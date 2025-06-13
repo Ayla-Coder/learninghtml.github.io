@@ -26,21 +26,19 @@
   <script src="https://cdn.jsdelivr.net/gh/tanaikech/HtmlFormObjectParserForGoogleAppsScript_js/htmlFormObjectParserForGoogleAppsScript_js.min.js"></script>
   <script>
     async function run(e) {
+      e.value = "Submitting...";
+      e.disabled = true;
+
       const url = "https://script.google.com/macros/s/AKfycbzWSSTg-Wd-XQOmMNFHQ9LYU5gMCUJW-cjhvRqopQjvNWb49ae5ggYS0nWGOMuEggF7/exec"; // Please set your Web Apps URL here.
       const obj = await ParseFormObjectForGAS(e.parentNode, null, null, true);
       fetch(url, { method: "POST", body: JSON.stringify(obj) })
         .then((res) => res.json())
         .then((res) => console.log(res));
-    e.value = "Submitting...";
-    e.classList.add("loading"); // Add a CSS class for spinner/animation
-    e.disabled = true;
-
-    // ...submission logic...
+   
 
     // On completion, reset as needed
-    e.value = "Submit";
-    e.classList.remove("loading");
-    e.disabled = false;
+    e.value = "Submitted!";
+    e.disabled = true;
     }
   </script>
 </body>
