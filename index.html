@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Apply google sheets custom form</title>
+    <base target="_top" />
+
+  </head>
+<body>
+<p>hello world! I can't figure this out....
+</p>
+<body>
+  
+  <script src="https://cdn.jsdelivr.net/gh/tanaikech/HtmlFormObjectParserForGoogleAppsScript_js/htmlFormObjectParserForGoogleAppsScript_js.min.js"></script>
+  <script>
+    async function run(e) {
+      const url = "https://script.google.com/macros/s/AKfycbzWSSTg-Wd-XQOmMNFHQ9LYU5gMCUJW-cjhvRqopQjvNWb49ae5ggYS0nWGOMuEggF7/exec"; // Please set your Web Apps URL here.
+      const obj = await ParseFormObjectForGAS(e.parentNode, null, null, true);
+      fetch(url, { method: "POST", body: JSON.stringify(obj) })
+        .then((res) => res.json())
+        .then((res) => console.log(res));
+    }
+  </script>
+</body>
+</html>
