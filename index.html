@@ -12,9 +12,9 @@
 <p>hello world! I figured it out!
 </p>
     <form>
-      Text1: <input type="text" name="Name" /><br />
-      Text2: <input type="email" name="Email" /><br />
-    
+      Your name: <input type="text" name="Name" /><br />
+      Your email: <input type="email" name="Email" /><br />
+
       <input
         type="submit"
         name="button"
@@ -31,6 +31,16 @@
       fetch(url, { method: "POST", body: JSON.stringify(obj) })
         .then((res) => res.json())
         .then((res) => console.log(res));
+    button.value = "Submitting...";
+    button.classList.add("loading"); // Add a CSS class for spinner/animation
+    button.disabled = true;
+
+    // ...submission logic...
+
+    // On completion, reset as needed
+    button.value = "Submit";
+    button.classList.remove("loading");
+    button.disabled = false;
     }
   </script>
 </body>
