@@ -12,4 +12,3 @@ async function run(e) {
     e.value = "Submitted!";
     e.disabled = true;
     }
-  </script>
