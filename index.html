@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fleur+De+Leah&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Apply google sheets custom form</title>
     <base target="_top" />
+
 
   </head>
 <body>
 <p>hello world! I figured it out!
 </p>
     <form>
-      Your name: <input type="text" name="Name" /><br />
-      Your email: <input type="email" name="Email" /><br />
+      <label for="fname">First name:</label><br>
+      <input type="text" id="fname" name="Name" /><br />
+      <label for="elmail">Email:</label><br>
+      <input type="email" id = "elmail" name="Email" /><br />
 
       <input
         type="submit"
