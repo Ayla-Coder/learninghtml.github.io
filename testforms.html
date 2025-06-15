@@ -6,24 +6,27 @@
 
   <body>
     <form>
-        <h1>This is a test form</h1> // header
+        <h1>This is a test form</h1> <! --  header --> 
 
 
-        <fieldset> // denotes a boxed-in part of the form that is its own "category." Anything in this fieldset are multiple choice questions.
-            <legend>Here are the first questions (multiple choice):</legend> // This is the title for this fieldset
+        <fieldset>  <! -- denotes a boxed-in part of the form that is its own "category." Anything in this fieldset are multiple choice questions. --> 
 
-            <div id="Q1"> //div divides the following questions into logical parts that can be called upon using functions as a whole. so all the inputs here are grouped into this question.
-                <legend>what kind of animal meows?</legend> // The title for the question
-                <label for="Q1a">cat</label> // The label for the answer. putting it before the input means the text will show up to the left of the input element.
-                <input type="radio" id="Q1a" name="animal" /> // The input denotes the type of answer. in this case it's a multiple choice with one correct answer.
+            <legend>Here are the first questions (multiple choice):</legend> <! --  This is the title for this fieldset -->
+
+            <! --  div divides the following questions into logical parts that can be called upon using functions as a whole. so all the inputs here are grouped into this question. --> 
+            <div id="Q1">
+
+                <legend>what kind of animal meows?</legend> <! --  The title for the question --> 
+                <label for="Q1a">cat</label> <! --  The label for the answer. putting it before the input means the text will show up to the left of the input element. -->  
+                <input type="radio" id="Q1a" name="animal" /> <! --  The input denotes the type of answer. in this case it's a multiple choice with one correct answer. -->  
                 <label for="Q1b">dog</label>
-                <input type="radio" id="Q1b" name="animal" /> // This is also a multiple choice with one correct answer.
+                <input type="radio" id="Q1b" name="animal" /> <! --  This is also a multiple choice with one correct answer. -->  
               </div>
 
-              <div id="Q2"> // Here's the second question in this fieldset. it is also in its own div. 
+              <div id="Q2"> <! --  Here's the second question in this fieldset. it is also in its own div.  -->  
                 <legend>How many legs does this animal normally have?</legend>
                 <input type="radio" id="Q2a" name="number" />
-                <label for="Q2a">1</label> // Putting the label after the input means the input is to the left of the label (I like this more). 
+                <label for="Q2a">1</label> <! --   Putting the label after the input means the input is to the left of the label (I like this more).  --> 
                 
                 <input type="radio" id="Q2b" name="number" />
                 <label for="Q2b">2</label>
@@ -37,7 +40,7 @@
         </fieldset>
 
 
-        <fieldset> // A new fieldset groups the next set of questions separately from the first set in the same manner. 
+        <fieldset> <! --  header -->  A new fieldset groups the next set of questions separately from the first set in the same manner. 
             <legend>Here are the long-answer questions:</legend>
             <div id="LQ1"> 
                 <label for="LQ1a">Please describe your favourite animal</label><br>
@@ -55,3 +58,4 @@
     </form>
 
   </body>
+</html>
