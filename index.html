@@ -29,5 +29,59 @@
         onclick="run(this);return false;"
       />
     </form>
+
+
+
+    <! -- This is the first test of an RSVP form -->
+    <form name="RSVP">
+
+    
+      
+      <! -- Question 1 (Q1)-->
+     <label>Will you be joining us?</label><br>
+    
+     <input type="radio" name="Q1" value="yes1" onclick = "showNextQuestion(this)" />Yes
+     <input type="radio" name="Q1" value="no1" onclick = "showNextQuestion(this)" />No
+     <br><br>
+  
+
+     <! -- Question 2 (Q2), displayed if Q1 = yes-->
+     <div id="yes1Question" style="display:none;">
+       <label> Have you signed up to get important updates from the website?</label><br>
+       <input type="radio"  name="Q2" value="yes2" onclick = "showNextQuestion(this)" />Yes
+       <input type="radio"  name="Q2" value="no2" onclick = "showNextQuestion(this)" />No
+       <br><br>
+     </div>
+    
+     <div id="yes2Question" style="display:none;">
+       <label>Please enter the names of each guest</label>
+       <input type="text" name="guests">
+       <button type="button" data-value="Guest" onclick = "showNextQuestion(this)">Click me</button>
+       <br><br>
+     </div>
+     <div id="GuestQuestion" style="display:none;">
+      Here's the menu options
+     </div>
+
+     <div id="no2Question" style="display:none;">
+       <label>Please sign up here with your email so you don't miss out on things like when paying for the bus becomes available: </label>
+       <input type="text" name="email" value="example@gmail.com">
+       <br><br>
+     </div>
+      
+      <! -- if Q1 = no -->
+    <div id="no1Question" style="display:none;"><br/>
+        Thank you for submitting your RSVP! Even if you can't make it, we really appreciate your response. You will be in our thoughts and hearts on the day! 
+       <br><br>
+     </div>
+    
+    <div id="submitDiv" style="display:none;">
+      <input type="submit">
+    </div>
+    
+    </form>
+
+
+
   </body>
 </html>
