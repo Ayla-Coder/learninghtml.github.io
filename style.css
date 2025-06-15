@@ -39,6 +39,13 @@ html {
     font-style: bold;
   }
 
+  h4 {
+    font-family: "Roboto Flex";
+    font-size: 20px;
+    text-align: left;
+    font-weight: 800;
+  
+
   html {
     font-family: "Open Sans", sans-serif;
 

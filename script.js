@@ -27,74 +27,62 @@ async function runRSVP(e) {
     e.disabled = true;
     }
 
+//takes a triggerSelector (the given answer), and compares this to a triggerValue (an answer option). 
+// If triggerSelector == triggerValue, the function will set the display setting of targetSelector to "block", making it visible while keepin the other branch hidden
+//function branchForm(triggerSelector, triggerValue, targetSelector) {
+    //document.querySelector(triggerSelector).addEventListener('change', function(e) {
+   // document.querySelector(targetSelector).style.display = 
+   // e.target.value === triggerValue ? 'block' : 'none';
+   // });
+//}
 
-
- function showNextQuestion(that) {
-        // Only hide mutually exclusive sections
-        document.getElementById("no1Question").style.display = "none";
-        document.getElementById("submitDiv").style.display = "none";
-      
-        // Get the answer value (works for radio, button, etc.)
-        var answer = that.value || that.getAttribute('data-value');
-      
-        // Show the next relevant question if it exists
-        if (document.getElementById(answer + 'Question')) {
-          document.getElementById(answer + 'Question').style.display = "block";
+function branchForm(triggerSelector, triggerValue, targetSelector) {
+    // Select all elements that match the triggerSelector (could be radios, a select, etc.)
+    var triggers = document.querySelectorAll(triggerSelector);
+  
+    // Add a 'change' event listener to each trigger element
+    triggers.forEach(function(trigger) {
+      trigger.addEventListener('change', function() {
+        // For radio groups: find the checked radio in the group
+        // For selects/checkboxes: this will be null, so fallback to trigger.value
+        var checked = document.querySelector(triggerSelector + ':checked');
+  
+        // If a checked radio is found, use its value; otherwise, use the value of the changed element (for select/checkbox)
+        var value = checked ? checked.value : trigger.value;
+  
+        // Select the target element to show/hide
+        var target = document.querySelector(targetSelector);
+  
+        // Show the target if the value matches triggerValue; otherwise, hide it
+        if (value === triggerValue) {
+          target.style.display = 'block';
+        } else {
+          target.style.display = 'none';
         }
-      
-        // Show submit button at the end of each branch
-        if (answer === "no1" || answer === "no2" || answer === "Guest") {
-          document.getElementById("submitDiv").style.display = "block";
+      });
+    });
+  }
+
+  // Function declaration for createTable
+function createTable()
+{
+    // Prompting the user to input the number of rows
+    rn = window.prompt("Input number of rows", 1);
+    // Prompting the user to input the number of columns
+    cn = window.prompt("Input number of columns",1);
+  
+    // Looping through rows
+    for(var r=0;r<parseInt(rn,10);r++)
+    {
+        // Inserting a new row at index r in the table
+        var x=document.getElementById('myTable').insertRow(r);
+        // Looping through columns
+        for(var c=0;c<parseInt(cn,10);c++)  
+        {
+            // Inserting a new cell at index c in the current row
+            var y=  x.insertCell(c);
+            // Setting the inner HTML content of the cell
+            y.innerHTML="Row-"+r+" Column-"+c; 
         }
-      }
-
-
-      
-// Example menu options
-const menuOptions = [
-    "Chicken",
-    "Beef",
-    "Vegetarian",
-    "Vegan",
-    "Other"
-  ];
-
-  const guestCountInput = document.getElementById('guestCount');
-  const mealSelectionsDiv = document.getElementById('mealSelections');
-
-  guestCountInput.addEventListener('input', function() {
-    // Clear previous meal selections
-    mealSelectionsDiv.innerHTML = '';
-    const count = parseInt(this.value, 10);
-
-    if (!isNaN(count) && count > 0) {
-      for (let i = 1; i <= count; i++) {
-        // Create label and select for each guest
-        const label = document.createElement('label');
-        label.textContent = `Meal choice for Guest ${i}:`;
-        label.className = 'meal-select';
-
-        const select = document.createElement('select');
-        select.name = `meal${i}`;
-        select.required = true;
-
-        // Add menu options
-        menuOptions.forEach(option => {
-          const opt = document.createElement('option');
-          opt.value = option;
-          opt.textContent = option;
-          select.appendChild(opt);
-        });
-
-        label.appendChild(select);
-        mealSelectionsDiv.appendChild(label);
-      }
     }
-  });
-
-  // Optional: handle form submission
-  document.getElementById('rsvpForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('RSVP submitted! Thank you.');
-    // Here you can add code to send the form data to your server
-  });
+}
