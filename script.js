@@ -63,26 +63,37 @@ function branchForm(triggerSelector, triggerValue, targetSelector) {
     });
   }
 
-  // Function declaration for createTable
-function createTable()
-{
-    // Prompting the user to input the number of rows
-    rn = window.prompt("Input number of rows", 1);
-    // Prompting the user to input the number of columns
-    cn = window.prompt("Input number of columns",1);
+
   
-    // Looping through rows
-    for(var r=0;r<parseInt(rn,10);r++)
-    {
-        // Inserting a new row at index r in the table
-        var x=document.getElementById('myTable').insertRow(r);
-        // Looping through columns
-        for(var c=0;c<parseInt(cn,10);c++)  
-        {
-            // Inserting a new cell at index c in the current row
-            var y=  x.insertCell(c);
-            // Setting the inner HTML content of the cell
-            y.innerHTML="Row-"+r+" Column-"+c; 
-        }
+// Function to dynamically create a table with the specified number of rows and columns
+// and insert it into a container element by its ID.
+function createTable(numRows, numCols, containerId) {
+    
+    // Get the container element where the table will be inserted
+    const tableContainer = document.getElementById(containerId);
+  
+    // Clear any existing content in the container (removes old tables)
+    tableContainer.innerHTML = '';
+  
+    // Create a new table element
+    const table = document.createElement('table');
+    // Add a CSS class for styling (use CSS for borders and appearance)
+    table.className = 'styled-table';
+  
+    // Loop to create table rows
+    for (let r = 0; r < numRows; r++) {
+      // Create a new row
+      const row = table.insertRow();
+      // Loop to create table cells in each row
+      for (let c = 0; c < numCols; c++) {
+        // Create a new cell
+        const cell = row.insertCell();
+        // Optionally set the cell's text content
+        cell.textContent = `Row ${r + 1}, Col ${c + 1}`;
+      }
     }
-}
+  
+    // Insert the completed table into the container
+    tableContainer.appendChild(table);
+  }
+  

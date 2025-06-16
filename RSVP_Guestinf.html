@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RSVP Form</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    .hidden { display: none; }
+    .step { margin-bottom: 2em; }
+    label { display: block; margin-top: 1em; }
+    .guest-block, .plusone-block, .meal-block { margin-bottom: 1em; padding: 1em; border: 1px solid #ccc; border-radius: 5px; }
+    .inline { display: inline-block; margin-right: 1em; }
+  </style>
+</head>
+<body>
+  <h2>RSVP Form</h2>
+  <form id="rsvpForm">
+
+
+    <!-- Step 1: Guests -->
+    <div class="step" id="step1">
+      <label>
+        How many guests from your group are coming? (Including children)
+
+        <input type="number" id="guestCount" name="guestCount" min="1" max="10" required>
+      </label>
+
+      <div id="guestDetails"></div>
+
+      <button type="button" id="toStep2">Next</button>
+
+    </div>
+
+    
+    <!-- Step 2: Plus Ones -->
+    <div class="step hidden" id="step2">
+      <div id="plusOneDetails"></div>
+      <button type="button" id="toStep3">Next</button>
+    </div>
+    <!-- Step 3: Meals -->
+    <div class="step hidden" id="step3">
+      <div id="mealDetails"></div>
+      <button type="submit">Submit RSVP</button>
+    </div>
+  </form>
+  <script src="Guest_inf.js"></script>
+</body>
+</html>

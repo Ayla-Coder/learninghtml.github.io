@@ -44,7 +44,17 @@ html {
     font-size: 20px;
     text-align: left;
     font-weight: 800;
+}
   
+  
+ .styled-table, .styled-table th, .styled-table td {
+    border: 1px solid #333;
+    border-collapse: collapse;
+    padding: 4px 8px;
+}
+
+
+
 
   html {
     font-family: "Open Sans", sans-serif;

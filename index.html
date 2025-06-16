@@ -40,7 +40,7 @@
     <fieldset> <!-- Question 1 (Q1)-->
       <legend><h3>RSVP</h3></legend>
       <label for="Responder">Please enter your full name (the person filling out the form):</label>
-      <input type="name" id="Responder" name="name"> <br><br>
+      <input type="name" id="Responder" name="name" value="Full name"> <br><br>
      
      
     
@@ -62,13 +62,13 @@
         <legend><h4>Remember to sign on to get important updates from the website!</h4></legend>
 
         <label for="EUpdates">Please enter your email here:</label>
-        <input type="email" id="EUpdates" name="Email"> <br><br>
+        <input type="email" id="EUpdates" name="Email" value="Example@gmail.com"> <br><br>
         
 
         <input type="radio" id="NoElUp" name="NoEmail">
         <label for="NoElUp">No thank you, I'll make sure to keep checking the website myself</label>
-
-        <input type="botton" id="next" value="Next page" name="nextButton" onclick="link">
+        <br><br>
+        <input type="botton" id="next" value="Next page" name="nextButton"> <!-- onclick="link">--> 
         
      </div> <p></p>
       
@@ -83,6 +83,9 @@
 
 
 
+  <fieldset>
+    
+  </fieldset>
 
 
 
@@ -91,15 +94,7 @@
 
 
 
-
-
-
-
-
-
-
-
-    <div id="SubmitMSG"></div>    <!-- Submit message-->
+    <div id="SubmitMSG" style="display:none;">    <!-- Submit message-->
       <fieldset>
         
           <legend><h4>Thank you!</h4></legend>
@@ -109,34 +104,30 @@
       </fieldset>
     </div>
 
-    
-    <fieldset>
-      <legend><h4>Guest info</h4></legend>
-        <div id="Q2"></div>   <!-- Question 2 (Q2), displayed if Q1a = yes-->
-
-          <label for="Guestnr">How many guests from your group are coming?</label>
-
-        </div>
-
-        <div id="Q3"></div>   <!-- Question 3 (Q3), displayed if Q2 = yes-->
-
-          <legend><h4>Would any of you like to request a +1?</h4></legend>
-
-          <label for="Guest+1">Please enter their full names and relationship to you:</label>
-        </div> 
-      
-     
-       
-    </fieldset>
+  
    </form>
+   Number of columns: <input type="number" id="numCols" min="1" required>
+   Number of rows: <input type="number" id="numRows" min="1" required>
+   <button id="createTableBtn">Create Table</button>
+   <div id="tableContainer"></div>
+   <form id="tableForm">
+      Number of columns: <input type="number" id="numCols" min="1" required>
+      Number of rows: <input type="number" id="numRows" min="1" value="1" required>
+      <button type="submit">Create Table</button>
+  </form>
+  
+  <div id="tableContainer"></div>
 
-  <!-- Table element with id 'myTable' and border attribute -->
-  <table id="myTable" border="1"> 
-    <!-- End of table element, currently empty -->
-    </table>
-    <!-- Form element containing a button triggering the createTable function on click -->
-    <form> 
-      <input type="button" onclick="createTable()" value="Create the table"> 
-    </form>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('createTableBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        const numRows = parseInt(document.getElementById('numRows').value, 10);
+        const numCols = parseInt(document.getElementById('numCols').value, 10);
+        createTable(numRows, numCols, 'tableContainer');
+      });
+    });
+    </script>
   </body>
 </html>
