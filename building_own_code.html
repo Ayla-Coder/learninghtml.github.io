@@ -1,16 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        
+        <style>
+            input[type="radio"] { 
+            margin-left: 30px; /* Adjust as needed */
+            
+            }
+            .container {
+              display: grid;
+              grid-template-columns: 250px 300px;
+              
+
+            }
+            .container > div {
+          
+              padding: 3px;
+              
+              text-align: left;
+              align-items: left;
+            }
+
+            .container2 {
+              display: grid;
+              grid-template-columns: 250px 550px 300px;
+              grid-template-rows: 150px;
+
+            }
+            .container2 > div {
+          
+              padding: 2px;
+              
+              text-align: left;
+              align-items: left;
+            }
+
+            .smallcontainer {
+              display: grid;
+              grid-template-columns: 90px 90px 70px 90px 90px 90px;
+              
+
+            }
+            .smallcontainer div {
+          
+              padding: 2px;
+              
+              text-align: left;
+              align-items: left;
+            }
+
+            input[name="longAns"] {
+
+                width: 300px;
+                height: 30px;
+                }
+
+            input[name="fname"] {
+
+                width: 190px;
+                
+                }
+            </style>
     </head>
     <body>
-        <div id="guestInfo" style="display:none">
-            <legend>Enter your full names:</legend>
-            <p id="addGuest"></p>
-        </div>
-        <button onclick="myFunction()">Click to add guest</button>
+        <form> 
 
-        <script src="building_own_code.js"></script>
+            <fieldset>
+                <legend><h2>Guest Info:</h2></legend>
+                <label for="guestNR">How many guests from your group are coming (including children)?</label>
+                <input type="number" min=1 max=10 id="guestNR"/>
+                <br><br>
+
+                <div id="gInfo" style="display:none">
+                    
+
+                </div>
+
+                <br><br>
+                <div id="testArray" style="display:none">
+                    <input type="button" id="testbtn" value="Click me to see if the GuestInfoStorage array works"/>
+                    <input type="button" id="Next2" value="Next"/>
+                            
+                </div>
+
+            </fieldset>
+
+            <fieldset id="Menu" style="display:none">
+                <legend><h2>Menu</h2></legend>
+                <p>The main course will likely be beef. We will update our website with the chosen menu when we know more, but this won't be until 2026. </p>
+
+                <div id="guestMeals">
+                </div>
+                <input type="button" id="Next3" value="Next"/>
+            </fieldset>
+
+            <fieldset id="Bus" style="display:none">
+                <legend><h2>Will any of you be taking the bus? What time?</h2></legend>
+                <p>Remember that we will ask that you pay a small sum of money to cover some of the cost of hiring the bus. We will keep this under
+                    the price of hiring a taxi, which are notoriously expensive in Norway, though this is always an option. As for payment options, 
+                    I'll set that up on the website asap. 
+
+                    Again, we aren't 100% sure about the times for the bus yet. All of this info will be posted to the website as 
+                    soon as we know more.</p>
+                
+                <div id="BussInf">
+                </div>
+                <input type="button" id="Next4" value="Next"/>
+            </fieldset>
+
+            <fieldset id="Drinks" style="display:none">
+                <legend><h2>Do you think you'll want to get drinks from the bar?</h2></legend>
+                <h3>TLDR:</h3>
+                <p>Please buy drink vouchers in advance to order mixed drinks, beer and extra wine at the bar. We will cover a welcome drink and wine with dinner.</p>
+                <br>
+                <h3>Why vouchers?</h3>
+                <p>Because of the venue, we have to buy all of the alcohol and supplies for the bar. This is actually better for you (our 
+                    guests) because alcohol prices in Norway are ridiculous compared to the US and UK (a mixed drink at a bar in oslo can cost 
+                    between 16 and 20USD or more). We will of course be covering the cost of the welcome-drink and the wine served at dinner,
+                    but we will be charging (a very affordable amount) for anything outside of this. </p>
+
+                <h3>Disclaimer!</h3> 
+                <p><b>There will also be alcohol-free versions of the cocktails we manage to organize.</b> These will be free of course.
+                I don't want to make any promises about the cocktail menu yet, but we really want to make piña coladas and margaritas with a 
+                slushie machine! I will update the website with the menu when we figure out what's realistic.</p>
+                    
+                <h3>Drinking Vouchers</h3>
+                <p>To save time and because of the alcohol-serving laws in Norway, we ask that you buy drink-vouchers in advance. You can use 
+                    these to order any drink of your choice at the bar, including beer, wine and possibly home-brewed hard cider. If you don't 
+                    get enough vouchers in advance, we will also set things up so that you can purchase some on-site as a last resort. Buying 
+                    vouchers in advance also gives us a good idea of how much alcohol we need to buy in, so this is the preferred method. 
+                </p>
+                <p><b>I will set up the payment options via this website as soon as possible.</b></p>
+                
+                <div id="Drinks">
+                </div>
+                <input type="button" id="Next5" value="Next"/>
+            </fieldset>
+
+            <fieldset id="End" style="display:none">
+                <legend>Any questions?</legend>
+               
+                <label for="Questions">Please write any questions you have here and we will get back to you as soon as possible!</label><br>
+                <input type="text" id="Questions" name="longAns"/>
+                <submit></submit>
+            </fieldset>
+        </form>
+
+        <!-- <script src="building_own_code.js"></script> -->
+        <script>
+            const guests = document.getElementById("guestNR");
+            const testbtn = document.getElementById("testbtn");
+            const testArrayDiv = document.getElementById("testArray");
+            
+            let GuestInfoStorage = []; // Empty array to store all of the user answers from the GuestInfo fieldset in
+            let counting = 0 // defines a global counting variable that is redefined when the updateField function is run. Stores this info for the next part of the RSVP.
+
+
+            guests.addEventListener("change", updateField);
+
+            testbtn.addEventListener("click", function() {
+                console.log(GuestInfoStorage);
+                alert(JSON.stringify(GuestInfoStorage, null, 2));
+             });
+
+             Next2.addEventListener("click", updateMeal);
+
+             Next3.addEventListener("click", function(){
+                document.getElementById("Bus").style.display = "block";
+             });
+             Next4.addEventListener("click", function(){
+                document.getElementById("Drinks").style.display = "block";
+             });
+             Next5.addEventListener("click", function(){
+                 document.getElementById("End").style.display = "block"
+             });
+
+
+            function updateField() {
+
+                document.getElementById("gInfo").innerHTML = '<legend><h3>Enter your full names here:</h3></legend><br>'; //deletes the html content of the guestDetailsDiv element.
+                GuestInfoStorage = [];
+                counting = guests.value; // redefines counting to match the number of guests entered by the user. 
+                
+                if (counting > 0 && counting < 11){ // Since I want a max of 10 guests, this makes sure that the code only works when the entered number is above 0 but below 11. 
+                
+                    document.getElementById("gInfo").style.display = "block";
+                    testArrayDiv.style.display = "block";
+
+                    for (let i = 0; i<counting; i++){ //runs the following code up to the number specified by user. 
+                        let GuestiInfo = {}; // Empty object to store all of the answers in, Guest Name, +1 answer, +1 name, +1 relationship
+                
+                        // myInp is a new div element of the class container that will be added to gInfo later
+                        const myInp = document.createElement("div"); myInp.className="container";
+                        // defines the code contained in myInp
+                        myInp.innerHTML = `
+                        <div>
+                        <label>Guest ${i+1} full name: </label>
+                        <input type="text" id="GuestID${i+1}" name="fname" required/> <br><br>
+                        </div>
+                        <div id="yesno+1${i+1}">
+                            <legend>Would you like to request a +1?</legend>
+                            <input type="radio" id="yes${i+1}" name="+1${i+1}" required/>
+                            <label for="yes${i+1}">Yes</label>
+                            <input type="radio" id="no${i+1}" name="+1${i+1}" required/>
+                            <label for="no${i+1}">No</label><br><br>
+                        </div>
+                        `;
+
+                        document.getElementById("gInfo").appendChild(myInp);
+
+                        const GuestName = document.getElementById(`GuestID${i+1}`);
+                        GuestName.addEventListener("change", function(){
+                            GuestiInfo.GuestName = this.value;
+                        });
+
+                        const plusOneYes = document.getElementById(`yes${i+1}`);
+                        const plusOneNo = document.getElementById(`no${i+1}`);
+                        
+                       
+                        plusOneYes.addEventListener("click", function() {
+                            const plusOneInfo = document.createElement("div"); plusOneInfo.className = "container"; plusOneInfo.id = `+1info${i+1}`;
+                            plusOneInfo.innerHTML = `
+                            <div> <label>Name of plus one for Guest ${i+1}: </label> </div>
+                            <div> <label>Relationship between plus one and Guest ${i+1}: </label></div>
+                            <div><input type="text" id="plusOneName${i+1}" name="fname" /> </div>
+                            <div><input type="text" id="plusOneRel${i+1}" name="longAns"/></div> <br><br>`;
+                            myInp.appendChild(plusOneInfo);
+                            GuestiInfo.plus1 = "yes";
+
+                            const plusOneName = document.getElementById(`plusOneName${i+1}`);
+                            const plusOneRel = document.getElementById(`plusOneRel${i+1}`);
+
+                            plusOneName.addEventListener("change", function(){
+                                GuestiInfo.plusOneName = this.value;
+                            });
+
+                            plusOneRel.addEventListener("change", function(){
+                                GuestiInfo.plusOneRel = this.value;
+                            });
+                            
+
+                        })
+
+                        plusOneNo.addEventListener("click", function() {
+                            const changedFromYes = document.getElementById(`+1info${i+1}`)
+                            if (changedFromYes) changedFromYes.remove();
+                            GuestiInfo.plus1 = "no";
+                        
+                    
+                        })
+
+                        
+                        // Instead of GuestInfoStorage.push(GuestiInfo);
+                        GuestInfoStorage[i] = GuestiInfo; // <-- Assign by index!
+                    }; 
+                    
+                }
+                else {
+                    window.alert("Please enter a number between 1 and 10");
+                }
+                
+            }
+        
+            
+            
+
+            function updateMeal() {
+                document.getElementById("guestMeals").innerHTML = ''; //deletes the html content of the guestDetailsDiv element.
+                let Names1 = [];
+                let Names2 = [];
+                document.getElementById("Menu").style.display = "block";
+               
+
+                for (let i = 0; i<counting; i++){
+                    //let guestName = GuestInfoStorage[i].GuestName;
+                    let guestName = GuestInfoStorage[i].GuestName;
+                    let plus1Name = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
+
+                    const newInp = document.createElement("div"); newInp.className="container2";
+                        // defines the code contained in myInp
+                        newInp.innerHTML = `
+                        <div>
+                            <legend><b>Enter your meal preferences here:</b></legend><br>
+                            <label>${guestName}: </label>
+                            <select id="menu${guestName}"> 
+                                <option value="">--Please choose an option--</option>
+                                <option value="Standard meal">Standard meal</option>
+                                <option value="Vegan">Vegan</option>
+                                <option value="Vegetarian">Vegetarian</option>
+                             </select>
+                        </div>
+                        <div>
+                            <legend><b>Do you have any of the following allergies/intolerances?</b></legend>
+                            <div class="smallcontainer">
+                                <div>
+                                    <input type="checkbox" id="Gluten${guestName}" value="Gluten">
+                                    <label for="Gluten${guestName}">Gluten</label>
+                                </div>
+                                <div>
+                                   <select id="Gsev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div>  
+                                <div>
+                                    <input type="checkbox" id="Dairy${guestName}" value="Dairy">
+                                    <label for="Dairy${guestName}">Dairy</label>
+                                </div>
+                                <div>
+                                    <select id="Dsev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div> 
+                                <div>
+                                <input type="checkbox" id="Peanuts${guestName}" value="Peanuts">
+                                    <label for="Peanuts${guestName}">Peanuts</label>
+                                </div>
+                                <div>
+                                    <select id="Psev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div> 
+                                <div>
+                                    <input type="checkbox" id="MostNuts${guestName}" value="MostNuts">
+                                    <label for="MostNuts${guestName}">Tree nuts</label>
+                                </div>
+                                <div>
+                                    <select id="TNsev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" id="Egg${guestName}" value="Egg">
+                                    <label for="Egg${guestName}">Egg</label>
+                                </div>
+                                <div>
+                                   <select id="Esev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" id="Soy${guestName}" value="Soy">
+                                    <label for="Soy${guestName}">Soy</label>
+                                </div>
+                                <div>
+                                   <select id="Ssev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" id="Wheat${guestName}" value="Wheat">
+                                    <label for="Wheat${guestName}">Wheat</label>
+                                </div>
+                                <div>
+                                    <select id="Wsev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" id="Fish${guestName}" value="Fish">
+                                    <label for="Fish${guestName}">Fish</label>
+                                </div> 
+                                <div>
+                                    <select id="Fsev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <input type="checkbox" id="Shellfish${guestName}" value="Shellfish">
+                                    <label for="Shellfish${guestName}">Shellfish</label>
+                                </div>
+                                <div>
+                                    <select id="SFsev${guestName}">
+                                        <option>Mild</option>
+                                        <option>Moderate</option>
+                                        <option>Severe</option>
+                                    </select>
+                                </div>
+                             </div>
+                        </div>
+                        <div>
+                            <legend><b>Any other intolerances/allergies we should know about?:</b></legend><br>
+                            <input type="text" id="allergies${guestName}" name="longAns"/>
+                        </div>
+                        `;
+                        document.getElementById("guestMeals").appendChild(newInp)
+                    //Names1.push(guestName);
+                    //Names2.push(plus1Name);
+                    
+
+
+                };
+                //console.log(Names1);
+                //alert(JSON.stringify(Names1 + Names2, null, 2));
+
+
+            }
+
+
+            
+        </script>
+
     </body>
 
 </html>
