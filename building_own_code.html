@@ -34,6 +34,20 @@
               align-items: left;
             }
 
+            .container3 {
+              display: grid;
+              grid-template-columns: 250px 550px;
+              
+
+            }
+            .container3 > div {
+          
+              padding: 2px;
+              
+              text-align: left;
+              align-items: left;
+            }
+
             .smallcontainer {
               display: grid;
               grid-template-columns: 90px 90px 70px 90px 90px 90px;
@@ -144,6 +158,14 @@
                 <submit></submit>
             </fieldset>
         </form>
+        
+        <!--What do I have left: 
+        1) include +1's in the menu function XXX
+
+        2) make the functions that append the bus and drink input
+        3) make it so that the next buttons can only be interacted with if all previous inputs are filled in. 
+        4) connect to a google sheets document-->
+
 
         <!-- <script src="building_own_code.js"></script> -->
         <script>
@@ -164,9 +186,7 @@
 
              Next2.addEventListener("click", updateMeal);
 
-             Next3.addEventListener("click", function(){
-                document.getElementById("Bus").style.display = "block";
-             });
+             Next3.addEventListener("click", updateBus);
              Next4.addEventListener("click", function(){
                 document.getElementById("Drinks").style.display = "block";
              });
@@ -265,155 +285,230 @@
             
 
             function updateMeal() {
-                document.getElementById("guestMeals").innerHTML = ''; //deletes the html content of the guestDetailsDiv element.
-                let Names1 = [];
-                let Names2 = [];
-                document.getElementById("Menu").style.display = "block";
-               
 
+                document.getElementById("guestMeals").innerHTML = ''; //deletes the html content of the guestDetailsDiv element.
+                document.getElementById("Menu").style.display = "block";
+
+                const guestMealsDiv = document.getElementById("guestMeals");
+               
                 for (let i = 0; i<counting; i++){
                     //let guestName = GuestInfoStorage[i].GuestName;
                     let guestName = GuestInfoStorage[i].GuestName;
                     let plus1Name = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
 
-                    const newInp = document.createElement("div"); newInp.className="container2";
-                        // defines the code contained in myInp
-                        newInp.innerHTML = `
-                        <div>
-                            <legend><b>Enter your meal preferences here:</b></legend><br>
-                            <label>${guestName}: </label>
-                            <select id="menu${guestName}"> 
-                                <option value="">--Please choose an option--</option>
-                                <option value="Standard meal">Standard meal</option>
-                                <option value="Vegan">Vegan</option>
-                                <option value="Vegetarian">Vegetarian</option>
-                             </select>
-                        </div>
-                        <div>
-                            <legend><b>Do you have any of the following allergies/intolerances?</b></legend>
-                            <div class="smallcontainer">
-                                <div>
-                                    <input type="checkbox" id="Gluten${guestName}" value="Gluten">
-                                    <label for="Gluten${guestName}">Gluten</label>
-                                </div>
-                                <div>
-                                   <select id="Gsev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div>  
-                                <div>
-                                    <input type="checkbox" id="Dairy${guestName}" value="Dairy">
-                                    <label for="Dairy${guestName}">Dairy</label>
-                                </div>
-                                <div>
-                                    <select id="Dsev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div> 
-                                <div>
-                                <input type="checkbox" id="Peanuts${guestName}" value="Peanuts">
-                                    <label for="Peanuts${guestName}">Peanuts</label>
-                                </div>
-                                <div>
-                                    <select id="Psev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div> 
-                                <div>
-                                    <input type="checkbox" id="MostNuts${guestName}" value="MostNuts">
-                                    <label for="MostNuts${guestName}">Tree nuts</label>
-                                </div>
-                                <div>
-                                    <select id="TNsev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <input type="checkbox" id="Egg${guestName}" value="Egg">
-                                    <label for="Egg${guestName}">Egg</label>
-                                </div>
-                                <div>
-                                   <select id="Esev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <input type="checkbox" id="Soy${guestName}" value="Soy">
-                                    <label for="Soy${guestName}">Soy</label>
-                                </div>
-                                <div>
-                                   <select id="Ssev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <input type="checkbox" id="Wheat${guestName}" value="Wheat">
-                                    <label for="Wheat${guestName}">Wheat</label>
-                                </div>
-                                <div>
-                                    <select id="Wsev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <input type="checkbox" id="Fish${guestName}" value="Fish">
-                                    <label for="Fish${guestName}">Fish</label>
-                                </div> 
-                                <div>
-                                    <select id="Fsev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <input type="checkbox" id="Shellfish${guestName}" value="Shellfish">
-                                    <label for="Shellfish${guestName}">Shellfish</label>
-                                </div>
-                                <div>
-                                    <select id="SFsev${guestName}">
-                                        <option>Mild</option>
-                                        <option>Moderate</option>
-                                        <option>Severe</option>
-                                    </select>
-                                </div>
-                             </div>
-                        </div>
-                        <div>
-                            <legend><b>Any other intolerances/allergies we should know about?:</b></legend><br>
-                            <input type="text" id="allergies${guestName}" name="longAns"/>
-                        </div>
-                        `;
-                        document.getElementById("guestMeals").appendChild(newInp)
-                    //Names1.push(guestName);
-                    //Names2.push(plus1Name);
                     
 
+                    //const newInp = createMealSection(guestName);
+                    //guestMealsDiv.appendChild(newInp);
+                    guestMealsDiv.appendChild(createMealSection(guestName));
 
+                    if (plus1Name.trim() !== "") {
+                        //const plusN = createMealSection(plus1Name);
+                        //guestMealsDiv.appendChild(plusN);
+                        guestMealsDiv.appendChild(createMealSection(plus1Name));
+                    }
+                    
+                   // document.getElementById("guestMeals").appendChild(guestMealsDiv);
+                    
                 };
-                //console.log(Names1);
-                //alert(JSON.stringify(Names1 + Names2, null, 2));
+        
+            }
+
+            // Helper function for updateMeal
+            function createMealSection(personName) {
+                let section = document.createElement("div");section.className = "container2";
+                section.innerHTML = `
+                <div>
+                    <legend><b>Enter your meal preferences here:</b></legend><br>
+                    <label>${personName}: </label>
+                    <select id="menu${personName}"> 
+                        <option value="">--Please choose an option--</option>
+                        <option value="Standard meal">Standard meal</option>
+                        <option value="Vegan">Vegan</option>
+                        <option value="Vegetarian">Vegetarian</option>
+                        </select>
+                </div>
+                <div>
+                    <legend><b>Do you have any of the following allergies/intolerances?</b></legend>
+                    <div class="smallcontainer">
+                        <div>
+                            <input type="checkbox" id="Gluten${personName}" value="Gluten">
+                            <label for="Gluten${personName}">Gluten</label>
+                        </div>
+                        <div>
+                            <select id="Gsev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>  
+                        <div>
+                            <input type="checkbox" id="Dairy${personName}" value="Dairy">
+                            <label for="Dairy${personName}">Dairy</label>
+                        </div>
+                        <div>
+                            <select id="Dsev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div> 
+                        <div>
+                        <input type="checkbox" id="Peanuts${personName}" value="Peanuts">
+                            <label for="Peanuts${personName}">Peanuts</label>
+                        </div>
+                        <div>
+                            <select id="Psev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div> 
+                        <div>
+                            <input type="checkbox" id="MostNuts${personName}" value="MostNuts">
+                            <label for="MostNuts${personName}">Tree nuts</label>
+                        </div>
+                        <div>
+                            <select id="TNsev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="checkbox" id="Egg${personName}" value="Egg">
+                            <label for="Egg${personName}">Egg</label>
+                        </div>
+                        <div>
+                            <select id="Esev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="checkbox" id="Soy${personName}" value="Soy">
+                            <label for="Soy${personName}">Soy</label>
+                        </div>
+                        <div>
+                            <select id="Ssev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="checkbox" id="Wheat${personName}" value="Wheat">
+                            <label for="Wheat${personName}">Wheat</label>
+                        </div>
+                        <div>
+                            <select id="Wsev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="checkbox" id="Fish${personName}" value="Fish">
+                            <label for="Fish${personName}">Fish</label>
+                        </div> 
+                        <div>
+                            <select id="Fsev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <input type="checkbox" id="Shellfish${personName}" value="Shellfish">
+                            <label for="Shellfish${personName}">Shellfish</label>
+                        </div>
+                        <div>
+                            <select id="SFsev${personName}">
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+                     </div>
+                </div>
+                <div>
+                    <legend><b>Any other intolerances/allergies we should know about?:</b></legend><br>
+                    <input type="text" id="allergies${personName}" name="longAns"/>
+                </div>
+                `;
+            return section;
+
+            }
 
 
+            function updateBus (){
+                document.getElementById("BussInf").innerHTML = ''; //deletes the html content of the guestDetailsDiv element.
+                document.getElementById("Bus").style.display = "block";
+
+                const guestBusDiv = document.getElementById("BussInf");
+               
+                for (let i = 0; i<counting; i++){
+                    //let guestName = GuestInfoStorage[i].GuestName;
+                    let guestName = GuestInfoStorage[i].GuestName;
+                    let plus1Name = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
+
+                    guestBusDiv.appendChild(createBusSection(guestName));
+
+                    if (plus1Name.trim() !== "") {
+                        //const plusN = createMealSection(plus1Name);
+                        //guestMealsDiv.appendChild(plusN);
+                        guestBusDiv.appendChild(createBusSection(plus1Name));
+                    }
+                    
+                   // document.getElementById("guestMeals").appendChild(guestMealsDiv);
+                    
+                };
+        
+            }
+
+            // Helper function for updatebus
+            function createBusSection(personName) {
+                let section = document.createElement("div");section.className = "container3";
+                section.innerHTML = `
+                 <div>
+                    <label>${personName}: </label>
+                    <input type="radio" id="yesBus${personName}" name="Bus${personName}" value="yes"/>
+                    <label for="yesBus${personName}">Yes</label>
+
+                    <input type="radio" id="noBus${personName}" name="Bus${personName}" value="no"/>
+                    <label for="noBus${personName}">No</label>
+                 </div>
+
+                 <div id="ifYesBus${personName}" style="display:none"/>
+                    <legend><b>Which hotel will you be staying at?</b></legend>
+                    <label>(In other words, where should the bus pick you up or drop you off?)</label>
+                    <input type="text" id="hotel${personName}" name="name"/>
+                 </div>
+                `;
+
+                // Use querySelector, not getElementById, and only after innerHTML is set
+                const yesRadio = section.querySelector(`#yesBus${personName}`);
+                const ifYesDiv = section.querySelector(`#ifYesBus${personName}`);
+
+                if (yesRadio && ifYesDiv) {
+                    yesRadio.addEventListener("change", function() {
+                        ifYesDiv.style.display = "block";
+                });
+                }
+               // document.getElementById(`yesBus${personName}`).addEventListener("change", function(){
+                 //   document.getElementById(`ifYesBus${personName}`).style.display = "block";
+                   // const divvy = document.createElement("div").innerHTML = `
+                    //<input type="button" id="donebtn" value="Done"/>
+                   // `
+                   // section.appendChild(divvy);
+               // });
+                return section;
             }
 
 
