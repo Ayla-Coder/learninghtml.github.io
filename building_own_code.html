@@ -2,8 +2,40 @@
 <html lang="en">
     <head>
         <style>
-            input[type="radio"] { 
-            margin-left: 30px; /* Adjust as needed */
+            button {
+                
+               
+                cursor: pointer;
+                }
+
+                dialog {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+                padding: 24px 32px;
+                max-width: 600px;
+                text-align: left;
+                }
+
+                dialog::backdrop {
+                background: rgba(0,0,0,0.3);
+                }
+
+                .close-btn {
+                margin-top: 20px;
+                padding: 8px 16px;
+                background: #e74c3c;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                }
+
+                .close-btn:hover {
+                background: #c0392b;
+                }
+            input[name="radio"][value="no"] { 
+            margin-left: 20px; /* Adjust as needed */
             
             }
             .container {
@@ -19,6 +51,7 @@
               text-align: left;
               align-items: left;
             }
+        
 
             .container2 {
               display: grid;
@@ -36,13 +69,28 @@
 
             .container3 {
               display: grid;
-              grid-template-columns: 250px 550px;
+              grid-template-columns: 200px 350px 10px 600px;
               
 
             }
             .container3 > div {
           
-              padding: 2px;
+              padding: 4px;
+              /*border: 1px solid black;*/
+              
+              text-align: left;
+              align-items: left;
+            }
+            .container4 {
+              display: grid;
+              grid-template-columns: 500px 300px;
+              
+
+            }
+            .container4 > div {
+          
+              padding: 3px;
+              
               
               text-align: left;
               align-items: left;
@@ -61,7 +109,32 @@
               text-align: left;
               align-items: left;
             }
+            .smallcontainer2 {
+              display: grid;
+              grid-template-columns: 200px 200px 200px;
+        
+            }
+            .smallcontainer2 div {
+          
+              padding: 2px;
+              /*border: 1px solid black;*/
+              text-align: left;
+              align-items: left;
+            }
 
+            .small {
+              display: grid;
+              grid-template-columns: 30px 150px;
+              
+
+            }
+            .small div {
+          
+              padding: 2px;
+              
+              text-align: left;
+              align-items: left;
+            }
             input[name="longAns"] {
 
                 width: 300px;
@@ -73,6 +146,7 @@
                 width: 190px;
                 
                 }
+           
             </style>
     </head>
     <body>
@@ -113,8 +187,8 @@
                     the price of hiring a taxi, which are notoriously expensive in Norway, though this is always an option. As for payment options, 
                     I'll set that up on the website asap. 
 
-                    Again, we aren't 100% sure about the times for the bus yet. All of this info will be posted to the website as 
-                    soon as we know more.</p>
+                    Again, we aren't 100% sure about the times for the bus yet, or if we'll hire one for both pick-up and drop-off. It all depends on 
+                    the amount of people who want/need to take the bus. All of this info will be posted to the website as soon as we know more.</p>
                 
                 <div id="BussInf">
                 </div>
@@ -122,28 +196,35 @@
             </fieldset>
 
             <fieldset id="Drinks" style="display:none">
-                <legend><h2>Do you think you'll want to get drinks from the bar?</h2></legend>
-                <h3>TLDR:</h3>
-                <p>Please buy drink vouchers in advance to order mixed drinks, beer and extra wine at the bar. We will cover a welcome drink and wine with dinner.</p>
-                <br>
-                <h3>Why vouchers?</h3>
-                <p>Because of the venue, we have to buy all of the alcohol and supplies for the bar. This is actually better for you (our 
-                    guests) because alcohol prices in Norway are ridiculous compared to the US and UK (a mixed drink at a bar in oslo can cost 
-                    between 16 and 20USD or more). We will of course be covering the cost of the welcome-drink and the wine served at dinner,
-                    but we will be charging (a very affordable amount) for anything outside of this. </p>
+                <legend><h2>Drink Vouchers</h2></legend>
 
-                <h3>Disclaimer!</h3> 
-                <p><b>There will also be alcohol-free versions of the cocktails we manage to organize.</b> These will be free of course.
-                I don't want to make any promises about the cocktail menu yet, but we really want to make piña coladas and margaritas with a 
-                slushie machine! I will update the website with the menu when we figure out what's realistic.</p>
-                    
-                <h3>Drinking Vouchers</h3>
-                <p>To save time and because of the alcohol-serving laws in Norway, we ask that you buy drink-vouchers in advance. You can use 
-                    these to order any drink of your choice at the bar, including beer, wine and possibly home-brewed hard cider. If you don't 
-                    get enough vouchers in advance, we will also set things up so that you can purchase some on-site as a last resort. Buying 
-                    vouchers in advance also gives us a good idea of how much alcohol we need to buy in, so this is the preferred method. 
+                <p>Due to limited space and to save time (and because of the alcohol-serving laws in Norway), instead of having a normal bar
+                    set-up we have to use drink-vouchers. These will be sold in packs of three on our website, and will be purchaseable using 
+                    Vipps (Norway), Paypal and bank transfers. We ask that you buy these in advance, both to save time and so that we get a 
+                    good idea of how many vouchers we will need and how many drinks we will need to provide. we will also set things up so that 
+                    you can purchase some on-site as a last resort.<b>We will of course cover the welcome-drinks and wine with dinner.</b>
                 </p>
-                <p><b>I will set up the payment options via this website as soon as possible.</b></p>
+                <div class="container4">
+
+                    <div>
+                        <b>I will set up the payment options via this website as soon as possible.</b>
+                    </div>
+                    <div>
+                        <button id="openDialogBtn">More info</button>
+                    </div>
+                 </div>
+                <dialog id="drinkInfo">
+                    <h3>Drink menu</h3>
+                    <p>
+                        We are currently working on a drink menu that we will post to the website at some point. What we do know so far, is that 
+                        we want to provide exciting mixed drinks with equally exciting <i>alcohol-free</i> versions! <br> <br>
+                        Again, we haven't landed on the exact menu yet, but we know we want to serve piña coladas and margaritas made in a slushie 
+                        machine, as well as beer, wine and maybe some home-brewed hard cider and beer too. 
+                        <br>
+                    </p>
+                    <button class="close-btn" id="closeDialogBtn">Close</button>
+                  </dialog>
+                  <p></p>
                 
                 <div id="Drinks">
                 </div>
@@ -163,6 +244,7 @@
         1) include +1's in the menu function XXX
 
         2) make the functions that append the bus and drink input
+
         3) make it so that the next buttons can only be interacted with if all previous inputs are filled in. 
         4) connect to a google sheets document-->
 
@@ -219,9 +301,9 @@
                         </div>
                         <div id="yesno+1${i+1}">
                             <legend>Would you like to request a +1?</legend>
-                            <input type="radio" id="yes${i+1}" name="+1${i+1}" required/>
+                            <input type="radio" id="yes${i+1}" name="+1${i+1}" value="yes"required/>
                             <label for="yes${i+1}">Yes</label>
-                            <input type="radio" id="no${i+1}" name="+1${i+1}" required/>
+                            <input type="radio" id="no${i+1}" name="+1${i+1}" value="no" required/>
                             <label for="no${i+1}">No</label><br><br>
                         </div>
                         `;
@@ -472,46 +554,114 @@
         
             }
 
+            function makeSafe(str) {
+                return str.replace(/\W/g, '_');
+            }
+
             // Helper function for updatebus
             function createBusSection(personName) {
+                const safeName = makeSafe(personName)
                 let section = document.createElement("div");section.className = "container3";
                 section.innerHTML = `
                  <div>
-                    <label>${personName}: </label>
-                    <input type="radio" id="yesBus${personName}" name="Bus${personName}" value="yes"/>
-                    <label for="yesBus${personName}">Yes</label>
+                    <label>${personName}: </label><br>
+                    <input type="radio" id="yesBus${safeName}" name="Bus${safeName}" value="yes"/>
+                    <label for="yesBus${safeName}">Yes</label>
 
-                    <input type="radio" id="noBus${personName}" name="Bus${personName}" value="no"/>
-                    <label for="noBus${personName}">No</label>
+                    <input type="radio" id="noBus${safeName}" name="Bus${safeName}" value="no"/>
+                    <label for="noBus${safeName}">No</label>
                  </div>
 
-                 <div id="ifYesBus${personName}" style="display:none"/>
-                    <legend><b>Which hotel will you be staying at?</b></legend>
-                    <label>(In other words, where should the bus pick you up or drop you off?)</label>
-                    <input type="text" id="hotel${personName}" name="name"/>
+                 <div id="ifYesBus${safeName}" style="display:none">
+                    <legend><b>Which hotel will you be staying at?</b></legend><br>
+                    <label>(Where should the bus pick you up/ drop you off?)</label>
+                    <input type="text" id="hName${safeName}" name="longAns"/>
                  </div>
+                 <div>
+                    </div>
+
+                 <div id="timesBus${safeName}" style="display:none">
+                    <legend><b>What times would you want to take the bus?</b></legend>
+                    <p>Info: we are early-birds, but if enough people would like to stay later than 01:00 am, we will consider pushing 
+                        the second drop-off time back</p>
+
+                    <div class="smallcontainer2"> 
+                        <div class="small">
+                            <div>
+                            <input type="checkbox" id="times1${safeName}"/>
+                            </div>
+                            <div>
+                            <label for="times1${safeName}">Pick-up at 01:30 pm (13:30)</label>
+                            </div>
+                        </div>
+                        <div>
+                            <legend>Drop-off times</legend>
+                            <input type="radio" id="times2${safeName}" name="dropOff"/>
+                            <label for="times2${safeName}">10:30 pm (22:30)</label> <br>
+                            
+                            <input type="radio" id="times3${safeName}" name="dropOff"/>
+                            <label for="times3${safeName}">01:00 am (01:00)</label><br>
+                       
+                            <input type="radio" id="times4${safeName}" name="dropOff"/>
+                            <label for="times4${safeName}">Request a later time</label><br>
+                        </div>
+                         <div id="laterDropOff${safeName}" style="display:none"> 
+
+                            <label>Please suggest a time before 03:00 am here:</label><br>
+                            <input type="time"/>
+                        </div>
+                    </div>
+                    
+                </div>
+
                 `;
 
                 // Use querySelector, not getElementById, and only after innerHTML is set
-                const yesRadio = section.querySelector(`#yesBus${personName}`);
-                const ifYesDiv = section.querySelector(`#ifYesBus${personName}`);
+                const yesRadio = section.querySelector(`#yesBus${safeName}`);
+                const ifYesDiv = section.querySelector(`#ifYesBus${safeName}`);
+                const busTimes = section.querySelector(`#timesBus${safeName}`);
+                const suggestTime = section.querySelector(`#laterDropOff${safeName}`);
+                const times4Radio = section.querySelector(`#times4${safeName}`);
+
+                times4Radio.addEventListener("change", () => {
+                    suggestTime.style.display = "block";
+                     });
 
                 if (yesRadio && ifYesDiv) {
                     yesRadio.addEventListener("change", function() {
                         ifYesDiv.style.display = "block";
+                        busTimes.style.display = "block";
                 });
                 }
-               // document.getElementById(`yesBus${personName}`).addEventListener("change", function(){
-                 //   document.getElementById(`ifYesBus${personName}`).style.display = "block";
-                   // const divvy = document.createElement("div").innerHTML = `
-                    //<input type="button" id="donebtn" value="Done"/>
-                   // `
-                   // section.appendChild(divvy);
-               // });
+               
                 return section;
             }
 
+            // more info button
+            const dialog = document.getElementById('drinkInfo');
+                const openBtn = document.getElementById('openDialogBtn');
+                const closeBtn = document.getElementById('closeDialogBtn');
 
+                openBtn.addEventListener('click', () => {
+                dialog.showModal();
+                });
+
+                closeBtn.addEventListener('click', () => {
+                dialog.close();
+                });
+
+                // Optional: Allow closing the dialog by clicking outside of it
+                dialog.addEventListener('click', (event) => {
+                const rect = dialog.getBoundingClientRect();
+                if (
+                    event.clientX < rect.left ||
+                    event.clientX > rect.right ||
+                    event.clientY < rect.top ||
+                    event.clientY > rect.bottom
+                ) {
+                    dialog.close();
+                }
+                });
             
         </script>
 
