@@ -180,6 +180,7 @@
                 <div id="guestMeals">
                 </div>
                 <input type="button" id="Next3" value="Next"/>
+                <input type="button" id="mealbtn" value="Click me to see if the MealInfoStorage array works"/>
             </fieldset>
 
             <fieldset id="Bus" style="display:none">
@@ -226,7 +227,9 @@
                     <button class="close-btn" id="closeDialogBtn">Close</button>
                   </dialog>
                   <p></p>
-             
+                  
+                  
+                
                 <div id="DrinkNext">
                 </div>
                 <div id="Next5" style="display:none">
@@ -246,9 +249,11 @@
         
         <!--What do I have left: 
         1) include +1's in the menu function XXX
+
         2) make the functions that append the bus and drink input XX
 
         3) make it so that the next buttons can only be interacted with if all previous inputs are filled in. 
+
         4) connect to a google sheets document-->
 
 
@@ -259,26 +264,33 @@
             const testArrayDiv = document.getElementById("testArray");
             
             let GuestInfoStorage = []; // Empty array to store all of the user answers from the GuestInfo fieldset in
+            let MealInfoStorage = []; // Empty array to store all of the user answers from the guestMeals fieldset in
+            let BusInfoStorage = []; // Empty array to store all of the user answers from the BussInf fieldset in
+            let DrinkInfoStorage = []; // Empty array to store all of the user answers from the DrinkNext fieldset in
+            let QuestionStorage = []; // Empty array to store all of the user answers from the GuestInfo fieldset in
             let counting = 0 // defines a global counting variable that is redefined when the updateField function is run. Stores this info for the next part of the RSVP.
 
-            // a schema that defines the rules for the GuestInfoStorage array. Used later for validation checks
-            const guestInfoSchema = [
-                { field: "GuestName", message: "Please enter the name for Guest {n}" },
-                { field: "plus1", message: "Please select if Guest {n} wants a +1" },
-                { field: "plusOneName", if: { field: "plus1", value: "yes" }, message: "Please enter the +1 name for Guest {n}" },
-                { field: "plusOneRel", if: { field: "plus1", value: "yes" }, message: "Please enter the +1 relationship for Guest {n}" }
-            ];
 
-      
+            guests.addEventListener("change", updateField);
 
-            // Functions:
-            //--------------------------------------------------------------
+            testbtn.addEventListener("click", function() {
+                console.log(GuestInfoStorage);
+                alert(JSON.stringify(GuestInfoStorage, null, 2));
+             });
 
-            //For the first guest info section --------------------------------------------------------------
+             let mealbtn = document.getElementById("mealbtn");
+            
+
+            
+             
+
+
             function updateField() {
 
                 document.getElementById("gInfo").innerHTML = '<legend><h3>Enter your full names here:</h3></legend><br>'; //deletes the html content of the guestDetailsDiv element.
-                GuestInfoStorage = [];
+                 GuestInfoStorage = [];
+              
+
                 counting = guests.value; // redefines counting to match the number of guests entered by the user. 
                 
                 if (counting > 0 && counting < 11){ // Since I want a max of 10 guests, this makes sure that the code only works when the entered number is above 0 but below 11. 
@@ -322,13 +334,6 @@
 
                         // adds an eventlistener to the yes radio button. This eventlistener adds the input fields for plus one. 
                         plusOneYes.addEventListener("click", function() {
-                            document.getElementById("Menu").style.display = "none"; //hides the menu section if it was previously filled out
-                            document.getElementById("guestMeals").innerHTML= ""; //resets the menu section if it was previously filled out
-                            document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
-                            document.getElementById("BussInf").innerHTML= ""; //resets the bus section if it was previously filled out
-                            document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
-                            document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
-                            document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
 
                             //creates the div element that contains the plus one input fields and sets the class to container grid for styling 
                             const plusOneInfo = document.createElement("div"); plusOneInfo.className = "container"; plusOneInfo.id = `+1info${i+1}`;
@@ -363,14 +368,6 @@
 
                         // adds an eventlistener to the no radio button that 1) removes the +1 info input fields if the user clicked yes first and 2) adds this answer to GuestInfo
                         plusOneNo.addEventListener("click", function() {
-                            document.getElementById("Menu").style.display = "none"; //hides the menu section if it was previously filled out
-                            document.getElementById("guestMeals").innerHTML= ""; //resets the menu section if it was previously filled out
-                            document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
-                            document.getElementById("BussInf").innerHTML= ""; //resets the bus section if it was previously filled out
-                            document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
-                            document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
-                            document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
-                            
                             const changedFromYes = document.getElementById(`+1info${i+1}`) // retrieves the +1info from the document
                             if (changedFromYes) changedFromYes.remove(); //if this +1info exists in the document, it is removed
                             GuestiInfo.plus1 = "no"; // stores the new answer in GuestiInfo
@@ -386,12 +383,12 @@
                     window.alert("Please enter a number between 1 and 10");
                 }
             }
-
-            //For the second, Meal info section --------------------------------------------------------------
         
             // this function updates the meal fields to include all of the guests entered in the first question.
             function updateMeal() {
 
+                MealInfoStorage = []; // Empties the array to store all of the user answers from the guestMeals fieldset in
+                
                 document.getElementById("guestMeals").innerHTML = ''; //deletes the html content of the guestDetailsDiv element.
                 document.getElementById("Menu").style.display = "block"; // makes the div element called Menu visible
 
@@ -400,6 +397,8 @@
                
                 // for i in range (0, counting, 1):
                 for (let i = 0; i<counting; i++){
+
+                    let mealAnswer = {}; // the object in which i will store the answers
                     
                     //retrieves the guest name and plus 1 name if it exists from GuestInfoStorage
                     let guestName = GuestInfoStorage[i].GuestName;
@@ -413,6 +412,9 @@
                         // append the plus1Name content created by createMealSection to guestMeals
                         guestMealsDiv.appendChild(createMealSection(plus1Name));
                     }
+                    MealInfoStorage[i] = mealAnswer
+                    
+                
                 };
             }
             
@@ -444,7 +446,7 @@
                     <legend><b>Do you have any of the following allergies/intolerances?</b></legend>
                     <div class="smallcontainer">
                         <div>
-                            <input type="checkbox" id="Gluten${safeName}" value="Gluten">
+                            <input type="checkbox" id="Gluten${safeName}" value="Gluten" class="allInt">
                             <label for="Gluten${safeName}">Gluten</label>
                         </div>
                         <div>
@@ -455,7 +457,7 @@
                             </select>
                         </div>  
                         <div>
-                            <input type="checkbox" id="Dairy${safeName}" value="Dairy">
+                            <input type="checkbox" id="Dairy${safeName}" value="Dairy" class="allInt">
                             <label for="Dairy${safeName}">Dairy</label>
                         </div>
                         <div>
@@ -466,7 +468,7 @@
                             </select>
                         </div> 
                         <div>
-                        <input type="checkbox" id="Peanuts${safeName}" value="Peanuts">
+                        <input type="checkbox" id="Peanuts${safeName}" value="Peanuts" class="allInt">
                             <label for="Peanuts${safeName}">Peanuts</label>
                         </div>
                         <div>
@@ -477,7 +479,7 @@
                             </select>
                         </div> 
                         <div>
-                            <input type="checkbox" id="MostNuts${safeName}" value="MostNuts">
+                            <input type="checkbox" id="MostNuts${safeName}" value="MostNuts" class="allInt">
                             <label for="MostNuts${safeName}">Tree nuts</label>
                         </div>
                         <div>
@@ -489,7 +491,7 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Egg${safeName}" value="Egg">
+                            <input type="checkbox" id="Egg${safeName}" value="Egg" class="allInt">
                             <label for="Egg${safeName}">Egg</label>
                         </div>
                         <div>
@@ -501,7 +503,7 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Soy${safeName}" value="Soy">
+                            <input type="checkbox" id="Soy${safeName}" value="Soy" class="allInt">
                             <label for="Soy${safeName}">Soy</label>
                         </div>
                         <div>
@@ -513,7 +515,7 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Wheat${safeName}" value="Wheat">
+                            <input type="checkbox" id="Wheat${safeName}" value="Wheat" class="allInt">
                             <label for="Wheat${safeName}">Wheat</label>
                         </div>
                         <div>
@@ -525,7 +527,7 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Fish${safeName}" value="Fish">
+                            <input type="checkbox" id="Fish${safeName}" value="Fish" class="allInt">
                             <label for="Fish${safeName}">Fish</label>
                         </div> 
                         <div>
@@ -537,7 +539,7 @@
                         </div>
                         
                         <div>
-                            <input type="checkbox" id="Shellfish${safeName}" value="Shellfish">
+                            <input type="checkbox" id="Shellfish${safeName}" value="Shellfish" class="allInt">
                             <label for="Shellfish${safeName}">Shellfish</label>
                         </div>
                         <div>
@@ -554,6 +556,22 @@
                     <input type="text" id="allergies${safeName}" name="longAns"/>
                 </div>
                 `;
+
+                //saves the mealChoice in GuestInfo for later
+                const mealChoice = document.getElementById(`menu${safeName}`);
+                        mealChoice.addEventListener("change", function(){
+                            mealAnswer.mealChoice = this.value;
+                        });
+
+                    const allergyIntolerance = document.querySelectorAll(".allInt");
+                    if(allergyIntolerance){
+                        allergyIntolerance.forEach(function(element){
+                            element.addEventListener("change", function(){
+                                mealAnswer.element = this.value
+                            })
+                        })
+                    };
+                   
                 
             //returns the new div element section 
             return section;
@@ -774,57 +792,52 @@
                 }
             });
  
-            //universal validation function
-            function validateInfo(infoList, schema) {
-                // for i in range(0, len(infoList), 1):
-                for (let i = 0; i < infoList.length; i++) {
-                    // answer = all answers from guest i
-                    const answer = infoList[i];
-                    // for rule in schema
-                    for (const rule of schema) {
 
-                        // If there's an if condition (like if yes is selected), check it
-                        if (rule.if) {
-                            // if the answer's if condition entered by the user is the same as the value in the schema, then add the next if check
-                            if (answer[rule.if.field] === rule.if.value) {
-                                // if the user's input is unanswered or just whitespace send an alert, and stop the event (by returning false) that is being validated 
-                                if (!answer[rule.field] || answer[rule.field].toString().trim() === "") {
-                                    alert(rule.message ? rule.message.replace('{n}', i+1) : `Please fill in ${rule.field} for item ${i+1}`);
-                                    return false;
-                                }
-                            }
-                        // if there isn't an if condition tied to another input field, run this code instead:
-                        } else {
-                            // if the answer field is empty, return an alert and stop the associated even from firing using return false
-                            if (!answer[rule.field] || answer[rule.field].toString().trim() === "") {
-                                alert(rule.message ? rule.message.replace('{n}', i+1) : `Please fill in ${rule.field} for item ${i+1}`);
-                                return false;
-                            }
+            //function validateGuestInfo() {
+            //   for (let i = 0; i < GuestInfoStorage.length; i++) {
+            //        const guest = GuestInfoStorage[i];
+            //        if (!guest.GuestName || guest.GuestName.trim() === "") return false;
+            //        if (!guest.plus1) return false;
+            //        if (guest.plus1 === "yes") {
+            //            if (!guest.plusOneName || guest.plusOneName.trim() === "") return false;
+            //            if (!guest.plusOneRel || guest.plusOneRel.trim() === "") return false;
+            //        }
+            //    }
+            //    return true;
+            //}
+
+            
+           // function validateInfo (infoList, variable){
+             //   for (let i = 0; i < infoList.length; i++) {
+               //     const Answer = infoList[i];
+                 //   if (!Answer.variable || Answer.variable.trim()=="") return false;
+                    //if (!Answer.variable == "yes" || Answer.variable == "no"){}
+                //}
+            //};
+
+            function validateInfo(infoList, requiredFields) {
+                for (let i = 0; i < infoList.length; i++) {
+                    const answer = infoList[i];
+                    //for field in requiredFields:
+                    for (let field of requiredFields) {
+                        if (!answer[field] || answer[field].toString().trim() === "") {
+                            return false;
                         }
                     }
                 }
-                // if all the above checks aren't true, then allow the connected event to fire by returning true
                 return true;
-            }
+            };
 
            
 
-            // Event listeners
-            //--------------------------------------------------
-            guests.addEventListener("change", updateField);
-
-            testbtn.addEventListener("click", function() {
-                console.log(GuestInfoStorage);
-                alert(JSON.stringify(GuestInfoStorage, null, 2));
-             });
-
             document.getElementById("Next2").addEventListener("click", function() {
-                if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
+                if (validateInfo(GuestInfoStorage, [GuestName, pl])) {
                     updateMeal();
+                } else {
+                    alert("Please complete all required quations before proceeding.");
                 }
             });
 
-   
 
 
 
@@ -838,6 +851,13 @@
 
             Next3.addEventListener("click", updateBus);
             Next4.addEventListener("click", updateDrinks);
+
+            mealbtn.addEventListener("click", function() {
+                console.log(MealInfoStorage);
+                alert(JSON.stringify(MealInfoStorage, null, 2));
+             });
+
+            
         </script>
 
     </body>
