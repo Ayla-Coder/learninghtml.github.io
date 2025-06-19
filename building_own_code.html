@@ -225,10 +225,15 @@
                     <button class="close-btn" id="closeDialogBtn">Close</button>
                   </dialog>
                   <p></p>
+                  
+                  
                 
-                <div id="Drinks">
+                <div id="DrinkNext">
                 </div>
-                <input type="button" id="Next5" value="Next"/>
+                <div id="Next5" style="display:none">
+                    <input type="button" id="btn5" value="Next" />
+                </div>
+                
             </fieldset>
 
             <fieldset id="End" style="display:none">
@@ -243,9 +248,10 @@
         <!--What do I have left: 
         1) include +1's in the menu function XXX
 
-        2) make the functions that append the bus and drink input
+        2) make the functions that append the bus and drink input XX
 
         3) make it so that the next buttons can only be interacted with if all previous inputs are filled in. 
+
         4) connect to a google sheets document-->
 
 
@@ -269,12 +275,8 @@
              Next2.addEventListener("click", updateMeal);
 
              Next3.addEventListener("click", updateBus);
-             Next4.addEventListener("click", function(){
-                document.getElementById("Drinks").style.display = "block";
-             });
-             Next5.addEventListener("click", function(){
-                 document.getElementById("End").style.display = "block"
-             });
+             Next4.addEventListener("click", updateDrinks);
+             
 
 
             function updateField() {
@@ -293,6 +295,7 @@
                 
                         // myInp is a new div element of the class container that will be added to gInfo later
                         const myInp = document.createElement("div"); myInp.className="container";
+
                         // defines the code contained in myInp
                         myInp.innerHTML = `
                         <div>
@@ -308,102 +311,116 @@
                         </div>
                         `;
 
+                        // appends myInp to ginfo in the document.
                         document.getElementById("gInfo").appendChild(myInp);
 
+                        //saves the GuestName in GuestInfo for later
                         const GuestName = document.getElementById(`GuestID${i+1}`);
                         GuestName.addEventListener("change", function(){
                             GuestiInfo.GuestName = this.value;
                         });
 
+                        // Saves the yes and no inputs as constants
                         const plusOneYes = document.getElementById(`yes${i+1}`);
                         const plusOneNo = document.getElementById(`no${i+1}`);
-                        
-                       
+
+                        // adds an eventlistener to the yes radio button. This eventlistener adds the input fields for plus one. 
                         plusOneYes.addEventListener("click", function() {
+
+                            //creates the div element that contains the plus one input fields and sets the class to container grid for styling 
                             const plusOneInfo = document.createElement("div"); plusOneInfo.className = "container"; plusOneInfo.id = `+1info${i+1}`;
+
+                            // writes the info in the newly created div
                             plusOneInfo.innerHTML = `
                             <div> <label>Name of plus one for Guest ${i+1}: </label> </div>
                             <div> <label>Relationship between plus one and Guest ${i+1}: </label></div>
                             <div><input type="text" id="plusOneName${i+1}" name="fname" /> </div>
                             <div><input type="text" id="plusOneRel${i+1}" name="longAns"/></div> <br><br>`;
+
+                            // appends this plus one info to myInp
                             myInp.appendChild(plusOneInfo);
+
+                            // saves the answer to GuestInfo
                             GuestiInfo.plus1 = "yes";
 
+                            // gets the plus one input answers
                             const plusOneName = document.getElementById(`plusOneName${i+1}`);
                             const plusOneRel = document.getElementById(`plusOneRel${i+1}`);
 
+                            //adds an eventlistener to the plus one name that saves these values to GuestInfo for later
                             plusOneName.addEventListener("change", function(){
                                 GuestiInfo.plusOneName = this.value;
                             });
 
+                            //adds an eventlistener to the plus one relationship that saves these values to GuestInfo for later
                             plusOneRel.addEventListener("change", function(){
                                 GuestiInfo.plusOneRel = this.value;
                             });
-                            
-
                         })
 
+                        // adds an eventlistener to the no radio button that 1) removes the +1 info input fields if the user clicked yes first and 2) adds this answer to GuestInfo
                         plusOneNo.addEventListener("click", function() {
-                            const changedFromYes = document.getElementById(`+1info${i+1}`)
-                            if (changedFromYes) changedFromYes.remove();
-                            GuestiInfo.plus1 = "no";
-                        
-                    
+                            const changedFromYes = document.getElementById(`+1info${i+1}`) // retrieves the +1info from the document
+                            if (changedFromYes) changedFromYes.remove(); //if this +1info exists in the document, it is removed
+                            GuestiInfo.plus1 = "no"; // stores the new answer in GuestiInfo
                         })
 
                         
                         // Instead of GuestInfoStorage.push(GuestiInfo);
-                        GuestInfoStorage[i] = GuestiInfo; // <-- Assign by index!
-                    }; 
-                    
+                        GuestInfoStorage[i] = GuestiInfo; // adds all of the information gathered into the item GuestInfo into a global list by index. This keeps things ordered for later
+                    };  
                 }
+                // If the number of guests entered is not between 1 and 10, this alert will pop up.
                 else {
                     window.alert("Please enter a number between 1 and 10");
                 }
-                
             }
         
-            
-            
-
+            // this function updates the meal fields to include all of the guests entered in the first question.
             function updateMeal() {
 
                 document.getElementById("guestMeals").innerHTML = ''; //deletes the html content of the guestDetailsDiv element.
-                document.getElementById("Menu").style.display = "block";
+                document.getElementById("Menu").style.display = "block"; // makes the div element called Menu visible
 
+                //retrieves the guestMeals div from the Menu div
                 const guestMealsDiv = document.getElementById("guestMeals");
                
+                // for i in range (0, counting, 1):
                 for (let i = 0; i<counting; i++){
-                    //let guestName = GuestInfoStorage[i].GuestName;
+                    
+                    //retrieves the guest name and plus 1 name if it exists from GuestInfoStorage
                     let guestName = GuestInfoStorage[i].GuestName;
                     let plus1Name = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
-
-                    
-
-                    //const newInp = createMealSection(guestName);
-                    //guestMealsDiv.appendChild(newInp);
+                  
+                    // appends the content created in the createMealSection function for the guest to guestMeals 
                     guestMealsDiv.appendChild(createMealSection(guestName));
 
+                    // if plus1Name (with spaces removed so no error is thrown) isn't empty
                     if (plus1Name.trim() !== "") {
-                        //const plusN = createMealSection(plus1Name);
-                        //guestMealsDiv.appendChild(plusN);
+                        // append the plus1Name content created by createMealSection to guestMeals
                         guestMealsDiv.appendChild(createMealSection(plus1Name));
                     }
-                    
-                   // document.getElementById("guestMeals").appendChild(guestMealsDiv);
-                    
                 };
-        
+            }
+            
+             // this function takes a string and replaces white spaces with _
+             function makeSafe(str) {
+                return str.replace(/\W/g, '_');
             }
 
-            // Helper function for updateMeal
+            // Helper function for updateMeal that creates the content for each guest and/or plus one entered in the first question
             function createMealSection(personName) {
+
+                //replaces whitespaces from the person name with _ for element ids
+                const safeName = makeSafe(personName);
+
+                //creates a new div element classed as container2 for styling
                 let section = document.createElement("div");section.className = "container2";
                 section.innerHTML = `
                 <div>
                     <legend><b>Enter your meal preferences here:</b></legend><br>
                     <label>${personName}: </label>
-                    <select id="menu${personName}"> 
+                    <select id="menu${safeName}"> 
                         <option value="">--Please choose an option--</option>
                         <option value="Standard meal">Standard meal</option>
                         <option value="Vegan">Vegan</option>
@@ -414,44 +431,44 @@
                     <legend><b>Do you have any of the following allergies/intolerances?</b></legend>
                     <div class="smallcontainer">
                         <div>
-                            <input type="checkbox" id="Gluten${personName}" value="Gluten">
-                            <label for="Gluten${personName}">Gluten</label>
+                            <input type="checkbox" id="Gluten${safeName}" value="Gluten">
+                            <label for="Gluten${safeName}">Gluten</label>
                         </div>
                         <div>
-                            <select id="Gsev${personName}">
+                            <select id="Gsev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
                             </select>
                         </div>  
                         <div>
-                            <input type="checkbox" id="Dairy${personName}" value="Dairy">
-                            <label for="Dairy${personName}">Dairy</label>
+                            <input type="checkbox" id="Dairy${safeName}" value="Dairy">
+                            <label for="Dairy${safeName}">Dairy</label>
                         </div>
                         <div>
-                            <select id="Dsev${personName}">
+                            <select id="Dsev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
                             </select>
                         </div> 
                         <div>
-                        <input type="checkbox" id="Peanuts${personName}" value="Peanuts">
-                            <label for="Peanuts${personName}">Peanuts</label>
+                        <input type="checkbox" id="Peanuts${safeName}" value="Peanuts">
+                            <label for="Peanuts${safeName}">Peanuts</label>
                         </div>
                         <div>
-                            <select id="Psev${personName}">
+                            <select id="Psev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
                             </select>
                         </div> 
                         <div>
-                            <input type="checkbox" id="MostNuts${personName}" value="MostNuts">
-                            <label for="MostNuts${personName}">Tree nuts</label>
+                            <input type="checkbox" id="MostNuts${safeName}" value="MostNuts">
+                            <label for="MostNuts${safeName}">Tree nuts</label>
                         </div>
                         <div>
-                            <select id="TNsev${personName}">
+                            <select id="TNsev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -459,11 +476,11 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Egg${personName}" value="Egg">
-                            <label for="Egg${personName}">Egg</label>
+                            <input type="checkbox" id="Egg${safeName}" value="Egg">
+                            <label for="Egg${safeName}">Egg</label>
                         </div>
                         <div>
-                            <select id="Esev${personName}">
+                            <select id="Esev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -471,11 +488,11 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Soy${personName}" value="Soy">
-                            <label for="Soy${personName}">Soy</label>
+                            <input type="checkbox" id="Soy${safeName}" value="Soy">
+                            <label for="Soy${safeName}">Soy</label>
                         </div>
                         <div>
-                            <select id="Ssev${personName}">
+                            <select id="Ssev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -483,11 +500,11 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Wheat${personName}" value="Wheat">
-                            <label for="Wheat${personName}">Wheat</label>
+                            <input type="checkbox" id="Wheat${safeName}" value="Wheat">
+                            <label for="Wheat${safeName}">Wheat</label>
                         </div>
                         <div>
-                            <select id="Wsev${personName}">
+                            <select id="Wsev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -495,11 +512,11 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Fish${personName}" value="Fish">
-                            <label for="Fish${personName}">Fish</label>
+                            <input type="checkbox" id="Fish${safeName}" value="Fish">
+                            <label for="Fish${safeName}">Fish</label>
                         </div> 
                         <div>
-                            <select id="Fsev${personName}">
+                            <select id="Fsev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -507,11 +524,11 @@
                         </div>
                         
                         <div>
-                            <input type="checkbox" id="Shellfish${personName}" value="Shellfish">
-                            <label for="Shellfish${personName}">Shellfish</label>
+                            <input type="checkbox" id="Shellfish${safeName}" value="Shellfish">
+                            <label for="Shellfish${safeName}">Shellfish</label>
                         </div>
                         <div>
-                            <select id="SFsev${personName}">
+                            <select id="SFsev${safeName}">
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -521,46 +538,44 @@
                 </div>
                 <div>
                     <legend><b>Any other intolerances/allergies we should know about?:</b></legend><br>
-                    <input type="text" id="allergies${personName}" name="longAns"/>
+                    <input type="text" id="allergies${safeName}" name="longAns"/>
                 </div>
                 `;
+                
+            //returns the new div element section 
             return section;
-
             }
 
-
+            // creates the bus input fields for each guest based on the first question
             function updateBus (){
-                document.getElementById("BussInf").innerHTML = ''; //deletes the html content of the guestDetailsDiv element.
-                document.getElementById("Bus").style.display = "block";
+                document.getElementById("BussInf").innerHTML = ''; //deletes the html content of the BussInf element.
+                document.getElementById("Bus").style.display = "block"; // unhides the Bus div element
 
+                // retrieves the BussInf element which the new inputs will be added to:
                 const guestBusDiv = document.getElementById("BussInf");
-               
+                
+                // for i in range(0, counting, 1):
                 for (let i = 0; i<counting; i++){
-                    //let guestName = GuestInfoStorage[i].GuestName;
+                    //retrives the namees of the guest an +1 if it exists
                     let guestName = GuestInfoStorage[i].GuestName;
                     let plus1Name = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
 
+                    //appends the input fields for the guest created by the createBusSection function
                     guestBusDiv.appendChild(createBusSection(guestName));
 
+                    //if there is a plus one name (with spaces removed by trim()) that isn't empty, append the input fields for them created by createBusSection function
                     if (plus1Name.trim() !== "") {
-                        //const plusN = createMealSection(plus1Name);
-                        //guestMealsDiv.appendChild(plusN);
                         guestBusDiv.appendChild(createBusSection(plus1Name));
                     }
-                    
-                   // document.getElementById("guestMeals").appendChild(guestMealsDiv);
-                    
                 };
         
             }
 
-            function makeSafe(str) {
-                return str.replace(/\W/g, '_');
-            }
-
             // Helper function for updatebus
             function createBusSection(personName) {
-                const safeName = makeSafe(personName)
+                const safeName = makeSafe(personName); // removes whitespaces from the name, replacing them with _
+
+                //creates a new div element called section, making it class=container3 for styling
                 let section = document.createElement("div");section.className = "container3";
                 section.innerHTML = `
                  <div>
@@ -596,13 +611,13 @@
                         </div>
                         <div>
                             <legend>Drop-off times</legend>
-                            <input type="radio" id="times2${safeName}" name="dropOff"/>
+                            <input type="radio" id="times2${safeName}" name="dropOff${safeName}" class="noSuggest${safeName}"/>
                             <label for="times2${safeName}">10:30 pm (22:30)</label> <br>
                             
-                            <input type="radio" id="times3${safeName}" name="dropOff"/>
+                            <input type="radio" id="times3${safeName}" name="dropOff${safeName}" class="noSuggest${safeName}"/>
                             <label for="times3${safeName}">01:00 am (01:00)</label><br>
                        
-                            <input type="radio" id="times4${safeName}" name="dropOff"/>
+                            <input type="radio" id="times4${safeName}" name="dropOff${safeName}"/>
                             <label for="times4${safeName}">Request a later time</label><br>
                         </div>
                          <div id="laterDropOff${safeName}" style="display:none"> 
@@ -612,46 +627,129 @@
                         </div>
                     </div>
                     
-                </div>
+                </div>`;
 
-                `;
+                // querySelector, not getElementById, is used because of the way the code was before (unsanitized by safeName). can only be after innerHTML is set
+                const yesRadio = section.querySelector(`#yesBus${safeName}`); // retrieves the yes radio button
+                const noRadio = section.querySelector(`#noBus${safeName}`); // retrieves the no radio button
+                const ifYesDiv = section.querySelector(`#ifYesBus${safeName}`); // retrieves the hotel name input 
+                const busTimes = section.querySelector(`#timesBus${safeName}`); // retrieves the bus times div element
+                const suggestTime = section.querySelector(`#laterDropOff${safeName}`); // retrieves the later drop-off radio button
+                const times = section.querySelectorAll(`.noSuggest${safeName}`); // retrieves all other drop-off radio buttons by the class attribute (indicated with a . instead of #)
+                const times4Radio = section.querySelector(`#times4${safeName}`); // retrieves the later drop-off time suggestion 
 
-                // Use querySelector, not getElementById, and only after innerHTML is set
-                const yesRadio = section.querySelector(`#yesBus${safeName}`);
-                const ifYesDiv = section.querySelector(`#ifYesBus${safeName}`);
-                const busTimes = section.querySelector(`#timesBus${safeName}`);
-                const suggestTime = section.querySelector(`#laterDropOff${safeName}`);
-                const times4Radio = section.querySelector(`#times4${safeName}`);
-
-                times4Radio.addEventListener("change", () => {
-                    suggestTime.style.display = "block";
-                     });
-
-                if (yesRadio && ifYesDiv) {
+                //if the yes radio button is selected, the hotel name input and the bus times input are made visible
+                if (yesRadio) {
                     yesRadio.addEventListener("change", function() {
                         ifYesDiv.style.display = "block";
                         busTimes.style.display = "block";
                 });
+                };
+
+                // if the no radio button is selected, the hotel name input and the bus times input are made invisible again if they were already visible
+                if (noRadio){
+                    noRadio.addEventListener("change", function(){
+                        ifYesDiv.style.display = "none";
+                        busTimes.style.display = "none";
+                    });
+                };
+
+                // adds eventlistener to the times4 radio button, which makes the time-suggestion field visible
+                if (times4Radio){
+                    times4Radio.addEventListener("change", function () {
+                        suggestTime.style.display = "block";
+                        });
                 }
+                 // adds eventlistener to the other bus-times radio buttons, which hides the time-suggestion field when selected
+                if (times){ // if (times) check is a safety net to make sure times exists before trying to use it.
+                    //forEach loops through each element/item in the times object
+                    times.forEach(function(element) {
+                        element.addEventListener("change", function() {
+                            suggestTime.style.display = "none";
+                        });
+                    });
+                }
+                return section;
+            }
+
+            
+
+            //drinks function
+            function updateDrinks (){
+                document.getElementById("DrinkNext").innerHTML = ''; //deletes the html content of the DrinkNext element.
+                document.getElementById("Drinks").style.display = "block"; // makes the Drinks element visible
                
+                const guestDrink = document.getElementById("DrinkNext"); //retrieves the DrinkNext element from the document
+               
+                for (let i = 0; i<counting; i++){
+
+                    let guestName = GuestInfoStorage[i].GuestName; // retrieves the guest name from GuestInfoStorage
+
+                    // retrieves the +1 name from GuestInfoStorage if it exists, and sets plus1Name to "" if it doesnt exits (is undefined)
+                    let plus1Name = GuestInfoStorage[i].plusOneName || ""; 
+
+                    // appends the drink inputs for each guest to the DrinkNext element in the document using the createDrinkSection function
+                    guestDrink.appendChild(createDrinksSection(guestName)); 
+
+                    if (plus1Name.trim() !== "") { // if the plus 1 name exists and isn't just "" when all the whitespace is removed, the following happens: 
+                        guestDrink.appendChild(createDrinksSection(plus1Name)); // the +1 name is appended to the DrinkNext element in the document
+                    }
+                };
+            }
+
+            // Helper function for updateDrinks
+            function createDrinksSection(personName) {
+                const safeName = makeSafe(personName) // replaces all whitespaces in the name with _
+
+                // creates a new div element using class="container3" for styling
+                let section = document.createElement("div");section.className = "container3";
+                section.innerHTML = `
+                 <div>
+                    <legend>Are you interested in getting some vouchers?</legend>
+
+                    <label>${personName}: </label><br>
+                    <input type="radio" id="yesDrinks${safeName}" name="drinkName${safeName}" value="yes"/>
+                    <label for="yesBus${safeName}">Yes</label>
+
+                    <input type="radio" id="noDrinks${safeName}" name="drinkName${safeName}" value="no"/>
+                    <label for="noBus${safeName}">No</label>
+                 </div>`;
+
+                const yesDrinks = section.querySelector(`#yesDrinks${safeName}`); //retrieves the yes radio button
+                const noDrinks = section.querySelector(`#noDrinks${safeName}`); //retrieves the no radio button
+
+                // adds eventlistener to the yes and no radio buttons, which displays the next button when selected
+                if (yesDrinks) { // if (yesDrinks) check is a safety net to make sure times exists before trying to use it.
+                        yesDrinks.addEventListener("change", function() {
+                            document.getElementById("Next5").style.display = "block";
+                        });
+                    };
+                     // adds eventlistener to the no radio button, which displays the next button when selected
+                    if (noDrinks) {
+                        noDrinks.addEventListener("change", function() {
+                            document.getElementById("Next5").style.display = "block";
+                        });
+                    };
                 return section;
             }
 
             // more info button
-            const dialog = document.getElementById('drinkInfo');
-                const openBtn = document.getElementById('openDialogBtn');
-                const closeBtn = document.getElementById('closeDialogBtn');
+            const dialog = document.getElementById('drinkInfo'); // retrieves the drinkInfo element
+            const openBtn = document.getElementById('openDialogBtn'); //retrieves the openDialog button
+            const closeBtn = document.getElementById('closeDialogBtn'); //retrieves the close Dialog button
 
-                openBtn.addEventListener('click', () => {
-                dialog.showModal();
-                });
+            // adds an eventlistener to the open dialog button that shows the drinkInfo element usig showModal
+            openBtn.addEventListener('click', function() {
+                dialog.showModal(); // showModal shows a text box that overlays the rest of the webpage, making that webpage inactive until the modal is closed again.
+            });
 
-                closeBtn.addEventListener('click', () => {
-                dialog.close();
-                });
+            // adds an eventlistener to the close dialog button that shows the drinkInfo element usig showModal
+            closeBtn.addEventListener('click', function() {
+                dialog.close(); // .close closes a modal (text box that overlays the rest of the webpage, making that webpage inactive) 
+            });
 
-                // Optional: Allow closing the dialog by clicking outside of it
-                dialog.addEventListener('click', (event) => {
+            // Optional: Allow closing the dialog by clicking outside of it via an event listener
+            dialog.addEventListener('click', function(event) {
                 const rect = dialog.getBoundingClientRect();
                 if (
                     event.clientX < rect.left ||
@@ -661,8 +759,13 @@
                 ) {
                     dialog.close();
                 }
-                });
-            
+            });
+
+            //adds an eventlistener to the last next button
+            Next5.addEventListener("click", function(){
+                document.getElementById("End").style.display = "block"
+            });
+
         </script>
 
     </body>
