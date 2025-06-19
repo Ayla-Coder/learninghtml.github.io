@@ -1,0 +1,144 @@
+button {
+                
+               
+    cursor: pointer;
+    }
+
+    dialog {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    padding: 24px 32px;
+    max-width: 600px;
+    text-align: left;
+    }
+
+    dialog::backdrop {
+    background: rgba(0,0,0,0.3);
+    }
+
+    .close-btn {
+    margin-top: 20px;
+    padding: 8px 16px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
+    .close-btn:hover {
+    background: #c0392b;
+    }
+input[name="radio"][value="no"] { 
+margin-left: 20px; /* Adjust as needed */
+
+}
+.container {
+  display: grid;
+  grid-template-columns: 250px 300px;
+  
+
+}
+.container > div {
+
+  padding: 3px;
+  
+  text-align: left;
+  align-items: left;
+}
+
+
+.container2 {
+  display: grid;
+  grid-template-columns: 250px 550px 300px;
+  grid-template-rows: 150px;
+
+}
+.container2 > div {
+
+  padding: 2px;
+  
+  text-align: left;
+  align-items: left;
+}
+
+.container3 {
+  display: grid;
+  grid-template-columns: 200px 350px 10px 600px;
+  
+
+}
+.container3 > div {
+
+  padding: 4px;
+  /*border: 1px solid black;*/
+  
+  text-align: left;
+  align-items: left;
+}
+.container4 {
+  display: grid;
+  grid-template-columns: 500px 300px;
+  
+
+}
+.container4 > div {
+
+  padding: 3px;
+  
+  
+  text-align: left;
+  align-items: left;
+}
+
+.smallcontainer {
+  display: grid;
+  grid-template-columns: 90px 90px 70px 90px 90px 90px;
+  
+
+}
+.smallcontainer div {
+
+  padding: 2px;
+  
+  text-align: left;
+  align-items: left;
+}
+.smallcontainer2 {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+
+}
+.smallcontainer2 div {
+
+  padding: 2px;
+  /*border: 1px solid black;*/
+  text-align: left;
+  align-items: left;
+}
+
+.small {
+  display: grid;
+  grid-template-columns: 30px 150px;
+  
+
+}
+.small div {
+
+  padding: 2px;
+  
+  text-align: left;
+  align-items: left;
+}
+input[name="longAns"] {
+
+    width: 300px;
+    height: 30px;
+    }
+
+input[name="fname"] {
+
+    width: 190px;
+    
+    }

@@ -246,7 +246,8 @@
         
         <!--What do I have left: 
         1) include +1's in the menu function XXX
-        2) make the functions that append the bus and drink input XX
+
+        2) make the functions that append the bus and drink input 
 
         3) make it so that the next buttons can only be interacted with if all previous inputs are filled in. 
         4) connect to a google sheets document-->
@@ -259,8 +260,13 @@
             const testArrayDiv = document.getElementById("testArray");
             
             let GuestInfoStorage = []; // Empty array to store all of the user answers from the GuestInfo fieldset in
-            let counting = 0 // defines a global counting variable that is redefined when the updateField function is run. Stores this info for the next part of the RSVP.
+            let MealInfoStorage = [];
+            let BusInfoStorage = [];
+            let DrinkInfoStorage = [];
 
+            let counting = 0; // defines a global counting variable that is redefined when the updateField function is run. Stores this info for the next part of the RSVP.
+
+//Schemas-------------------------------------------------------
             // a schema that defines the rules for the GuestInfoStorage array. Used later for validation checks
             const guestInfoSchema = [
                 { field: "GuestName", message: "Please enter the name for Guest {n}" },
@@ -268,14 +274,25 @@
                 { field: "plusOneName", if: { field: "plus1", value: "yes" }, message: "Please enter the +1 name for Guest {n}" },
                 { field: "plusOneRel", if: { field: "plus1", value: "yes" }, message: "Please enter the +1 relationship for Guest {n}" }
             ];
+            
+            const mealInfoSchema = [
+                { field: "menuChoice",  message: "Please select a meal for Guest {n}" },
+                { field: "severityChoice", if: { field: "allergenChoice", value: "true" }, message: "Please enter the severity of your allergies" },
+            ];    
 
-      
+// Functions:
+//--------------------------------------------------------------
 
-            // Functions:
-            //--------------------------------------------------------------
-
-            //For the first guest info section --------------------------------------------------------------
+//For the first guest info section --------------------------------------------------------------
             function updateField() {
+                document.getElementById("Menu").style.display = "none"; //hides the menu section if it was previously filled out
+                document.getElementById("guestMeals").innerHTML= ""; //resets the menu section if it was previously filled out
+                document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                document.getElementById("BussInf").innerHTML= ""; //resets the bus section if it was previously filled out
+                document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
+                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+
 
                 document.getElementById("gInfo").innerHTML = '<legend><h3>Enter your full names here:</h3></legend><br>'; //deletes the html content of the guestDetailsDiv element.
                 GuestInfoStorage = [];
@@ -387,12 +404,14 @@
                 }
             }
 
-            //For the second, Meal info section --------------------------------------------------------------
+//For the second, Meal info section --------------------------------------------------------------
         
             // this function updates the meal fields to include all of the guests entered in the first question.
             function updateMeal() {
-
-                document.getElementById("guestMeals").innerHTML = ''; //deletes the html content of the guestDetailsDiv element.
+                document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                            
                 document.getElementById("Menu").style.display = "block"; // makes the div element called Menu visible
 
                 //retrieves the guestMeals div from the Menu div
@@ -421,8 +440,9 @@
                 return str.replace(/\W/g, '_');
             }
 
-            // Helper function for updateMeal that creates the content for each guest and/or plus one entered in the first question
+// Helper function for updateMeal that creates the content for each guest and/or plus one entered in the first question
             function createMealSection(personName) {
+                let mealInfo = {};
 
                 //replaces whitespaces from the person name with _ for element ids
                 const safeName = makeSafe(personName);
@@ -433,7 +453,7 @@
                 <div>
                     <legend><b>Enter your meal preferences here:</b></legend><br>
                     <label>${personName}: </label>
-                    <select id="menu${safeName}"> 
+                    <select id="menu${safeName}" class="menuItem${safeName}"> 
                         <option value="">--Please choose an option--</option>
                         <option value="Standard meal">Standard meal</option>
                         <option value="Vegan">Vegan</option>
@@ -444,44 +464,48 @@
                     <legend><b>Do you have any of the following allergies/intolerances?</b></legend>
                     <div class="smallcontainer">
                         <div>
-                            <input type="checkbox" id="Gluten${safeName}" value="Gluten">
+                            <input type="checkbox" id="Gluten${safeName}" name="allergen${safeName}" value="Gluten" class="menuItem${safeName}"/>
                             <label for="Gluten${safeName}">Gluten</label>
                         </div>
                         <div>
-                            <select id="Gsev${safeName}">
+                            <select id="Gsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
                             </select>
                         </div>  
                         <div>
-                            <input type="checkbox" id="Dairy${safeName}" value="Dairy">
+                            <input type="checkbox" id="Dairy${safeName}" name="allergen${safeName}" value="Dairy" class="menuItem${safeName}"/>
                             <label for="Dairy${safeName}">Dairy</label>
                         </div>
                         <div>
-                            <select id="Dsev${safeName}">
+                            <select id="Dsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
                             </select>
                         </div> 
                         <div>
-                        <input type="checkbox" id="Peanuts${safeName}" value="Peanuts">
+                        <input type="checkbox" id="Peanuts${safeName}" name="allergen${safeName}" value="Peanuts" class="menuItem${safeName}"/>
                             <label for="Peanuts${safeName}">Peanuts</label>
                         </div>
                         <div>
-                            <select id="Psev${safeName}">
+                            <select id="Psev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
                             </select>
                         </div> 
                         <div>
-                            <input type="checkbox" id="MostNuts${safeName}" value="MostNuts">
+                            <input type="checkbox" id="MostNuts${safeName}" name="allergen${safeName}" value="MostNuts" class="menuItem${safeName}"/>
                             <label for="MostNuts${safeName}">Tree nuts</label>
                         </div>
                         <div>
-                            <select id="TNsev${safeName}">
+                            <select id="TNsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -489,11 +513,12 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Egg${safeName}" value="Egg">
+                            <input type="checkbox" id="Egg${safeName}" name="allergen${safeName}" value="Egg" class="menuItem${safeName}"/>
                             <label for="Egg${safeName}">Egg</label>
                         </div>
                         <div>
-                            <select id="Esev${safeName}">
+                            <select id="Esev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -501,11 +526,12 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Soy${safeName}" value="Soy">
+                            <input type="checkbox" id="Soy${safeName}" name="allergen${safeName}" value="Soy" class="menuItem${safeName}"/>
                             <label for="Soy${safeName}">Soy</label>
                         </div>
                         <div>
-                            <select id="Ssev${safeName}">
+                            <select id="Ssev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -513,11 +539,12 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Wheat${safeName}" value="Wheat">
+                            <input type="checkbox" id="Wheat${safeName}" name="allergen${safeName}" value="Wheat" class="menuItem${safeName}"/>
                             <label for="Wheat${safeName}">Wheat</label>
                         </div>
                         <div>
-                            <select id="Wsev${safeName}">
+                            <select id="Wsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -525,11 +552,12 @@
                         </div>
 
                         <div>
-                            <input type="checkbox" id="Fish${safeName}" value="Fish">
+                            <input type="checkbox" id="Fish${safeName}" name="allergen${safeName}" value="Fish" class="menuItem${safeName}"/>
                             <label for="Fish${safeName}">Fish</label>
                         </div> 
                         <div>
-                            <select id="Fsev${safeName}">
+                            <select id="Fsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -537,11 +565,12 @@
                         </div>
                         
                         <div>
-                            <input type="checkbox" id="Shellfish${safeName}" value="Shellfish">
+                            <input type="checkbox" id="Shellfish${safeName}" name="allergen${safeName}" value="Shellfish" class="menuItem${safeName}"/>
                             <label for="Shellfish${safeName}">Shellfish</label>
                         </div>
                         <div>
-                            <select id="SFsev${safeName}">
+                            <select id="SFsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
                                 <option>Mild</option>
                                 <option>Moderate</option>
                                 <option>Severe</option>
@@ -551,17 +580,64 @@
                 </div>
                 <div>
                     <legend><b>Any other intolerances/allergies we should know about?:</b></legend><br>
-                    <input type="text" id="allergies${safeName}" name="longAns"/>
+                    <input type="text" id="allergies${safeName}" name="longAns" class="menuItem${safeName}"/>
                 </div>
                 `;
+                // if the no radio button is selected, the hotel name input and the bus times input are made invisible again if they were already visible
                 
+                const menuChoice = section.querySelector(`#menu${safeName}`);
+                const allergenChoice = section.querySelectorAll(`[name="allergen${safeName}"]`);
+                const severityChoice = section.querySelectorAll(`[name="severity${safeName}"]`);
+
+                function updateAllergenChoice() {
+                    let anyChecked = Array.from(allergenChoice).some(function(cb) {
+                        return cb.checked});
+                    mealInfo.allergenChoice = anyChecked ? "true" : "";
+                }
+
+                allergenChoice.forEach(function(cb) {
+                    cb.addEventListener("change", updateAllergenChoice);
+                });
+
+                //const severityChoices = section.querySelectorAll(`[name="severity${safeName}"]`);
+                    severityChoice.forEach(function(sel) {
+                        sel.addEventListener("change", function() {
+                            // Store the value of the currently changed select
+                            mealInfo.severityChoice = this.value === "--severity--" ? "" : this.value;
+                        });
+                    });
+
+            
+                // When creating/selecting the menu dropdown
+                menuChoice.addEventListener("change", function() {
+                    if (this.value === "--Please choose an option--") {
+                        mealInfo.menuChoice = "";
+                    } else {
+                        mealInfo.menuChoice = this.value;
+                    }
+                });
+
+
+                const menuChange = section.querySelectorAll(`.menuItem${safeName}`); // retrieves all other drop-off radio buttons by the class attribute (indicated with a . instead of #)
+                 // adds eventlistener to the other bus-times radio buttons, which hides the time-suggestion field when selected
+                if (menuChange){ // if (times) check is a safety net to make sure times exists before trying to use it.
+                    //forEach loops through each element/item in the times object
+                    menuChange.forEach(function(element) {
+                        element.addEventListener("change", function() {
+                            document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                            document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                            document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                        });
+                    });
+                }
+                MealInfoStorage.push(mealInfo);
             //returns the new div element section 
             return section;
             }
 
-            // creates the bus input fields for each guest based on the first question
+
+// creates the bus input fields for each guest based on the first question
             function updateBus (){
-                document.getElementById("BussInf").innerHTML = ''; //deletes the html content of the BussInf element.
                 document.getElementById("Bus").style.display = "block"; // unhides the Bus div element
 
                 // retrieves the BussInf element which the new inputs will be added to:
@@ -584,8 +660,10 @@
         
             }
 
-            // Helper function for updatebus
+// Helper function for updatebus
             function createBusSection(personName) {
+                let busInfo = {};
+
                 const safeName = makeSafe(personName); // removes whitespaces from the name, replacing them with _
 
                 //creates a new div element called section, making it class=container3 for styling
@@ -654,6 +732,9 @@
                 //if the yes radio button is selected, the hotel name input and the bus times input are made visible
                 if (yesRadio) {
                     yesRadio.addEventListener("change", function() {
+                        document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                        document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+
                         ifYesDiv.style.display = "block";
                         busTimes.style.display = "block";
                 });
@@ -662,6 +743,9 @@
                 // if the no radio button is selected, the hotel name input and the bus times input are made invisible again if they were already visible
                 if (noRadio){
                     noRadio.addEventListener("change", function(){
+                        document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                        document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+
                         ifYesDiv.style.display = "none";
                         busTimes.style.display = "none";
                     });
@@ -670,6 +754,9 @@
                 // adds eventlistener to the times4 radio button, which makes the time-suggestion field visible
                 if (times4Radio){
                     times4Radio.addEventListener("change", function () {
+                        document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
+                        document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+
                         suggestTime.style.display = "block";
                         });
                 }
@@ -677,6 +764,9 @@
                 if (times){ // if (times) check is a safety net to make sure times exists before trying to use it.
                     //forEach loops through each element/item in the times object
                     times.forEach(function(element) {
+                        document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
+                        document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+
                         element.addEventListener("change", function() {
                             suggestTime.style.display = "none";
                         });
@@ -807,10 +897,8 @@
                 return true;
             }
 
-           
-
-            // Event listeners
-            //--------------------------------------------------
+// Event listeners
+//--------------------------------------------------
             guests.addEventListener("change", updateField);
 
             testbtn.addEventListener("click", function() {
@@ -824,7 +912,13 @@
                 }
             });
 
-   
+            
+
+            document.getElementById("Next3").addEventListener("click", function() {
+                if (validateInfo(MealInfoStorage, mealInfoSchema)) {
+                    updateBus();
+                }
+            })
 
 
 
@@ -836,7 +930,7 @@
             
             //Next2.addEventListener("click", updateMeal);
 
-            Next3.addEventListener("click", updateBus);
+            //Next3.addEventListener("click", updateBus);
             Next4.addEventListener("click", updateDrinks);
         </script>
 
