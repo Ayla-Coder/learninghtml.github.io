@@ -166,9 +166,7 @@
                 <br><br>
                 <div id="testArray" style="display:none">
                     <input type="button" id="testbtn" value="Click me to see if the GuestInfoStorage array works"/>
-                    <input type="button" id="Next2" value="Next"/>
-                    
-                            
+                    <input type="button" id="Next2" value="Next"/>  
                 </div>
 
             </fieldset>
@@ -179,7 +177,12 @@
 
                 <div id="guestMeals">
                 </div>
-                <input type="button" id="Next3" value="Next"/>
+                
+                <br><br>
+                <div id="testMealArray" style="display:none">
+                    <input type="button" id="testMealbtn" value="Click me to see if the MealInfoStorage array works"/>
+                    <input type="button" id="Next3" value="Next"/>
+                </div>
             </fieldset>
 
             <fieldset id="Bus" style="display:none">
@@ -193,7 +196,13 @@
                 
                 <div id="BussInf">
                 </div>
-                <input type="button" id="Next4" value="Next"/>
+
+                <br><br>
+                <div id="testBusArray" style="display:none">
+                    <input type="button" id="testBusbtn" value="Click me to see if the BusInfoStorage array works"/>
+                    <input type="button" id="Next4" value="Next"/>
+                </div>
+
             </fieldset>
 
             <fieldset id="Drinks" style="display:none">
@@ -211,7 +220,7 @@
                         <b>I will set up the payment options via this website as soon as possible.</b>
                     </div>
                     <div>
-                        <button id="openDialogBtn">More info</button>
+                        <button id="openDialogBtn" type="button">More info</button>
                     </div>
                  </div>
                 <dialog id="drinkInfo">
@@ -223,7 +232,7 @@
                         machine, as well as beer, wine and maybe some home-brewed hard cider and beer too. 
                         <br>
                     </p>
-                    <button class="close-btn" id="closeDialogBtn">Close</button>
+                    <button class="close-btn" id="closeDialogBtn" type="button">Close</button>
                   </dialog>
                   <p></p>
              
@@ -258,11 +267,30 @@
             const guests = document.getElementById("guestNR");
             const testbtn = document.getElementById("testbtn");
             const testArrayDiv = document.getElementById("testArray");
+
+            const testMealbtn = document.getElementById("testMealbtn");
+            const testMealArray = document.getElementById("testMealArray");
+
+            const testBusbtn = document.getElementById("testBusbtn");
+            const testBusArray = document.getElementById("testBusArray");
+
+             // more info button
+            const dialog = document.getElementById('drinkInfo'); // retrieves the drinkInfo element
+            const openBtn = document.getElementById('openDialogBtn'); //retrieves the openDialog button
+            const closeBtn = document.getElementById('closeDialogBtn'); //retrieves the close Dialog button
             
             let GuestInfoStorage = []; // Empty array to store all of the user answers from the GuestInfo fieldset in
             let MealInfoStorage = [];
             let BusInfoStorage = [];
             let DrinkInfoStorage = [];
+            let QuestionInfoStorage = [];
+
+            // Keep backup arrays for restoring
+            let oldGuestInfo = [];
+            let oldMealInfo = [];
+            let oldBusInfo = [];
+            let oldDrinkInfo = [];
+            let oldQuestion = [];
 
             let counting = 0; // defines a global counting variable that is redefined when the updateField function is run. Stores this info for the next part of the RSVP.
 
@@ -277,8 +305,14 @@
             
             const mealInfoSchema = [
                 { field: "menuChoice",  message: "Please select a meal for Guest {n}" },
-                { field: "severityChoice", if: { field: "allergenChoice", value: "true" }, message: "Please enter the severity of your allergies" },
-            ];    
+                { field: "severityChoice", if: { field: "allergenSelected", value: "true" }, message: "Please enter the severity of your allergies" },
+            ];  
+            
+            const busInfoSchema = [
+                { field: "hotelName",  if: {field: "busAnswer", value: "Yes"}, message: "Please enter the hotel name for Guest {n}" },
+                { field: "busTimes",  if: {field: "busAnswer", value: "Yes"}, message: "Please pick a bus time for Guest {n}" },
+                { field: "busTimes", if: { field: "timeSelected", value: "true" }, message: "Please enter a suggested time for Guest {n}" },
+            ]; 
 
 // Functions:
 //--------------------------------------------------------------
@@ -409,13 +443,16 @@
             // this function updates the meal fields to include all of the guests entered in the first question.
             function updateMeal() {
                 document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                document.getElementById("BussInf").innerHTML= ""; //resets the bus section if it was previously filled out
                 document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
                 document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
-                            
+           
                 document.getElementById("Menu").style.display = "block"; // makes the div element called Menu visible
 
                 //retrieves the guestMeals div from the Menu div
                 const guestMealsDiv = document.getElementById("guestMeals");
+                testMealArray.style.display = "block";
                
                 // for i in range (0, counting, 1):
                 for (let i = 0; i<counting; i++){
@@ -423,6 +460,7 @@
                     //retrieves the guest name and plus 1 name if it exists from GuestInfoStorage
                     let guestName = GuestInfoStorage[i].GuestName;
                     let plus1Name = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
+                   
                   
                     // appends the content created in the createMealSection function for the guest to guestMeals 
                     guestMealsDiv.appendChild(createMealSection(guestName));
@@ -432,6 +470,7 @@
                         // append the plus1Name content created by createMealSection to guestMeals
                         guestMealsDiv.appendChild(createMealSection(plus1Name));
                     }
+                    MealInfoStorage[i] = mealInfo
                 };
             }
             
@@ -443,7 +482,7 @@
 // Helper function for updateMeal that creates the content for each guest and/or plus one entered in the first question
             function createMealSection(personName) {
                 let mealInfo = {};
-
+                mealInfo.GuestName = personName
                 //replaces whitespaces from the person name with _ for element ids
                 const safeName = makeSafe(personName);
 
@@ -500,8 +539,8 @@
                             </select>
                         </div> 
                         <div>
-                            <input type="checkbox" id="MostNuts${safeName}" name="allergen${safeName}" value="MostNuts" class="menuItem${safeName}"/>
-                            <label for="MostNuts${safeName}">Tree nuts</label>
+                            <input type="checkbox" id="treeNuts${safeName}" name="allergen${safeName}" value="treeNuts" class="menuItem${safeName}"/>
+                            <label for="treeNuts${safeName}">Tree nuts</label>
                         </div>
                         <div>
                             <select id="TNsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
@@ -588,35 +627,46 @@
                 const menuChoice = section.querySelector(`#menu${safeName}`);
                 const allergenChoice = section.querySelectorAll(`[name="allergen${safeName}"]`);
                 const severityChoice = section.querySelectorAll(`[name="severity${safeName}"]`);
+                const otherAllergensChoice = section.querySelector(`#allergies${safeName}`);
 
-                function updateAllergenChoice() {
-                    let anyChecked = Array.from(allergenChoice).some(function(cb) {
-                        return cb.checked});
-                    mealInfo.allergenChoice = anyChecked ? "true" : "";
-                }
-
-                allergenChoice.forEach(function(cb) {
-                    cb.addEventListener("change", updateAllergenChoice);
-                });
-
-                //const severityChoices = section.querySelectorAll(`[name="severity${safeName}"]`);
-                    severityChoice.forEach(function(sel) {
-                        sel.addEventListener("change", function() {
-                            // Store the value of the currently changed select
-                            mealInfo.severityChoice = this.value === "--severity--" ? "" : this.value;
-                        });
-                    });
-
-            
-                // When creating/selecting the menu dropdown
-                menuChoice.addEventListener("change", function() {
+                 // When creating/selecting the menu dropdown
+                 menuChoice.addEventListener("change", function() {
                     if (this.value === "--Please choose an option--") {
                         mealInfo.menuChoice = "";
                     } else {
                         mealInfo.menuChoice = this.value;
                     }
                 });
+                
+                // scans the answers to see if an allergy has been checked off, and appends this as well as any selected variable to mealInfo
+                function updateAllergenChoice() {
+                    let checkedAllergens = Array.from(allergenChoice)
+                        .filter(cb => cb.checked)
+                        .map(cb => cb.value);
 
+                    // For the schema to work, we need to check that checkedAllergens is true. if it is and the severity hasn't been filled, an alert will pop up.
+                    mealInfo.allergenSelected = checkedAllergens ? "true" : ""; 
+                    mealInfo.allergenChoice = checkedAllergens;
+                    
+                    // Checks that the severity has been selected when the allergy check box next to it is selected.
+                    let checkedSeverities = Array.from(severityChoice)
+                        .filter(sel => sel.value === "--severity--" ? "" : this.value)
+                        .map(sel => sel.value);
+                    mealInfo.severityChoice = checkedSeverities;
+                };
+
+                allergenChoice.forEach(function(cb) {
+                    cb.addEventListener("change", updateAllergenChoice);
+                });
+                severityChoice.forEach(function(sel) {
+                    sel.addEventListener("change", updateAllergenChoice);
+                });
+
+
+                otherAllergensChoice.addEventListener("change", function(){
+                        mealInfo.otherAllergens = this.value;
+                
+                });
 
                 const menuChange = section.querySelectorAll(`.menuItem${safeName}`); // retrieves all other drop-off radio buttons by the class attribute (indicated with a . instead of #)
                  // adds eventlistener to the other bus-times radio buttons, which hides the time-suggestion field when selected
@@ -638,7 +688,12 @@
 
 // creates the bus input fields for each guest based on the first question
             function updateBus (){
+                document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
+                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                
                 document.getElementById("Bus").style.display = "block"; // unhides the Bus div element
+                testBusArray.style.display = "block";
 
                 // retrieves the BussInf element which the new inputs will be added to:
                 const guestBusDiv = document.getElementById("BussInf");
@@ -656,6 +711,7 @@
                     if (plus1Name.trim() !== "") {
                         guestBusDiv.appendChild(createBusSection(plus1Name));
                     }
+                    BusInfoStorage[i] = busInfo;
                 };
         
             }
@@ -663,6 +719,8 @@
 // Helper function for updatebus
             function createBusSection(personName) {
                 let busInfo = {};
+
+                busInfo.GuestName = personName
 
                 const safeName = makeSafe(personName); // removes whitespaces from the name, replacing them with _
 
@@ -702,10 +760,10 @@
                         </div>
                         <div>
                             <legend>Drop-off times</legend>
-                            <input type="radio" id="times2${safeName}" name="dropOff${safeName}" class="noSuggest${safeName}"/>
+                            <input type="radio" id="times2${safeName}" value="10:30 pm" name="dropOff${safeName}" class="noSuggest${safeName}"/>
                             <label for="times2${safeName}">10:30 pm (22:30)</label> <br>
                             
-                            <input type="radio" id="times3${safeName}" name="dropOff${safeName}" class="noSuggest${safeName}"/>
+                            <input type="radio" id="times3${safeName}" value="01:00 am" name="dropOff${safeName}" class="noSuggest${safeName}"/>
                             <label for="times3${safeName}">01:00 am (01:00)</label><br>
                        
                             <input type="radio" id="times4${safeName}" name="dropOff${safeName}"/>
@@ -714,7 +772,7 @@
                          <div id="laterDropOff${safeName}" style="display:none"> 
 
                             <label>Please suggest a time before 03:00 am here:</label><br>
-                            <input type="time"/>
+                            <input type="time" id="Suggested${safeName}"/>
                         </div>
                     </div>
                     
@@ -724,30 +782,52 @@
                 const yesRadio = section.querySelector(`#yesBus${safeName}`); // retrieves the yes radio button
                 const noRadio = section.querySelector(`#noBus${safeName}`); // retrieves the no radio button
                 const ifYesDiv = section.querySelector(`#ifYesBus${safeName}`); // retrieves the hotel name input 
+                const hotelInp = section.querySelector(`#hName${safeName}`);
                 const busTimes = section.querySelector(`#timesBus${safeName}`); // retrieves the bus times div element
-                const suggestTime = section.querySelector(`#laterDropOff${safeName}`); // retrieves the later drop-off radio button
+                const suggestTime = section.querySelector(`#Suggested${safeName}`); // retrieves the later drop-off radio button
                 const times = section.querySelectorAll(`.noSuggest${safeName}`); // retrieves all other drop-off radio buttons by the class attribute (indicated with a . instead of #)
                 const times4Radio = section.querySelector(`#times4${safeName}`); // retrieves the later drop-off time suggestion 
+                const pickUp = section.querySelector(`#times1${safeName}`);
 
                 //if the yes radio button is selected, the hotel name input and the bus times input are made visible
                 if (yesRadio) {
                     yesRadio.addEventListener("change", function() {
                         document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
                         document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
-
+                        busInfo.busAnswer = "Yes";
                         ifYesDiv.style.display = "block";
                         busTimes.style.display = "block";
-                });
+                    
+                     });
+
+                     hotelInp.addEventListener("change", function(){
+                        busInfo.hotelName = this.value
+                    });
                 };
+
+               
 
                 // if the no radio button is selected, the hotel name input and the bus times input are made invisible again if they were already visible
                 if (noRadio){
                     noRadio.addEventListener("change", function(){
                         document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
                         document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                        busInfo.busTimes.remove();
+                        busInfo.suggestedTime.remove();
 
                         ifYesDiv.style.display = "none";
                         busTimes.style.display = "none";
+                    });
+                };
+           
+                if (pickUp){
+                    pickUp.addEventListener("change", function(){
+                        document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
+                        document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                        if (this.checked){
+                            busInfo.pickUpYes = "Yes"
+                        }else{delete busInfo.pickUpYes};
+                        
                     });
                 };
 
@@ -756,8 +836,12 @@
                     times4Radio.addEventListener("change", function () {
                         document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
                         document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
-
-                        suggestTime.style.display = "block";
+                        //busInfo.suggestedTime.remove
+                        busInfo.timeSelected = "true"
+                        document.getElementById(`laterDropOff${safeName}`).style.display = "block";
+                        });
+                        suggestTime.addEventListener("change", function(){
+                            busInfo.busTimes = this.value
                         });
                 }
                  // adds eventlistener to the other bus-times radio buttons, which hides the time-suggestion field when selected
@@ -768,18 +852,21 @@
                         document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
 
                         element.addEventListener("change", function() {
-                            suggestTime.style.display = "none";
+                            busInfo.timeSelected = "true"
+                            document.getElementById(`laterDropOff${safeName}`).style.display = "none";
+                            busInfo.busTimes = this.value
                         });
                     });
+                    BusInfoStorage.push(busInfo)
                 }
                 return section;
             }
 
-            
-
+  
             //drinks function
             function updateDrinks (){
                 document.getElementById("DrinkNext").innerHTML = ''; //deletes the html content of the DrinkNext element.
+                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
                 document.getElementById("Drinks").style.display = "block"; // makes the Drinks element visible
                
                 const guestDrink = document.getElementById("DrinkNext"); //retrieves the DrinkNext element from the document
@@ -800,7 +887,7 @@
                 };
             }
 
-            // Helper function for updateDrinks
+// Helper function for updateDrinks
             function createDrinksSection(personName) {
                 const safeName = makeSafe(personName) // replaces all whitespaces in the name with _
 
@@ -836,33 +923,7 @@
                 return section;
             }
 
-            // more info button
-            const dialog = document.getElementById('drinkInfo'); // retrieves the drinkInfo element
-            const openBtn = document.getElementById('openDialogBtn'); //retrieves the openDialog button
-            const closeBtn = document.getElementById('closeDialogBtn'); //retrieves the close Dialog button
-
-            // adds an eventlistener to the open dialog button that shows the drinkInfo element usig showModal
-            openBtn.addEventListener('click', function() {
-                dialog.showModal(); // showModal shows a text box that overlays the rest of the webpage, making that webpage inactive until the modal is closed again.
-            });
-
-            // adds an eventlistener to the close dialog button that shows the drinkInfo element usig showModal
-            closeBtn.addEventListener('click', function() {
-                dialog.close(); // .close closes a modal (text box that overlays the rest of the webpage, making that webpage inactive) 
-            });
-
-            // Optional: Allow closing the dialog by clicking outside of it via an event listener
-            dialog.addEventListener('click', function(event) {
-                const rect = dialog.getBoundingClientRect();
-                if (
-                    event.clientX < rect.left ||
-                    event.clientX > rect.right ||
-                    event.clientY < rect.top ||
-                    event.clientY > rect.bottom
-                ) {
-                    dialog.close();
-                }
-            });
+           
  
             //universal validation function
             function validateInfo(infoList, schema) {
@@ -906,13 +967,22 @@
                 alert(JSON.stringify(GuestInfoStorage, null, 2));
              });
 
+             testMealbtn.addEventListener("click", function() {
+                console.log(MealInfoStorage);
+                alert(JSON.stringify(MealInfoStorage, null, 2));
+             });
+
+             testBusbtn.addEventListener("click", function() {
+                console.log(BusInfoStorage);
+                alert(JSON.stringify(BusInfoStorage, null, 2));
+             });
+
             document.getElementById("Next2").addEventListener("click", function() {
                 if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
                     updateMeal();
                 }
             });
 
-            
 
             document.getElementById("Next3").addEventListener("click", function() {
                 if (validateInfo(MealInfoStorage, mealInfoSchema)) {
@@ -920,7 +990,36 @@
                 }
             })
 
+            document.getElementById("Next4").addEventListener("click", function() {
+                if (validateInfo(BusInfoStorage, busInfoSchema)) {
+                    updateDrinks();
+                }
+            })
+            
+            //Next4.addEventListener("click", updateDrinks);
 
+            // adds an eventlistener to the open dialog button that shows the drinkInfo element usig showModal
+            openBtn.addEventListener('click', function() {
+                dialog.showModal(); // showModal shows a text box that overlays the rest of the webpage, making that webpage inactive until the modal is closed again.
+            });
+
+            // adds an eventlistener to the close dialog button that shows the drinkInfo element usig showModal
+            closeBtn.addEventListener('click', function() {
+                dialog.close(); // .close closes a modal (text box that overlays the rest of the webpage, making that webpage inactive) 
+            });
+
+            // Optional: Allow closing the dialog by clicking outside of it via an event listener
+            dialog.addEventListener('click', function(event) {
+                const rect = dialog.getBoundingClientRect();
+                if (
+                    event.clientX < rect.left ||
+                    event.clientX > rect.right ||
+                    event.clientY < rect.top ||
+                    event.clientY > rect.bottom
+                ) {
+                    dialog.close();
+                }
+            });
 
             //adds an eventlistener to the last next button
             Next5.addEventListener("click", function(){
@@ -931,7 +1030,7 @@
             //Next2.addEventListener("click", updateMeal);
 
             //Next3.addEventListener("click", updateBus);
-            Next4.addEventListener("click", updateDrinks);
+            
         </script>
 
     </body>
