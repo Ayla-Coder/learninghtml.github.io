@@ -314,16 +314,38 @@
                 { field: "busTimes", if: { field: "timeSelected", value: "true" }, message: "Please enter a suggested time for Guest {n}" },
             ]; 
 
+            
+
 // Functions:
 //--------------------------------------------------------------
 
+            // this function takes a string and replaces white spaces with _
+            function makeSafe(str) {
+                return str.replace(/\W/g, '_');
+            };
+
 //For the first guest info section --------------------------------------------------------------
             function updateField() {
+                document.getElementById("Menu").style.display = "none"; 
+                document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+
                 // Step 1: Save a copy of old data
                 oldGuestInfo = [...GuestInfoStorage];
-                GuestInfoStorage = []; //wipe the current Storage list to avoid duplicates
+                //oldMealInfo = [...MealInfoStorage];
+                //oldBusInfo = [...BusInfoStorage];
+                //oldQuestion = [...QuestionInfoStorage];
+
+                //Step 2: wipe the current Storage list to avoid duplicates
+                GuestInfoStorage = []; 
+                //MealInfoStorage = [];
+                //BusInfoStorage = [];
+                //QuestionInfoStorage = [];
+
                 counting = guests.value; // redefines counting to match the number of guests entered by the user. 
                 
+                //Step 3: wipe all previously generated form elements (gInfo in this case)
                 const gInfoDiv = document.getElementById("gInfo");
                 gInfoDiv.innerHTML = '<legend><h3>Enter your full names here:</h3></legend><br>'; //deletes the html content of the guestDetailsDiv element.
                 
@@ -332,7 +354,10 @@
                     gInfoDiv.style.display = "block";
                     testArrayDiv.style.display = "block";
 
-                    for (let i = 0; i<counting; i++){ //runs the following code up to the number specified by user. 
+                    //Step 4: create for loop to generate the amount of dynamic fields necessary.
+                    for (let i = 0; i<counting; i++){ //runs the following code up to the number specified by user.
+                        
+                        //Step 5: create empty local storage object  
                         let GuestiInfo = {}; // Empty object to store all of the answers in, Guest Name, +1 answer, +1 name, +1 relationship
                 
                         // myInp is a new div element of the class container that will be added to gInfo later
@@ -417,7 +442,7 @@
                             GuestiInfo.plusOneRel = "";
                         })
 
-                        // Restore old guest data if it exists
+                        //Step 10: Restore old guest data if it exists
                         if (oldGuestInfo[i]) { //if there is anything stored in oldGuestInfo[i], proceed with following code
                             const old = oldGuestInfo[i];
                             // Restore guest name
@@ -450,51 +475,108 @@
         
             // this function updates the meal fields to include all of the guests entered in the first question.
             function updateMeal() {
-                document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
-                document.getElementById("BussInf").innerHTML= ""; //resets the bus section if it was previously filled out
+                document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out 
                 document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
-                document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
                 document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
-           
                 document.getElementById("Menu").style.display = "block"; // makes the div element called Menu visible
-
-                //retrieves the guestMeals div from the Menu div
-                const guestMealsDiv = document.getElementById("guestMeals");
                 testMealArray.style.display = "block";
+
+                // Step 1: Save a copy of old data
+                oldMealInfo = [...MealInfoStorage];
+            
+                //Step 2: wipe the current Storage list to avoid duplicates
+                MealInfoStorage = []; 
                
-                // for i in range (0, counting, 1):
-                for (let i = 0; i<counting; i++){
-                    
+                //Step 3: wipe all previously generated form elements
+                 const guestMealsDiv = document.getElementById("guestMeals"); //retrieves the guestMeals div from the Menu div
+                 guestMealsDiv.innerHTML = "";
+
+                 //Step 4: create for loop to generate the amount of dynamic fields necessary. 
+                for (let i = 0; i<counting; i++){ // for i in range (0, counting, 1):
+
                     //retrieves the guest name and plus 1 name if it exists from GuestInfoStorage
                     let guestName = GuestInfoStorage[i].GuestName;
                     let plus1Name = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
+
+                    //Steps 5-6 and 8-9 happens inside of createMealSection: 
+                    let [dynamicSection, temporaryMealStorage, UserAnswers] = createMealSection(guestName);
                    
-                  
-                    // appends the content created in the createMealSection function for the guest to guestMeals 
-                    guestMealsDiv.appendChild(createMealSection(guestName));
+                    //Step 7: append the newly generated dynamic form-object to the document (in this case it's created in the createMealSection function)
+                    guestMealsDiv.appendChild(dynamicSection);
+
+                     //Step 10: Restore old user answer-data if it exists to the temporary storage-item: 
+                    if (oldMealInfo[i]){
+                        restoreMealSection(temporaryMealStorage, UserAnswers, oldMealInfo[i]);
+                    };
+
+                    //step 12: update the global storage array with the data from the temporary storage in createdMealSection
+                    MealInfoStorage[i] = temporaryMealStorage
 
                     // if plus1Name (with spaces removed so no error is thrown) isn't empty
                     if (plus1Name.trim() !== "") {
-                        // append the plus1Name content created by createMealSection to guestMeals
-                        guestMealsDiv.appendChild(createMealSection(plus1Name));
+                    
+                        //Steps 5-6 and 8-9 happens inside of createMealSection: 
+                        let [dynamicSectionPlus1, temporaryPlus1MealStorage, plus1UserAnswers] = createMealSection(plus1Name);
+
+                        //Step 7: append the newly generated dynamic form-object to the document (in this case it's plus1Name content created by createMealSection)
+                        guestMealsDiv.appendChild(dynamicSectionPlus1);
+
+                        //STEP 10: Restore old PLUS-1 answer-data if it exists to the temporary storage-item: 
+                        if (oldMealInfo[i]?.plusOneMeal){
+                            restoreMealSection(temporaryPlus1MealStorage, plus1UserAnswers, oldMealInfo[i].plusOneMeal);
+                        };
+
+                        MealInfoStorage[i].plusOneMeal = temporaryPlus1MealStorage;
+                        
                     }
-                    MealInfoStorage[i] = mealInfo
                 };
-            }
-            
-             // this function takes a string and replaces white spaces with _
-             function makeSafe(str) {
-                return str.replace(/\W/g, '_');
-            }
+            }; //end of function
+
+            // Helper for restoring meal section data
+            function restoreMealSection(mealInfo, inputs, oldData) {
+                // inputs = [menuChoice, allergenChoice, severityChoice, otherAllergensChoice]
+                if (!oldData) return;
+
+                // Restore menu choice
+                if (inputs[0]) {
+                    inputs[0].value = oldData.menuChoice || "";
+                    mealInfo.menuChoice = oldData.menuChoice || "";
+                }
+
+                // Restore allergens (checkboxes)
+                if (inputs[1] && oldData.allergenChoice) {
+                    inputs[1].forEach(cb => {
+                        cb.checked = (oldData.allergenChoice || []).includes(cb.value);
+                    });
+                    mealInfo.allergenChoice = oldData.allergenChoice || [];
+                    mealInfo.allergenSelected = oldData.allergenSelected || "";
+                }
+
+                // Restore severity selections
+                if (inputs[2] && oldData.severityChoice) {
+                    inputs[2].forEach((sel, idx) => {
+                        sel.value = oldData.severityChoice[idx] || "--severity--";
+                    });
+                    mealInfo.severityChoice = oldData.severityChoice || [];
+                }
+
+                // Restore other allergens
+                if (inputs[3]) {
+                    inputs[3].value = oldData.otherAllergens || "";
+                    mealInfo.otherAllergens = oldData.otherAllergens || "";
+                }
+            }; // end of function
+
 
 // Helper function for updateMeal that creates the content for each guest and/or plus one entered in the first question
             function createMealSection(personName) {
+                //Step 5: create empty local storage object
                 let mealInfo = {};
-                mealInfo.GuestName = personName
-                //replaces whitespaces from the person name with _ for element ids
-                const safeName = makeSafe(personName);
 
-                //creates a new div element classed as container2 for styling
+                mealInfo.GuestName = personName //stores the relevant name in this local object
+                const safeName = makeSafe(personName); //replaces whitespaces from the person name with _ for element ids
+
+                //Step 6: create the dynamic form-object (Here, a new div element classed as container2 for styling)
                 let section = document.createElement("div");section.className = "container2";
                 section.innerHTML = `
                 <div>
@@ -630,12 +712,14 @@
                     <input type="text" id="allergies${safeName}" name="longAns" class="menuItem${safeName}"/>
                 </div>
                 `;
-                // if the no radio button is selected, the hotel name input and the bus times input are made invisible again if they were already visible
                 
+                //Step 8: retrieve any input elements from the newly generated section
                 const menuChoice = section.querySelector(`#menu${safeName}`);
                 const allergenChoice = section.querySelectorAll(`[name="allergen${safeName}"]`);
                 const severityChoice = section.querySelectorAll(`[name="severity${safeName}"]`);
                 const otherAllergensChoice = section.querySelector(`#allergies${safeName}`);
+
+                //Steo 9: add eventlisteners to these input elements which adds the user's current answers to the temporary storage object (mealInfo)
 
                  // When creating/selecting the menu dropdown
                  menuChoice.addEventListener("change", function() {
@@ -653,15 +737,17 @@
                         .map(cb => cb.value);
 
                     // For the schema to work, we need to check that checkedAllergens is true. if it is and the severity hasn't been filled, an alert will pop up.
-                    mealInfo.allergenSelected = checkedAllergens ? "true" : ""; 
+                    mealInfo.allergenSelected = checkedAllergens.length > 0 ? "true" : "";
                     mealInfo.allergenChoice = checkedAllergens;
                     
                     // Checks that the severity has been selected when the allergy check box next to it is selected.
                     let checkedSeverities = Array.from(severityChoice)
                         .filter(sel => sel.value === "--severity--" ? "" : this.value)
                         .map(sel => sel.value);
+                
                     mealInfo.severityChoice = checkedSeverities;
                 };
+
 
                 allergenChoice.forEach(function(cb) {
                     cb.addEventListener("change", updateAllergenChoice);
@@ -670,14 +756,12 @@
                     sel.addEventListener("change", updateAllergenChoice);
                 });
 
-
                 otherAllergensChoice.addEventListener("change", function(){
                         mealInfo.otherAllergens = this.value;
-                
                 });
 
-                const menuChange = section.querySelectorAll(`.menuItem${safeName}`); // retrieves all other drop-off radio buttons by the class attribute (indicated with a . instead of #)
-                 // adds eventlistener to the other bus-times radio buttons, which hides the time-suggestion field when selected
+                const menuChange = section.querySelectorAll(`.menuItem${safeName}`); // retrieves all radio buttons by the class attribute (indicated with a . instead of #)
+                 // adds eventlistener to the menu radio buttons, which hides the time-suggestion field when selected
                 if (menuChange){ // if (times) check is a safety net to make sure times exists before trying to use it.
                     //forEach loops through each element/item in the times object
                     menuChange.forEach(function(element) {
@@ -688,10 +772,12 @@
                         });
                     });
                 }
-                MealInfoStorage.push(mealInfo);
+                
+                const UserAnswers = [menuChoice, allergenChoice, severityChoice, otherAllergensChoice]
+                //MealInfoStorage.push(mealInfo);
             //returns the new div element section 
-            return section;
-            }
+            return [section, mealInfo, UserAnswers];
+            };
 
 
 // creates the bus input fields for each guest based on the first question
@@ -985,11 +1071,21 @@
                 alert(JSON.stringify(BusInfoStorage, null, 2));
              });
 
+            //document.getElementById("Next2").addEventListener("click", function() {
+            //    if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
+            //        updateMeal();
+            //    }
+            //});
+
             document.getElementById("Next2").addEventListener("click", function() {
                 if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
+                    console.log("Validation passed!");
                     updateMeal();
+                } else {
+                    console.log("Validation failed!");
                 }
             });
+
 
 
             document.getElementById("Next3").addEventListener("click", function() {
