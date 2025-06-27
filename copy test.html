@@ -314,13 +314,26 @@
                 { field: "menuChoice",  if:{field: "plus1", value: "no"}, message: "Please select a meal for all Guests!" },
                 { field: "menuChoice", if:{field: "plus1", value: "yes"},  message: "Please select a meal for all of the requested plus ones!" },
                 { field: "severityChoice", if: { field: "allergenSelected", value: "true" }, message: "Please enter the severity of your allergies" },
-            ];  */
-            
-            const busInfoSchema = [
+            ];  
+              const busInfoSchema = [
                 { field: "hotelName",  if: {field: "busAnswer", value: "Yes"}, message: "Please enter the hotel name for Guest {n}" },
                 { field: "busTimes",  if: {field: "busAnswer", value: "Yes"}, message: "Please pick a bus time for Guest {n}" },
                 { field: "busTimes", if: { field: "timeSelected", value: "true" }, message: "Please enter a suggested time for Guest {n}" },
-            ]; 
+            ]; */
+            const busInfoSchema = [
+    { field: "busAnswer", message: "Please select Yes or No for the bus for Guest {n}" },
+    { field: "hotelName", if: { field: "busAnswer", value: "Yes" }, message: "Please enter the hotel name for Guest {n}" },
+    { field: "busTimes", if: { field: "busAnswer", value: "Yes" }, message: "Please pick at least one bus time for Guest {n}" }
+];
+
+            
+            /*
+        
+            const busInfoSchema = [
+            { field: "hotelName", if: { field: "busAnswer", value: "Yes" }, message: "Please enter the hotel name for Guest {n}" },
+            { field: "busTimes", if: { field: "busAnswer", value: "Yes" }, message: "Please pick at least one bus time for Guest {n}" }
+        ];*/
+
 
             
 
@@ -494,82 +507,58 @@
 // right now, a bug is occuring where the old guests and their plusone's meals are not being restored.  
         
             // this function updates the meal fields to include all of the guests entered in the first question.
-            function updateMeal() {
-                document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out 
-                document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
-                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
-                document.getElementById("Menu").style.display = "block"; // makes the div element called Menu visible
-                testMealArray.style.display = "block";
+           function updateMeal() {
+    document.getElementById("Bus").style.display = "none";
+    document.getElementById("Drinks").style.display = "none";
+    document.getElementById("End").style.display = "none";
+    document.getElementById("Menu").style.display = "block";
+    testMealArray.style.display = "block";
 
-                // Step 1: Save a copy of old data
-                let oldMealInfo = [...MealInfoStorage];
+    let oldMealInfo = [...MealInfoStorage];
+    MealInfoStorage = [];
+    const guestMealsDiv = document.getElementById("guestMeals");
+    guestMealsDiv.innerHTML = "";
 
-                //Step 2: wipe the current Storage list to avoid duplicates
-                MealInfoStorage = []; 
-               
-                //Step 3: wipe all previously generated form elements
-                 const guestMealsDiv = document.getElementById("guestMeals"); //retrieves the guestMeals div from the Menu div
-                 guestMealsDiv.innerHTML = "";
+    for (let i = 0; i < GuestInfoStorage.length; i++) {
+        let guestName = GuestInfoStorage[i].GuestName;
+        let plusOneName = GuestInfoStorage[i].plusOneName || "";
 
-                 //Step 4: create for loop to generate the amount of dynamic fields necessary.
-                 //let index = 0; 
-                for (let i = 0; i<GuestInfoStorage.length; i++){ // for i in range (0, counting, 1):
+        // Main guest
+        let [dynamicSection, temporaryMealStorage] = createMealSection(guestName);
+        guestMealsDiv.appendChild(dynamicSection);
+        temporaryMealStorage.plus1 = plusOneName.trim() !== "" ? "yes" : "no";
 
-                    //retrieves the guest name and plus 1 name if it exists from GuestInfoStorage
-                    let guestName = GuestInfoStorage[i].GuestName;
-                    let plusOneName = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
+        // Restore main guest info by index (if possible)
+        if (oldMealInfo[i]) {
+            restoreMealSection(dynamicSection, oldMealInfo[i], makeSafe(guestName));
+            // Optionally, copy restored fields into temporaryMealStorage
+            Object.assign(temporaryMealStorage, oldMealInfo[i]);
+        }
 
-                    //Main guest,Steps 5-6 and 8-9 happens inside of createMealSection: 
-                    let [dynamicSection, temporaryMealStorage, UserAnswers] = createMealSection(guestName);
-   
-                    //Step 7: append the newly generated dynamic form-object to the document (in this case it's created in the createMealSection function)
-                    guestMealsDiv.appendChild(dynamicSection);
+        // Plus-one
+        if (plusOneName.trim() !== "") {
+            let [dynamicSectionPlus1, temporaryPlus1MealStorage] = createMealSection(plusOneName);
+            guestMealsDiv.appendChild(dynamicSectionPlus1);
 
-                    /*
-                    if(plusOneName.trim() !== ""){
-                        temporaryMealStorage.plus1 = "yes"
-                    }else{
-                        temporaryMealStorage.plus1 = "no"
-                    }*/
-                      // Initialize plus1 flag FIRST
-                     temporaryMealStorage.plus1 = plusOneName.trim() !== "" ? "yes" : "no";
+            temporaryPlus1MealStorage.plus1 = "yes";
+            temporaryPlus1MealStorage.PlusOneName = plusOneName;
+            temporaryPlus1MealStorage.mainGuestName = guestName;
 
-                    //Step 10: Restore old user answer-data by name if it exists to the temporary storage-item: 
-                    if (oldMealInfo[i]) {
-                        restoreMealSection(dynamicSection, oldMealInfo[i], makeSafe(guestName));
-                        // MealInfoStorage[i] = temporaryMealStorage;
-                    }
-                   
+            // Restore plus-one info if possible
+            if (oldMealInfo[i] && oldMealInfo[i].plusOneMeal) {
+                restoreMealSection(dynamicSectionPlus1, oldMealInfo[i].plusOneMeal, makeSafe(plusOneName));
+                Object.assign(temporaryPlus1MealStorage, oldMealInfo[i].plusOneMeal);
+            }
 
-                    // if plusOneName (with spaces removed so no error is thrown) isn't empty, this code will create a new plus 1 item and add it to the global storage
-                    if (plusOneName.trim() !== "") {
+            // Attach plus-one meal info to main guest object
+            temporaryMealStorage.plusOneMeal = temporaryPlus1MealStorage;
+        }
 
-                        //Steps 5-6 and 8-9 happens inside of createMealSection: 
-                        let [dynamicSectionPlus1, temporaryPlus1MealStorage, plus1UserAnswers] = createMealSection(plusOneName);
-                        //temporaryPlus1MealStorage.plus1 = "yes";
-                        //Step 7: append the newly generated dynamic form-object to the document (in this case it's plusOneName content created by createMealSection)
-                        guestMealsDiv.appendChild(dynamicSectionPlus1);
+        MealInfoStorage[i] = temporaryMealStorage;
+    }
+}
 
-                        //STEP 10: Restore old PLUS-1 answer-data if it exists to the temporary storage-item:
-                        if (oldMealInfo[i] && oldMealInfo[i].plusOneMeal) {
-                            restoreMealSection(dynamicSectionPlus1, oldMealInfo[i].plusOneMeal, makeSafe(plusOneName));
-                        }
-                        temporaryPlus1MealStorage.PlusOneName = plusOneName//temporaryPlus1MealStorage.GuestName;
-                        delete temporaryPlus1MealStorage.GuestName;
-                       temporaryPlus1MealStorage.mainGuestName = guestName; // <-- Or this line!
-                        MealInfoStorage[i] = temporaryMealStorage;
-                        MealInfoStorage[i].plusOneMeal = temporaryPlus1MealStorage; 
-                         MealInfoStorage[i].plusOneMeal = oldMealInfo[i].plusOneMeal;   
-                        //index++;                   
-                    }else if(oldMealInfo[i]){
-                        MealInfoStorage[i] = oldMealInfo[i];
-                    }else{ MealInfoStorage[i] = temporaryMealStorage};
 
-                     //step 12: update the global storage array with the data from the temporary storage in createdMealSection
-                    
-                     
-                };
-            }; //end of function
 
             // Helper for restoring meal section data
             function restoreMealSection(section, oldData, safeName) {
@@ -604,7 +593,38 @@
 
             }; // end of function
 
-     // Helper function for updateMeal that creates the content for each guest and/or plus one entered in the first question
+             /*
+                if (inputs[0]) {
+                    inputs[0].value = oldData.menuChoice || "";
+                    mealInfo.menuChoice = oldData.menuChoice || "";
+                }
+
+                // Restore allergens (checkboxes)
+                if (inputs[1] && oldData.allergenChoice) {
+                    inputs[1].forEach(cb => {
+                        cb.checked = (oldData.allergenChoice || []).includes(cb.value);
+                    });
+                    mealInfo.allergenChoice = oldData.allergenChoice || [];
+                    mealInfo.allergenSelected = oldData.allergenSelected || "";
+                }
+
+                // Restore severity selections
+                if (inputs[2] && oldData.severityChoice) {
+                    inputs[2].forEach((sel, idx) => {
+                        sel.value = oldData.severityChoice[idx] || "--severity--";
+                    });
+                    mealInfo.severityChoice = oldData.severityChoice || [];
+                }
+
+                // Restore other allergens
+                if (inputs[3]) {
+                    inputs[3].value = oldData.otherAllergens || "";
+                    mealInfo.otherAllergens = oldData.otherAllergens || "";
+                }
+                    */
+
+
+// Helper function for updateMeal that creates the content for each guest and/or plus one entered in the first question
             function createMealSection(personName) {
                 //Step 5: create empty local storage object
                 let mealInfo = {};
@@ -764,13 +784,7 @@
                         mealInfo.menuChoice = this.value;
                     }
                 });
-                 
-                /*
-                menuChoice.addEventListener("change", function() {
-                    mealInfo.menuChoice = this.value;
-                });
-                 */
-                
+                                 
                 // scans the answers to see if an allergy has been checked off, and appends this as well as any selected variable to mealInfo
                 function updateAllergenChoice() {
                     let checkedAllergens = Array.from(allergenChoice)
@@ -820,131 +834,144 @@
 
 
 // creates the bus input fields for each guest based on the first question
-            function updateBus (){
-                document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
-                document.getElementById("DrinkNext").innerHTML = ""; //resets the drinks section if it was previously filled out
-                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
-                
-                document.getElementById("Bus").style.display = "block"; // unhides the Bus div element
-                testBusArray.style.display = "block";
+            function updateBus() {
+    document.getElementById("Drinks").style.display = "none";
+    document.getElementById("DrinkNext").innerHTML = "";
+    document.getElementById("End").style.display = "none";
+    document.getElementById("Bus").style.display = "block";
+    testBusArray.style.display = "block";
 
-                // Step 1: Save a copy of old data
-                oldBusInfo = [...BusInfoStorage];
-            
-                //Step 2: wipe the current Storage list to avoid duplicates
-                BusInfoStorage = []; 
-               
-                //Step 3: wipe all previously generated form elements
-                // retrieves the BussInf element which the new inputs will be added to:
-                const guestBusDiv = document.getElementById("BussInf");
-                guestBusDiv.innerHTML = "";
-                
-                //Step 4: create for loop to generate the amount of dynamic fields necessary (for i in range(0, counting, 1):)
-                for (let i = 0; i<counting; i++){
-                    //Steps 5-6 and 8-9 happens inside of createMealSection:
-                    //retrives the namees of the guest an +1 if it exists
-                    let guestName = GuestInfoStorage[i].GuestName;
-                    let plusOneName = GuestInfoStorage[i].plusOneName || ""; // If undefined, use ""
-                    let safeName = makeSafe(guestName); // for use in restoring old info in step 10
-                    let [dynamicSection, temporaryBusStorage] =  createBusSection(guestName) 
-                    temporaryBusStorage.plus1 = "no"; 
+    let oldBusInfo = [...BusInfoStorage];
+    BusInfoStorage = [];
+    const guestBusDiv = document.getElementById("BussInf");
+    guestBusDiv.innerHTML = "";
 
-                    //Step 7: append the newly generated dynamic form-object to the document 
-                    guestBusDiv.appendChild(dynamicSection);
+    // Build a map of old bus info by name
+    let oldBusInfoMap = {};
+    (oldBusInfo || []).forEach(item => {
+        if (item.GuestName && item.plus1 === "no") oldBusInfoMap[item.GuestName] = item;
+        if ((item.PlusOneName || item.GuestName) && item.plus1 === "yes") {
+            let name = item.PlusOneName || item.GuestName;
+            oldBusInfoMap[name] = item;
+        }
+    });
 
-                     //Step 10: Restore old user answer-data if it exists to the temporary storage-item:
-                   if (oldBusInfo[i]){
-                       restoreBusSection(dynamicSection, oldBusInfo[i], safeName);
-                   };
+    // Always create and push a new storage object for every guest and plus-one
+    for (let i = 0; i < GuestInfoStorage.length; i++) {
+        let guestName = GuestInfoStorage[i].GuestName;
+        let plusOneName = GuestInfoStorage[i].plusOneName || "";
 
-                   //Step 11: store the data in the global storage array
-                   BusInfoStorage.push(temporaryBusStorage);
+        // --- Main guest ---
+        let [dynamicSection, temporaryBusStorage] = createBusSection(guestName);
+        temporaryBusStorage.plus1 = "no";
+        guestBusDiv.appendChild(dynamicSection);
 
-                    //if there is a plus one name (with spaces removed by trim()) that isn't empty, append the input fields for them created by createBusSection function
-                    if (plusOneName.trim() !== "") {
-                        let safeNamePlusOne = makeSafe(plusOneName);
-                        let [dynamicSectionPlus1, temporaryPlus1BusStorage] = createBusSection(plusOneName);
-                        temporaryPlus1BusStorage.plus1 = "yes"
+        // Restore main guest bus info by name if it exists
+        if (oldBusInfoMap[guestName]) {
+            restoreBusSection(dynamicSection, oldBusInfoMap[guestName], makeSafe(guestName));
+            Object.assign(temporaryBusStorage, oldBusInfoMap[guestName]);
+        }
+        // Always push a new object for the main guest
+        BusInfoStorage.push(temporaryBusStorage);
 
-                         //Step 7: append the newly generated dynamic form-object to the document 
-                        guestBusDiv.appendChild(dynamicSectionPlus1);
+        // --- Plus-one (if present) ---
+        if (plusOneName.trim() !== "") {
+            let [dynamicSectionPlus1, temporaryPlus1BusStorage] = createBusSection(plusOneName);
+            temporaryPlus1BusStorage.plus1 = "yes";
+            temporaryPlus1BusStorage.PlusOneName = plusOneName;
+            temporaryPlus1BusStorage.mainGuestName = guestName;
+            guestBusDiv.appendChild(dynamicSectionPlus1);
 
-                        //Step 10: Restore old plus1 answer-data if it exists to the temporary storage-item:
-                        if (oldBusInfo[i]?.plusOneBus){
-                          restoreBusSection(dynamicSectionPlus1, oldBusInfo[i].plusOneBus, safeNamePlusOne);
-                       };
-                       temporaryPlus1BusStorage.PlusOneName = temporaryPlus1BusStorage.GuestName;
-                       delete temporaryPlus1BusStorage.GuestName;
-                       temporaryPlus1BusStorage.mainGuestName = guestName; 
+            // Restore plus-one bus info by name if it exists
+            if (oldBusInfoMap[plusOneName]) {
+                restoreBusSection(dynamicSectionPlus1, oldBusInfoMap[plusOneName], makeSafe(plusOneName));
+                Object.assign(temporaryPlus1BusStorage, oldBusInfoMap[plusOneName]);
+            }
+            // Always push a new object for the plus-one
+            BusInfoStorage.push(temporaryPlus1BusStorage);
+        }
+    }
 
-                       // step 11: update the global storage array with this info
-                       BusInfoStorage.push(temporaryPlus1BusStorage);                      
-                   }
-                        
-                    }
-                    //BusInfoStorage[i] = busInfo;
-                }; // end of function
+    // Debug: Check that every guest/plus-one is represented
+    console.log("BusInfoStorage after update:", BusInfoStorage.map(x => x.GuestName || x.PlusOneName));
+}
+
+
+
+
 
 // helper for restoring businfo section data: UserAnswers = [busAnswer, hotelInp, pickUp, busTimes]
-            function restoreBusSection(section, oldData, safeName){
-                if (!oldData) return;
+         function restoreBusSection(section, oldData, safeName){
+    if (!oldData) return;
 
-                //Retrieve the yes/no radio button answers
-                const yesRadio = section.querySelector(`#yesBus${safeName}`);
-                const noRadio = section.querySelector(`#noBus${safeName}`);
+    const yesRadio = section.querySelector(`#yesBus${safeName}`);
+    const noRadio = section.querySelector(`#noBus${safeName}`);
+    const ifYesDiv = section.querySelector(`#ifYesBus${safeName}`);
+    const busTimesDiv = section.querySelector(`#timesBus${safeName}`);
+    const hotelInp = section.querySelector(`#hName${safeName}`);
+    const pickUp = section.querySelector(`#times1${safeName}`);
+    const times = section.querySelectorAll(`.noSuggest${safeName}`);
+    const times4Radio = section.querySelector(`#times4${safeName}`);
+    const suggestedTime = section.querySelector(`#Suggested${safeName}`);
+    const laterDropOffDiv = section.querySelector(`#laterDropOff${safeName}`);
 
-                //Restore the yes/no radio button answers:
-                if(oldData.busAnswer === "Yes" && yesRadio){
-                    yesRadio.checked = true;
-                };
-                if(oldData.busAnswer == "No" && noRadio){
-                    noRadio.checked = true;
-                };
+    // Log the entire oldData for debugging
+    console.log("Restoring bus section for:", safeName, "oldData:", oldData);
 
-                //Restore the hotel input:
-                const hotelInp = section.querySelector(`#hName${safeName}`);
-                if (hotelInp){
-                    hotelInp.value = oldData.hotelName || "";
-                };
+    // Restore bus answer and update UI
+    if (oldData.busAnswer === "Yes" && yesRadio) {
+        yesRadio.checked = true;
+        ifYesDiv.style.display = "block";
+        busTimesDiv.style.display = "block";
+    } else if (oldData.busAnswer === "No" && noRadio) {
+        noRadio.checked = true;
+        ifYesDiv.style.display = "none";
+        busTimesDiv.style.display = "none";
+    }
 
-                //Restore the pickup checkbox: 
-                const pickUp = section.querySelector(`#times1${safeName}`);
-                if (pickUp){
-                    pickUp.checked = oldData.pickUp === "Yes";
-                };
+    // Restore hotel input
+    if (hotelInp) hotelInp.value = oldData.hotelName || "";
 
-                //Restore the drop-off radio buttons:
-                const times = section.querySelectorAll(`.noSuggest${safeName}`);
-                
-                // for each radio button in the constant times (which is a set of radio buttons)
-                times.forEach(function(radio){
-                   if (Array.isArray(oldData.busTimes)){ //The condition checks if oldData.busTimes is an array.
-                    //If true, a radio button is checked when it's value matches a value stored in the busTimes array (via .include). 
-                    radio.checked = oldData.busTimes.includes(radio.value); 
-                   }else{
-                    //if oldData.busTimes is not an array, a radio button is checked when its value equals oldData.busTimes.
-                    radio.checked = oldData.busTimes === radio.value
-                   }; 
-                });
+    // --- THIS IS WHERE YOU LOG PICKUP RESTORATION ---
+    if (pickUp) {
+        console.log("Checking pickUp:", pickUp.value, "in", oldData.busTimes);
+        pickUp.checked = oldData.busTimes && (
+            (Array.isArray(oldData.busTimes) && oldData.busTimes.includes(pickUp.value)) ||
+            oldData.busTimes === pickUp.value
+        );
+    }
 
-                //Restore suggest time radio and input 
-                const times4Radio = section.querySelector(`#times4${safeName}`);
-                const suggestedTime = section.querySelector(`#Suggested${safeName}`);
+    // --- LOG EACH DROP-OFF RADIO RESTORATION ---
+    times.forEach(function(radio){
+        console.log("Checking drop-off:", radio.value, "in", oldData.busTimes);
+        radio.checked = oldData.busTimes && (
+            (Array.isArray(oldData.busTimes) && oldData.busTimes.includes(radio.value)) ||
+            oldData.busTimes === radio.value
+        );
+    });
 
-                if (times4Radio && suggestedTime){ //if the time4radio button is checked and suggestedTime exists: 
-                    if (Array.isArray(oldData.busTimes)){ //The condition checks if oldData.busTimes is an array.
-                        //If true, the time4Radio button is checked if the oldData.busTimes array includes the suggestedTime value
-                        times4Radio.checked = oldData.busTimes.includes(suggestedTime.value);
-                    }else{
-                        //If busTimes is not an array, the time4Radio button is still checked when oldData.busTimes equals the suggestedTime.value.
-                        times4Radio.checked = oldData.busTimes === suggestedTime.value;
-                    };
-                    // the value for suggestedTime is set to equal the oldData.suggestedTime or remain blank
-                    suggestedTime.value = oldData.suggestedTime || "";
-                };
-                //busInfo.busTimes will now be set to equal oldData.busTimes
-                //busInfo.busTimes = oldData.busTimes || [];
-            }; // end of function
+    // --- LOG SUGGESTED TIME RESTORATION ---
+    if (times4Radio && suggestedTime){
+        console.log("Checking suggested time:", suggestedTime.value, "in", oldData.busTimes);
+        times4Radio.checked = oldData.busTimes && (
+            (Array.isArray(oldData.busTimes) && oldData.busTimes.includes(suggestedTime.value)) ||
+            oldData.busTimes === suggestedTime.value
+        );
+        suggestedTime.value = oldData.suggestedTime || "";
+    }
+
+    // Show/hide suggested time input
+    if (times4Radio && times4Radio.checked) {
+        laterDropOffDiv.style.display = "block";
+    } else {
+        laterDropOffDiv.style.display = "none";
+    }
+}
+
+
+
+
+
 
 
 // Helper function for updatebus
@@ -1049,7 +1076,7 @@
                     busTimes.style.display = "none";
                     busAnswer = "No"
                 });
-
+/*
                 // --- Deselectable radio logic for drop-off times ---
                 let lastCheckedRadio = null;
 
@@ -1103,7 +1130,7 @@
                         //update busInfo:
                         updateBusTimes();
                     }
-                });
+                });*/
 
                 times4Radio.addEventListener("change", updateBusTimes) ;
                  // --- Pick-up checkbox ---
@@ -1113,49 +1140,49 @@
                 suggestedTime.addEventListener("change", updateBusTimes);
 
                 // --- Main function to update busTimes ---
-                function updateBusTimes(){
-                    document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
-                    document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
-                   
-                    //find selected drop-off value
-                    let dropOffValue = null;
+               // --- Pick-up, drop-off, and suggested time logic ---
+    function updateBusTimes() {
+        document.getElementById("Drinks").style.display = "none";
+        document.getElementById("End").style.display = "none";
 
-                    times.forEach(function(radio){
-                        if (radio.checked){
-                            dropOffValue = radio.value;
-                        };
-                    });
+        let pickUpSelected = pickUp.checked;
+        let dropOffValue = null;
+        times.forEach(function(radio) {
+            if (radio.checked) {
+                dropOffValue = radio.value;
+            }
+        });
 
-                    let suggestChecked = times4Radio.checked;
-                
-                    // Update busInfo.pickup:
-                    busInfo.pickUp = pickUp.checked ? "Yes" : "No";
+        let suggestChecked = times4Radio.checked;
+        let suggestedValue = suggestedTime.value;
 
-                    //Update businfo bustimes and businfo.timeselected:
-                    if (pickUp.checked && dropOffValue){
-                        busInfo.timeSelected = "true";
-                        busInfo.busTimes = [pickUp.value, dropOffValue];
+        // Show/hide suggested time input
+        section.querySelector(`#laterDropOff${safeName}`).style.display = suggestChecked ? "block" : "none";
 
-                    }else if (pickUp.checked && times4Radio.checked && suggestedTime.value){
-                        busInfo.timeSelected = "true";
-                        busInfo.busTimes = [pickUp.value, suggestedTime.value];
-                    }else if(dropOffValue){
-                        busInfo.timeSelected = "true";
-                        busInfo.busTimes = dropOffValue
+        // Build busTimes array
+        let timesArr = [];
+        if (pickUpSelected) timesArr.push(pickUp.value);
+        if (dropOffValue) timesArr.push(dropOffValue);
+        if (suggestChecked && suggestedValue) timesArr.push(suggestedValue);
 
-                    }else if (times4Radio.checked && suggestedTime.value){
-                        busInfo.timeSelected = "true";
-                        busInfo.busTimes = suggestedTime.value;
-                    }else {
-                        busInfo.timeSelected = "false";
-                        busInfo.busTimes = "";
-                    };
-                };
+        // Set busTimes and timeSelected
+        if (timesArr.length > 0) {
+            busInfo.timeSelected = "true";
+            busInfo.busTimes = timesArr;
+        } else {
+            busInfo.timeSelected = "false";
+            busInfo.busTimes = "";
+        }
+    }
 
-                //const UserAnswers = [busAnswer, hotelInp, pickUp, busTimes]
-                //BusInfoStorage.push(busInfo)
-                return [section, busInfo];//, UserAnswers];
-             };
+    // --- Attach event listeners ---
+    pickUp.addEventListener("change", updateBusTimes);
+    times.forEach(radio => radio.addEventListener("change", updateBusTimes));
+    times4Radio.addEventListener("change", updateBusTimes);
+    suggestedTime.addEventListener("change", updateBusTimes);
+
+    return [section, busInfo];
+}
 
             //drinks function
             function updateDrinks (){
@@ -1218,46 +1245,46 @@
             }
 
             function validateInfo(infoList, schema) {
-                for (let i = 0; i < infoList.length; i++) {
-                    const answer = infoList[i];
-                    // Validate main guest
-                    for (const rule of schema) {
-                        if (rule.if) {
-                            if (answer[rule.if.field] === rule.if.value) {
-                                if (!answer[rule.field] || answer[rule.field].toString().trim() === "") {
-                                    alert(rule.message ? rule.message.replace('{n}', i+1).replace(`{m}`, i) : `Please fill in ${rule.field} for item ${i+1}`);
-                                    return false;
-                                }
-                            }
-                        } else {
-                            if (!answer[rule.field] || answer[rule.field].toString().trim() === "") {
-                                alert(rule.message ? rule.message.replace('{n}', i+1) : `Please fill in ${rule.field} for item ${i+1}`);
-                                return false;
-                            }
-                        }
-                    }
-                    // Validate plus-one if present
-                    if (answer.plus1 === "yes" && answer.plusOneMeal) {
-                        // Optionally, you can pass a label or index for more specific error messages
-                        for (const rule of schema) {
-                            if (rule.if) {
-                                if (answer.plusOneMeal[rule.if.field] === rule.if.value) {
-                                    if (!answer.plusOneMeal[rule.field] || answer.plusOneMeal[rule.field].toString().trim() === "") {
-                                        alert(rule.message ? `Plus-one of guest ${i+1}: ${rule.message}` : `Please fill in ${rule.field} for plus-one of guest ${i+1}`);
-                                        return false;
-                                    }
-                                }
-                            } else {
-                                if (!answer.plusOneMeal[rule.field] || answer.plusOneMeal[rule.field].toString().trim() === "") {
-                                    alert(rule.message ? `Plus-one of guest ${i+1}: ${rule.message}` : `Please fill in ${rule.field} for plus-one of guest ${i+1}`);
-                                    return false;
-                                }
-                            }
-                        }
+    for (let i = 0; i < infoList.length; i++) {
+        const answer = infoList[i];
+        // Validate main object (guest or plus-one)
+        for (const rule of schema) {
+            if (rule.if) {
+                if (answer[rule.if.field] === rule.if.value) {
+                    if (!answer[rule.field] || answer[rule.field].toString().trim() === "") {
+                        alert(rule.message ? rule.message.replace('{n}', i+1).replace(`{m}`, i) : `Please fill in ${rule.field} for item ${i+1}`);
+                        return false;
                     }
                 }
-                return true;
+            } else {
+                if (!answer[rule.field] || answer[rule.field].toString().trim() === "") {
+                    alert(rule.message ? rule.message.replace('{n}', i+1) : `Please fill in ${rule.field} for item ${i+1}`);
+                    return false;
+                }
             }
+        }
+        // If this object has a nested plus-one (for meals), validate that too
+        if (answer.plusOneMeal) {
+            for (const rule of schema) {
+                if (rule.if) {
+                    if (answer.plusOneMeal[rule.if.field] === rule.if.value) {
+                        if (!answer.plusOneMeal[rule.field] || answer.plusOneMeal[rule.field].toString().trim() === "") {
+                            alert(rule.message ? `Plus-one of guest ${i+1}: ${rule.message}` : `Please fill in ${rule.field} for plus-one of guest ${i+1}`);
+                            return false;
+                        }
+                    }
+                } else {
+                    if (!answer.plusOneMeal[rule.field] || answer.plusOneMeal[rule.field].toString().trim() === "") {
+                        alert(rule.message ? `Plus-one of guest ${i+1}: ${rule.message}` : `Please fill in ${rule.field} for plus-one of guest ${i+1}`);
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+
 
 
 
