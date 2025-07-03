@@ -175,8 +175,7 @@
                 
                 <div id="SubmitDiv" name="submit" style="display:none;">
                     <button type="submit" id="Submit" name="submitbtn">Submit</button>
-                    
-                </div>
+                     
                 </fieldset>
 
 
@@ -208,7 +207,7 @@
                 
                 <br><br>
                 <div id="testMealArray" style="display:none">
-                   
+                    
                     <input type="button" id="Next3" value="Next"/>
                 </div>
             </fieldset>
@@ -227,7 +226,7 @@
 
                 <br><br>
                 <div id="testBusArray" style="display:none">
-                    
+                   
                     <input type="button" id="Next4" value="Next"/>
                 </div>
 
@@ -304,6 +303,12 @@
             const dialog = document.getElementById('drinkInfo'); // retrieves the drinkInfo element
             const openBtn = document.getElementById('openDialogBtn'); //retrieves the openDialog button
             const closeBtn = document.getElementById('closeDialogBtn'); //retrieves the close Dialog button
+
+            const testArrayDiv = document.getElementById("testArray");          
+            const testMealArray = document.getElementById("testMealArray");            
+            const testBusArray = document.getElementById("testBusArray");           
+            const testDrinkArray = document.getElementById("testBusArray");
+            const testQbtn = document.getElementById("testBusbtn");
             
             let GuestInfoStorage = []; // Empty array to store all of the user answers from the GuestInfo fieldset in
             let MealInfoStorage = [];
@@ -361,7 +366,7 @@
                     const mealInfo = MealInfoStorage[storageIndex] || {};
                     const busInfo = BusInfoStorage[storageIndex] || {};
                     const drinkInfo = DrinkInfoStorage[storageIndex] || {};
-                    const questionsInfo = QuestionsInfoStorage[storageIndex] || {};
+                    const questionsInfo = QuestionInfoStorage[storageIndex] || {};
 
                     guests.push({
                     name: guest.GuestName || "",
@@ -385,7 +390,7 @@
                         const mealInfoPlus1 = MealInfoStorage[storageIndex] || {};
                         const busInfoPlus1 = BusInfoStorage[storageIndex] || {};
                         const drinkInfoPlus1 = DrinkInfoStorage[storageIndex] || {};
-                        const questionsInfoPlus1 = QuestionsInfoStorage[storageIndex] || {};
+                        const questionsInfoPlus1 = QuestionInfoStorage[storageIndex] || {};
 
                         guests.push({
                             name: guest.plusOneName || "",

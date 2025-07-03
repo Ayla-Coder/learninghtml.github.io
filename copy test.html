@@ -453,7 +453,13 @@
                 return str.replace(/\W/g, '_');
             };
 
-           
+            document.getElementById('mainRSVPForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // You can process the form data here, show a message, or just reset the form
+    alert("Thank you for your RSVP! (This form no longer sends data to Google Sheets.)");
+    // Optionally, reset the form:
+    // this.reset();
+});
 
 
 
@@ -1426,8 +1432,12 @@
             return;
         }
 
-       
-   
+        // Gather and send data
+        e.preventDefault(); // Prevent default submit
+        const formData = gatherFormData();
+        sendRSVPToSheets(formData);
+    });
+});
 
 
             
