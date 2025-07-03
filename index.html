@@ -1330,17 +1330,6 @@
 
     // Guest number change triggers guest info fields
     guests.addEventListener("change", updateField);
-/*
-    // Debug/test buttons
-    testbtn.addEventListener("click", function() {
-        alert(JSON.stringify(GuestInfoStorage, null, 2));
-    });
-    testMealbtn.addEventListener("click", function() {
-        alert(JSON.stringify(MealInfoStorage, null, 2));
-    });
-    testBusbtn.addEventListener("click", function() {
-        alert(JSON.stringify(BusInfoStorage, null, 2));
-    });*/
 
     // Section navigation with validation
     Next2.addEventListener("click", function() {
@@ -1382,6 +1371,7 @@
     });
 
     // Main form submission
+    
     form.addEventListener("submit", function(e) {
         // Custom validation (optional, adjust as needed)
         const responder = document.getElementById("Responder").value.trim();
@@ -1404,10 +1394,7 @@
             e.preventDefault();
             return;
         }
-         });
-});
-
-document.getElementById('mainRSVPForm').addEventListener('submit', function(e) {
+        // If all validation passes, prevent default and send data
     e.preventDefault();
     const formData = gatherFormData();
 
@@ -1426,7 +1413,11 @@ document.getElementById('mainRSVPForm').addEventListener('submit', function(e) {
         }
     })
     .catch(error => alert("Error: " + error.message));
+
+         });
 });
+
+
 
             
         </script>
