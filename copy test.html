@@ -1327,158 +1327,128 @@
 
 // Event listeners
 //--------------------------------------------------
-            document.addEventListener("DOMContentLoaded", function() {
-                const nextButton = document.getElementById("nextButton");
-                const guestInfoSection = document.getElementById("guestInfoSection");
+           document.addEventListener("DOMContentLoaded", function() {
+    // Cache elements
+    const form = document.getElementById("mainRSVPForm");
+    const nextButton = document.getElementById("nextButton");
+    const guestInfoSection = document.getElementById("guestInfoSection");
+    const comingRadios = document.getElementsByName("RSVP1");
+    const q1yesDiv = document.getElementById("Q1yes");
+    const submitDiv = document.getElementById("SubmitDiv");
+    const guests = document.getElementById("guestNR");
+    const testbtn = document.getElementById("testbtn");
+    const testMealbtn = document.getElementById("testMealbtn");
+    const testBusbtn = document.getElementById("testBusbtn");
+    const Next2 = document.getElementById("Next2");
+    const Next3 = document.getElementById("Next3");
+    const Next4 = document.getElementById("Next4");
+    const Next5 = document.getElementById("btn5");
+    const dialog = document.getElementById('drinkInfo');
+    const openBtn = document.getElementById('openDialogBtn');
+    const closeBtn = document.getElementById('closeDialogBtn');
 
-                nextButton.addEventListener("click", function() {
-                    // Hide the RSVP fieldset if you want:
-                    // document.getElementById("RSVPFieldset").style.display = "none";
-                    
-                    // Show the Guest Info section
-                    guestInfoSection.style.display = "block";
-                });
-            });
+    // Next button on RSVP
+    nextButton.addEventListener("click", function() {
+        guestInfoSection.style.display = "block";
+    });
 
-            document.addEventListener("DOMContentLoaded", function() {
-                const comingRadios = document.getElementsByName("RSVP1");
-                const q1yesDiv = document.getElementById("Q1yes");
-                const submitDiv = document.getElementById("SubmitDiv");
-                const nextButton = document.getElementById("nextButton");
-                const rsvpFieldset = document.getElementById("RSVPFieldset");
-                const form = document.querySelector("form"); // or your form's ID
+    // Show/hide email and submit based on RSVP answer
+    comingRadios.forEach(radio => {
+        radio.addEventListener("change", function() {
+            if (this.value === "yes") {
+                q1yesDiv.style.display = "block";
+                submitDiv.style.display = "none";
+            } else {
+                q1yesDiv.style.display = "none";
+                submitDiv.style.display = "block";
+            }
+        });
+    });
 
-                // Show/hide email input and submit button based on RSVP answer
-                comingRadios.forEach(radio => {
-                    radio.addEventListener("change", function() {
-                    if (this.value === "yes") {
-                        q1yesDiv.style.display = "block";
-                        submitDiv.style.display = "none";
-                    } else {
-                        q1yesDiv.style.display = "none";
-                        submitDiv.style.display = "block";
-                    }
-                    });
-                });
+    // Guest number change triggers guest info fields
+    guests.addEventListener("change", updateField);
 
-                // Optional: Prevent form submission if data is invalid
-                form.addEventListener("submit", function(e) {
-                    const responder = document.getElementById("Responder").value.trim();
-                    const coming = document.querySelector("input[name='RSVP1']:checked");
-                    const email = document.getElementById("EUpdates").value.trim();
-                    const noEmail = document.getElementById("NoElUp").checked;
+    // Debug/test buttons
+    testbtn.addEventListener("click", function() {
+        alert(JSON.stringify(GuestInfoStorage, null, 2));
+    });
+    testMealbtn.addEventListener("click", function() {
+        alert(JSON.stringify(MealInfoStorage, null, 2));
+    });
+    testBusbtn.addEventListener("click", function() {
+        alert(JSON.stringify(BusInfoStorage, null, 2));
+    });
 
-                    // Validation
-                    if (!responder) {
-                    alert("Please enter your full name.");
-                    e.preventDefault();
-                    return;
-                    }
-                    if (!coming) {
-                    alert("Please select if your group is coming.");
-                    e.preventDefault();
-                    return;
-                    }
-                    if (coming.value === "yes" && !noEmail && !email) {
-                    alert("Please provide an email or check the 'No thank you' box.");
-                    e.preventDefault();
-                    return;
-                    }
+    // Section navigation with validation
+    Next2.addEventListener("click", function() {
+        if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
+            updateMeal();
+        }
+    });
+    Next3.addEventListener("click", function() {
+        if (validateInfo(MealInfoStorage, mealInfoSchema)) {
+            updateBus();
+        }
+    });
+    Next4.addEventListener("click", function() {
+        if (validateInfo(BusInfoStorage, busInfoSchema)) {
+            updateDrinks();
+        }
+    });
+    Next5.addEventListener("click", function(){
+        document.getElementById("End").style.display = "block";
+    });
 
-                    // At this point, you can gather the data and store it as needed
-                    // Example:
-                    // let rsvpData = {
-                    //   responder,
-                    //   coming: coming.value,
-                    //   email: noEmail ? "" : email,
-                    //   noEmail
-                    // };
-                    // Store rsvpData or pass to your Google Sheets function
-                });
-            });
-            guests.addEventListener("change", updateField);
+    // Modal dialog for drinks info
+    openBtn.addEventListener('click', function() {
+        dialog.showModal();
+    });
+    closeBtn.addEventListener('click', function() {
+        dialog.close();
+    });
+    dialog.addEventListener('click', function(event) {
+        const rect = dialog.getBoundingClientRect();
+        if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+        ) {
+            dialog.close();
+        }
+    });
 
-            testbtn.addEventListener("click", function() {
-                console.log(GuestInfoStorage);
-                alert(JSON.stringify(GuestInfoStorage, null, 2));
-             });
+    // Main form submission
+    form.addEventListener("submit", function(e) {
+        // Custom validation (optional, adjust as needed)
+        const responder = document.getElementById("Responder").value.trim();
+        const coming = document.querySelector("input[name='RSVP1']:checked");
+        const email = document.getElementById("EUpdates").value.trim();
+        const noEmail = document.getElementById("NoElUp").checked;
 
-             testMealbtn.addEventListener("click", function() {
-                console.log(MealInfoStorage);
-                alert(JSON.stringify(MealInfoStorage, null, 2));
-             });
+        if (!responder) {
+            alert("Please enter your full name.");
+            e.preventDefault();
+            return;
+        }
+        if (!coming) {
+            alert("Please select if your group is coming.");
+            e.preventDefault();
+            return;
+        }
+        if (coming.value === "yes" && !noEmail && !email) {
+            alert("Please provide an email or check the 'No thank you' box.");
+            e.preventDefault();
+            return;
+        }
 
-             testBusbtn.addEventListener("click", function() {
-                console.log(BusInfoStorage);
-                alert(JSON.stringify(BusInfoStorage, null, 2));
-             });
+        // Gather and send data
+        e.preventDefault(); // Prevent default submit
+        const formData = gatherFormData();
+        sendRSVPToSheets(formData);
+    });
+});
 
-            
-            document.getElementById("Next2").addEventListener("click", function() {
-                if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
-                    console.log("Validation passed!");
-                    updateMeal();
-                } else {
-                    console.log("Validation failed!");
-                }
-            });
-
-            document.getElementById("Next3").addEventListener("click", function() {
-                if (validateInfo(MealInfoStorage, mealInfoSchema)) {
-                    updateBus();
-                }
-            })
-
-            document.getElementById("Next4").addEventListener("click", function() {
-                if (validateInfo(BusInfoStorage, busInfoSchema)) {
-                    updateDrinks();
-                }
-            })
-                        
-            // adds an eventlistener to the open dialog button that shows the drinkInfo element usig showModal
-            openBtn.addEventListener('click', function() {
-                dialog.showModal(); // showModal shows a text box that overlays the rest of the webpage, making that webpage inactive until the modal is closed again.
-            });
-
-            // adds an eventlistener to the close dialog button that shows the drinkInfo element usig showModal
-            closeBtn.addEventListener('click', function() {
-                dialog.close(); // .close closes a modal (text box that overlays the rest of the webpage, making that webpage inactive) 
-            });
-
-            // Optional: Allow closing the dialog by clicking outside of it via an event listener
-            dialog.addEventListener('click', function(event) {
-                const rect = dialog.getBoundingClientRect();
-                if (
-                    event.clientX < rect.left ||
-                    event.clientX > rect.right ||
-                    event.clientY < rect.top ||
-                    event.clientY > rect.bottom
-                ) {
-                    dialog.close();
-                }
-            });
-
-            //adds an eventlistener to the last next button
-            Next5.addEventListener("click", function(){
-                document.getElementById("End").style.display = "block"
-            });
-
-            document.addEventListener("DOMContentLoaded", function() {
-                const form = document.getElementById("mainRSVPForm");
-                form.addEventListener("SubmitDiv2", function(event) {
-                    event.preventDefault(); // Prevent the default form submission (page reload)
-                    const formData = gatherFormData(); // Collect all your data
-                    sendRSVPToSheets(formData); // Send data to Google Sheets or handle as needed
-                });
-            });
-
-             // On form submit:
-            //form.addEventListener("submit", function(e) {
-                // ...validation...
-               // let rsvpData = gatherRSVPData();
-                // Combine with BusInfoStorage, etc.
-                // sendRSVPToSheets({...rsvpData, ...otherData});
-           // });
 
             
         </script>
