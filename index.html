@@ -174,8 +174,8 @@
                 </div>
                 
                 <div id="SubmitDiv" name="submit" style="display:none;">
-                    <button type="submit" onclick="return submitForm(this);">Submit</button>
-                    
+                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
+                     <input type="button" id="testInitbtn" value="Click me to see if the InitialInfoStorage array works"/>
                 </div>
                 </fieldset>
 
@@ -193,7 +193,7 @@
 
                 <br><br>
                 <div id="testArray" style="display:none">
-                    
+                    <input type="button" id="testbtn" value="Click me to see if the GuestInfoStorage array works"/>
                     <input type="button" id="Next2" value="Next"/>  
                 </div>
 
@@ -208,7 +208,7 @@
                 
                 <br><br>
                 <div id="testMealArray" style="display:none">
-                   
+                    <input type="button" id="testMealbtn" value="Click me to see if the MealInfoStorage array works"/>
                     <input type="button" id="Next3" value="Next"/>
                 </div>
             </fieldset>
@@ -227,7 +227,7 @@
 
                 <br><br>
                 <div id="testBusArray" style="display:none">
-                   
+                    <input type="button" id="testBusbtn" value="Click me to see if the BusInfoStorage array works"/>
                     <input type="button" id="Next4" value="Next"/>
                 </div>
 
@@ -268,7 +268,7 @@
                 </div>
                 <div id="Next5" style="display:none">
                     <input type="button" id="btn5" value="Next" />
-                    
+                     <input type="button" id="testDrinkbtn" value="Click me to see if the DrinkInfoStorage array works"/>
                 </div>
                 
             </fieldset>
@@ -280,8 +280,8 @@
                 <input type="text" id="Questions" name="longAns"/>
 
                  <div id="SubmitDiv2" name="submit">
-                    <button type="submit" onclick="return submitForm(this);">Submit</button>
-                    
+                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
+                     <input type="button" id="testQbtn" value="Click me to see if the QuestionInfoStorage array works"/>
                 </div>
                
             </fieldset>
@@ -301,7 +301,25 @@
 
         <!-- <script src="building_own_code.js"></script> -->
         <script>
-          
+            const testInitbtn = document.getElementById("guestNR");
+           // const testInitArray = document.getElementById("guestNR");
+
+            const guests = document.getElementById("guestNR");
+            const testbtn = document.getElementById("testbtn");
+            const testArrayDiv = document.getElementById("testArray");
+
+            const testMealbtn = document.getElementById("testMealbtn");
+            const testMealArray = document.getElementById("testMealArray");
+
+            const testBusbtn = document.getElementById("testBusbtn");
+            const testBusArray = document.getElementById("testBusArray");
+
+            const testDrinkbtn = document.getElementById("testBusbtn");
+            //const testDrinkArray = document.getElementById("testBusArray");
+
+            const testQbtn = document.getElementById("testBusbtn");
+           // const testQArray = document.getElementById("testBusArray");
+
              // more info button
             const dialog = document.getElementById('drinkInfo'); // retrieves the drinkInfo element
             const openBtn = document.getElementById('openDialogBtn'); //retrieves the openDialog button
@@ -1431,22 +1449,9 @@
                 });
             });
 
-            async function submitForm(btn) {
-                // btn.parentNode is the form element
-                const parsed = await ParseFormObjectForGAS(btn.parentNode);
-                google.script.run
-                    .withSuccessHandler(res => alert(res))
-                    .withFailureHandler(err => alert("Error: " + err.message))
-                    .getFormValues(parsed);
-                return false; // prevent default submit
-                }
-
 
             
         </script>
-
-        <script src="https://cdn.jsdelivr.net/gh/tanaikech/HtmlFormObjectParserForGoogleAppsScript_js@master/htmlFormObjectParserForGoogleAppsScript_js.min.js"></script>
-
 
     </body>
 
