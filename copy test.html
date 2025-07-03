@@ -1465,7 +1465,7 @@
 
             document.addEventListener("DOMContentLoaded", function() {
                 const form = document.getElementById("mainRSVPForm");
-                form.addEventListener("submit", function(event) {
+                form.addEventListener("SubmitDiv2", function(event) {
                     event.preventDefault(); // Prevent the default form submission (page reload)
                     const formData = gatherFormData(); // Collect all your data
                     sendRSVPToSheets(formData); // Send data to Google Sheets or handle as needed
