@@ -151,7 +151,7 @@
             </style>
     </head>
     <body>
-        <form id="mainRSVPForm"> 
+        <form id="mainRSVPForm" autocomplete="off"> 
             <fieldset id="RSVPFieldset">
                 <legend><h3>RSVP</h3></legend>
                 <label for="Responder">Please enter your full name (the person filling out the form):</label>
@@ -174,8 +174,8 @@
                 </div>
                 
                 <div id="SubmitDiv" name="submit" style="display:none;">
-                    <button type="submit" onclick="return submitForm(this);">Submit</button>
-                    
+                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
+                     <input type="button" id="testInitbtn" value="Click me to see if the InitialInfoStorage array works"/>
                 </div>
                 </fieldset>
 
@@ -193,7 +193,7 @@
 
                 <br><br>
                 <div id="testArray" style="display:none">
-                    
+                    <input type="button" id="testbtn" value="Click me to see if the GuestInfoStorage array works"/>
                     <input type="button" id="Next2" value="Next"/>  
                 </div>
 
@@ -208,7 +208,7 @@
                 
                 <br><br>
                 <div id="testMealArray" style="display:none">
-                   
+                    <input type="button" id="testMealbtn" value="Click me to see if the MealInfoStorage array works"/>
                     <input type="button" id="Next3" value="Next"/>
                 </div>
             </fieldset>
@@ -227,7 +227,7 @@
 
                 <br><br>
                 <div id="testBusArray" style="display:none">
-                   
+                    <input type="button" id="testBusbtn" value="Click me to see if the BusInfoStorage array works"/>
                     <input type="button" id="Next4" value="Next"/>
                 </div>
 
@@ -268,7 +268,7 @@
                 </div>
                 <div id="Next5" style="display:none">
                     <input type="button" id="btn5" value="Next" />
-                    
+                     <input type="button" id="testDrinkbtn" value="Click me to see if the DrinkInfoStorage array works"/>
                 </div>
                 
             </fieldset>
@@ -280,8 +280,8 @@
                 <input type="text" id="Questions" name="longAns"/>
 
                  <div id="SubmitDiv2" name="submit">
-                    <button type="submit" onclick="return submitForm(this);">Submit</button>
-                    
+                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
+                     <input type="button" id="testQbtn" value="Click me to see if the QuestionInfoStorage array works"/>
                 </div>
                
             </fieldset>
@@ -301,7 +301,25 @@
 
         <!-- <script src="building_own_code.js"></script> -->
         <script>
-          
+            const testInitbtn = document.getElementById("guestNR");
+           // const testInitArray = document.getElementById("guestNR");
+
+            const guests = document.getElementById("guestNR");
+            const testbtn = document.getElementById("testbtn");
+            const testArrayDiv = document.getElementById("testArray");
+
+            const testMealbtn = document.getElementById("testMealbtn");
+            const testMealArray = document.getElementById("testMealArray");
+
+            const testBusbtn = document.getElementById("testBusbtn");
+            const testBusArray = document.getElementById("testBusArray");
+
+            const testDrinkbtn = document.getElementById("testBusbtn");
+            //const testDrinkArray = document.getElementById("testBusArray");
+
+            const testQbtn = document.getElementById("testBusbtn");
+           // const testQArray = document.getElementById("testBusArray");
+
              // more info button
             const dialog = document.getElementById('drinkInfo'); // retrieves the drinkInfo element
             const openBtn = document.getElementById('openDialogBtn'); //retrieves the openDialog button
@@ -346,13 +364,95 @@
 
 // Functions:
 //--------------------------------------------------------------
-            
+            function gatherFormData() {
+                // 1. Collect RSVP info
+                const responder = document.getElementById("Responder").value.trim();
+                const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
+                const email = document.getElementById("EUpdates") ? document.getElementById("EUpdates").value.trim() : "";
+
+                // 2. Collect guest and plus-one info
+                let guests = [];
+                let storageIndex = 0;
+
+                for (let i = 0; i < GuestInfoStorage.length; i++) {
+                    const guest = GuestInfoStorage[i];
+
+                    // Main guest info
+                    const mealInfo = MealInfoStorage[storageIndex] || {};
+                    const busInfo = BusInfoStorage[storageIndex] || {};
+                    const drinkInfo = DrinkInfoStorage[storageIndex] || {};
+                    const questionsInfo = QuestionsInfoStorage[storageIndex] || {};
+
+                    guests.push({
+                    name: guest.GuestName || "",
+                    plusOne: "No",
+                    plusOneRelationship: "",
+                    meals: mealInfo.meal || "",
+                    allergies: mealInfo.allergies || "",
+                    otherAllergies: mealInfo.otherAllergies || "",
+                    bus: busInfo.busAnswer || "",
+                    hotel: busInfo.hotelName || "",
+                    pickUp: busInfo.pickUp || "",
+                    dropOff: Array.isArray(busInfo.busTimes) ? busInfo.busTimes.join(", ") : (busInfo.busTimes || ""),
+                    drinks: drinkInfo.drinks || "",
+                    questions: questionsInfo.questions || ""
+                    });
+
+                    storageIndex++;
+
+                    // Plus one info, if present
+                    if (guest.plusOneName && guest.plusOneName.trim() !== "") {
+                        const mealInfoPlus1 = MealInfoStorage[storageIndex] || {};
+                        const busInfoPlus1 = BusInfoStorage[storageIndex] || {};
+                        const drinkInfoPlus1 = DrinkInfoStorage[storageIndex] || {};
+                        const questionsInfoPlus1 = QuestionsInfoStorage[storageIndex] || {};
+
+                        guests.push({
+                            name: guest.plusOneName || "",
+                            plusOne: "Yes",
+                            plusOneRelationship: guest.plusOneRelationship || "",
+                            meals: mealInfoPlus1.meal || "",
+                            allergies: mealInfoPlus1.allergies || "",
+                            otherAllergies: mealInfoPlus1.otherAllergies || "",
+                            bus: busInfoPlus1.busAnswer || "",
+                            hotel: busInfoPlus1.hotelName || "",
+                            pickUp: busInfoPlus1.pickUp || "",
+                            dropOff: Array.isArray(busInfoPlus1.busTimes) ? busInfoPlus1.busTimes.join(", ") : (busInfoPlus1.busTimes || ""),
+                            drinks: drinkInfoPlus1.drinks || "",
+                            questions: questionsInfoPlus1.questions || ""
+                        });
+                        storageIndex++;
+                        }
+                }
+
+                return {
+                    responder,
+                    coming,
+                    email,
+                    guests
+                };
+            }
+
+            // Gathers the initial data from the form about the responder
+            function gatherRSVPData() {
+                const responder = document.getElementById("Responder").value.trim();
+                const coming = document.querySelector("input[name='RSVP1']:checked")?.value;
+                const email = document.getElementById("EUpdates").value.trim();
+                const noEmail = document.getElementById("NoElUp").checked;
+
+                return {
+                    responder,
+                    coming,
+                    email: noEmail ? "" : email,
+                    noEmail
+                };
+            }
 
             // this function takes a string and replaces white spaces with _
             function makeSafe(str) {
                 return str.replace(/\W/g, '_');
             };
-            /*
+
             function sendRSVPToSheets(formData) {
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbzAGRTSlWPHqliQuB6lcSph0Li7cCbsy3u94GswjLwey5XpEKT1IH6l7Am84DPrchP85Q/exec';
                 fetch(scriptURL, {
@@ -371,7 +471,7 @@
                 .catch(error => {
                     alert("Error: " + error);
                 });
-                }*/
+                }
 
 
 //For the first guest info section --------------------------------------------------------------
@@ -1228,143 +1328,130 @@
 // Event listeners
 //--------------------------------------------------
            document.addEventListener("DOMContentLoaded", function() {
-                // Cache elements
-                const form = document.getElementById("mainRSVPForm");
-                const nextButton = document.getElementById("nextButton");
-                const guestInfoSection = document.getElementById("guestInfoSection");
-                const comingRadios = document.getElementsByName("RSVP1");
-                const q1yesDiv = document.getElementById("Q1yes");
-                const submitDiv = document.getElementById("SubmitDiv");
-                const guests = document.getElementById("guestNR");
-                const testbtn = document.getElementById("testbtn");
-                const testMealbtn = document.getElementById("testMealbtn");
-                const testBusbtn = document.getElementById("testBusbtn");
-                const Next2 = document.getElementById("Next2");
-                const Next3 = document.getElementById("Next3");
-                const Next4 = document.getElementById("Next4");
-                const Next5 = document.getElementById("btn5");
-                const dialog = document.getElementById('drinkInfo');
-                const openBtn = document.getElementById('openDialogBtn');
-                const closeBtn = document.getElementById('closeDialogBtn');
+    // Cache elements
+    const form = document.getElementById("mainRSVPForm");
+    const nextButton = document.getElementById("nextButton");
+    const guestInfoSection = document.getElementById("guestInfoSection");
+    const comingRadios = document.getElementsByName("RSVP1");
+    const q1yesDiv = document.getElementById("Q1yes");
+    const submitDiv = document.getElementById("SubmitDiv");
+    const guests = document.getElementById("guestNR");
+    const testbtn = document.getElementById("testbtn");
+    const testMealbtn = document.getElementById("testMealbtn");
+    const testBusbtn = document.getElementById("testBusbtn");
+    const Next2 = document.getElementById("Next2");
+    const Next3 = document.getElementById("Next3");
+    const Next4 = document.getElementById("Next4");
+    const Next5 = document.getElementById("btn5");
+    const dialog = document.getElementById('drinkInfo');
+    const openBtn = document.getElementById('openDialogBtn');
+    const closeBtn = document.getElementById('closeDialogBtn');
 
-                // Next button on RSVP
-                nextButton.addEventListener("click", function() {
-                    guestInfoSection.style.display = "block";
-                });
+    // Next button on RSVP
+    nextButton.addEventListener("click", function() {
+        guestInfoSection.style.display = "block";
+    });
 
-                // Show/hide email and submit based on RSVP answer
-                comingRadios.forEach(radio => {
-                    radio.addEventListener("change", function() {
-                        if (this.value === "yes") {
-                            q1yesDiv.style.display = "block";
-                            submitDiv.style.display = "none";
-                        } else {
-                            q1yesDiv.style.display = "none";
-                            submitDiv.style.display = "block";
-                        }
-                    });
-                });
+    // Show/hide email and submit based on RSVP answer
+    comingRadios.forEach(radio => {
+        radio.addEventListener("change", function() {
+            if (this.value === "yes") {
+                q1yesDiv.style.display = "block";
+                submitDiv.style.display = "none";
+            } else {
+                q1yesDiv.style.display = "none";
+                submitDiv.style.display = "block";
+            }
+        });
+    });
 
-                // Guest number change triggers guest info fields
-                guests.addEventListener("change", updateField);
+    // Guest number change triggers guest info fields
+    guests.addEventListener("change", updateField);
 
-                // Debug/test buttons
-                testbtn.addEventListener("click", function() {
-                    alert(JSON.stringify(GuestInfoStorage, null, 2));
-                });
-                testMealbtn.addEventListener("click", function() {
-                    alert(JSON.stringify(MealInfoStorage, null, 2));
-                });
-                testBusbtn.addEventListener("click", function() {
-                    alert(JSON.stringify(BusInfoStorage, null, 2));
-                });
+    // Debug/test buttons
+    testbtn.addEventListener("click", function() {
+        alert(JSON.stringify(GuestInfoStorage, null, 2));
+    });
+    testMealbtn.addEventListener("click", function() {
+        alert(JSON.stringify(MealInfoStorage, null, 2));
+    });
+    testBusbtn.addEventListener("click", function() {
+        alert(JSON.stringify(BusInfoStorage, null, 2));
+    });
 
-                // Section navigation with validation
-                Next2.addEventListener("click", function() {
-                    if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
-                        updateMeal();
-                    }
-                });
-                Next3.addEventListener("click", function() {
-                    if (validateInfo(MealInfoStorage, mealInfoSchema)) {
-                        updateBus();
-                    }
-                });
-                Next4.addEventListener("click", function() {
-                    if (validateInfo(BusInfoStorage, busInfoSchema)) {
-                        updateDrinks();
-                    }
-                });
-                Next5.addEventListener("click", function(){
-                    document.getElementById("End").style.display = "block";
-                });
+    // Section navigation with validation
+    Next2.addEventListener("click", function() {
+        if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
+            updateMeal();
+        }
+    });
+    Next3.addEventListener("click", function() {
+        if (validateInfo(MealInfoStorage, mealInfoSchema)) {
+            updateBus();
+        }
+    });
+    Next4.addEventListener("click", function() {
+        if (validateInfo(BusInfoStorage, busInfoSchema)) {
+            updateDrinks();
+        }
+    });
+    Next5.addEventListener("click", function(){
+        document.getElementById("End").style.display = "block";
+    });
 
-                // Modal dialog for drinks info
-                openBtn.addEventListener('click', function() {
-                    dialog.showModal();
-                });
-                closeBtn.addEventListener('click', function() {
-                    dialog.close();
-                });
-                dialog.addEventListener('click', function(event) {
-                    const rect = dialog.getBoundingClientRect();
-                    if (
-                        event.clientX < rect.left ||
-                        event.clientX > rect.right ||
-                        event.clientY < rect.top ||
-                        event.clientY > rect.bottom
-                    ) {
-                        dialog.close();
-                    }
-                });
-/*
-                // Main form submission
-                form.addEventListener("submit", function(e) {
-                    // Custom validation (optional, adjust as needed)
-                    const responder = document.getElementById("Responder").value.trim();
-                    const coming = document.querySelector("input[name='RSVP1']:checked");
-                    const email = document.getElementById("EUpdates").value.trim();
-                    const noEmail = document.getElementById("NoElUp").checked;
+    // Modal dialog for drinks info
+    openBtn.addEventListener('click', function() {
+        dialog.showModal();
+    });
+    closeBtn.addEventListener('click', function() {
+        dialog.close();
+    });
+    dialog.addEventListener('click', function(event) {
+        const rect = dialog.getBoundingClientRect();
+        if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+        ) {
+            dialog.close();
+        }
+    });
 
-                    if (!responder) {
-                        alert("Please enter your full name.");
-                        e.preventDefault();
-                        return;
-                    }
-                    if (!coming) {
-                        alert("Please select if your group is coming.");
-                        e.preventDefault();
-                        return;
-                    }
-                    if (coming.value === "yes" && !noEmail && !email) {
-                        alert("Please provide an email or check the 'No thank you' box.");
-                        e.preventDefault();
-                        return;
-                    }
+    // Main form submission
+    form.addEventListener("submit", function(e) {
+        // Custom validation (optional, adjust as needed)
+        const responder = document.getElementById("Responder").value.trim();
+        const coming = document.querySelector("input[name='RSVP1']:checked");
+        const email = document.getElementById("EUpdates").value.trim();
+        const noEmail = document.getElementById("NoElUp").checked;
 
-                    // Gather and send data
-                    e.preventDefault(); // Prevent default submit
-                    const formData = gatherFormData();
-                    sendRSVPToSheets(formData);
-                });
-            });*/
+        if (!responder) {
+            alert("Please enter your full name.");
+            e.preventDefault();
+            return;
+        }
+        if (!coming) {
+            alert("Please select if your group is coming.");
+            e.preventDefault();
+            return;
+        }
+        if (coming.value === "yes" && !noEmail && !email) {
+            alert("Please provide an email or check the 'No thank you' box.");
+            e.preventDefault();
+            return;
+        }
 
-            async function submitForm(btn) {
-                // btn.parentNode is the form element
-                const parsed = await ParseFormObjectForGAS(btn.parentNode);
-                google.script.run
-                    .withSuccessHandler(res => alert(res))
-                    .withFailureHandler(err => alert("Error: " + err.message))
-                    .getFormValues(parsed);
-                return false; // prevent default submit
-                }
+        // Gather and send data
+        e.preventDefault(); // Prevent default submit
+        const formData = gatherFormData();
+        sendRSVPToSheets(formData);
+    });
+});
 
 
             
         </script>
-
-        <script src="https://cdn.jsdelivr.net/gh/tanaikech/HtmlFormObjectParserForGoogleAppsScript_js@master/htmlFormObjectParserForGoogleAppsScript_js.min.js"></script>
-
 
     </body>
 
