@@ -1,133 +1,1458 @@
 <!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <link href="style.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fleur+De+Leah&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
-    
-    <meta name="viewport" content="width=device-width">
-    <title>Apply google sheets custom form</title>
-    <base target="_top" />
-    <script src="https://cdn.jsdelivr.net/gh/tanaikech/HtmlFormObjectParserForGoogleAppsScript_js/htmlFormObjectParserForGoogleAppsScript_js.min.js"></script>
-    <script src="script.js"></script>
+<html lang="en">
+    <head>
+        <script src="https://cdn.jsdelivr.net/gh/tanaikech/HtmlFormObjectParserForGoogleAppsScript_js/htmlFormObjectParserForGoogleAppsScript_js.min.js"></script>
+        <style>
+            button {
+                
+               
+                cursor: pointer;
+                }
 
-  </head>
-  <body>
-  <p>hello world! I figured it out!
-  </p>
-    <form>
-      <label for="fname">First name:</label><br>
-      <input type="text" id="fname" name="Name" 
-      autocomplete="name"/><br />
-      <label for="elmail">Email:</label><br>
-      <input type="email" id = "elmail" name="Email" 
-      autocomplete="email"/><br />
-      <input
-        type="submit"
-        name="button"
-        value="submit"
-        onclick="run(this);return false;"
-      />
-   <form>
+                dialog {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+                padding: 24px 32px;
+                max-width: 600px;
+                text-align: left;
+                }
 
+                dialog::backdrop {
+                background: rgba(0,0,0,0.3);
+                }
 
+                .close-btn {
+                margin-top: 20px;
+                padding: 8px 16px;
+                background: #e74c3c;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                }
 
+                .close-btn:hover {
+                background: #c0392b;
+                }
+            input[name="radio"][value="no"] { 
+            margin-left: 20px; /* Adjust as needed */
+            
+            }
+            .container {
+              display: grid;
+              grid-template-columns: 250px 300px;
+              
 
-
-   
-
-    <fieldset> <!-- Question 1 (Q1)-->
-      <legend><h3>RSVP</h3></legend>
-      <label for="Responder">Please enter your full name (the person filling out the form):</label>
-      <input type="name" id="Responder" name="name" value="Full name"> <br><br>
-     
-     
-    
-      <h4>Can your group make it?</h4>      <!-- Question 1a (Q1a)-->
-      <input type="radio" id="Coming" name="RSVP1" value="yes">
-      <label for="Coming">Yes</label>
-
-      <input type="radio" id="NotComing" name="RSVP1" value="no">
-      <label for="NotComing">No</label> <br><br>
-    
-
-      <div id="Submit" style="display:none;">
-        <input type="submit" id="Submit" name="submitButton">
-      </div>
-
-
-      <!-- Question 1b (Q1yes), displayed if Q1a = yes-->
-      <div id="Q1yes" style="display:none;">
-        <legend><h4>Remember to sign on to get important updates from the website!</h4></legend>
-
-        <label for="EUpdates">Please enter your email here:</label>
-        <input type="email" id="EUpdates" name="Email" value="Example@gmail.com"> <br><br>
-        
-
-        <input type="radio" id="NoElUp" name="NoEmail">
-        <label for="NoElUp">No thank you, I'll make sure to keep checking the website myself</label>
-        <br><br>
-        <input type="botton" id="next" value="Next_page" name="nextButton" onclick="link">
-        
-     </div> <p></p>
-      
-   <script>
-   branchForm('input[name="RSVP1"]', 'yes', '#Q1yes');
-   branchForm('input[name="RSVP1"]', 'no', '#Submit');
- 
-   </script>
-
-    </fieldset>
-
-
-
-
-  <fieldset>
-    
-  </fieldset>
-
-
-
-
-
-
-
-
-    <div id="SubmitMSG" style="display:none;">    <!-- Submit message-->
-      <fieldset>
-        
-          <legend><h4>Thank you!</h4></legend>
+            }
+            .container > div {
           
-            Thank you so much for taking the time to RSVP! We appreciate it, and hope you have a lovely day.
-  
-      </fieldset>
-    </div>
+              padding: 3px;
+              
+              text-align: left;
+              align-items: left;
+            }
+        
 
-  
-   </form>
-   Number of columns: <input type="number" id="numCols" min="1" required>
-   Number of rows: <input type="number" id="numRows" min="1" required>
-   <button id="createTableBtn">Create Table</button>
-   <div id="tableContainer"></div>
-   <form id="tableForm">
-      Number of columns: <input type="number" id="numCols" min="1" required>
-      Number of rows: <input type="number" id="numRows" min="1" value="1" required>
-      <button type="submit">Create Table</button>
-  </form>
-  
-  <div id="tableContainer"></div>
+            .container2 {
+              display: grid;
+              grid-template-columns: 250px 550px 300px;
+              grid-template-rows: 150px;
+
+            }
+            .container2 > div {
+          
+              padding: 2px;
+              
+              text-align: left;
+              align-items: left;
+            }
+
+            .container3 {
+              display: grid;
+              grid-template-columns: 200px 350px 10px 600px;
+              
+
+            }
+            .container3 > div {
+          
+              padding: 4px;
+              /*border: 1px solid black;*/
+              
+              text-align: left;
+              align-items: left;
+            }
+            .container4 {
+              display: grid;
+              grid-template-columns: 500px 300px;
+              
+
+            }
+            .container4 > div {
+          
+              padding: 3px;
+              
+              
+              text-align: left;
+              align-items: left;
+            }
+
+            .smallcontainer {
+              display: grid;
+              grid-template-columns: 90px 90px 70px 90px 90px 90px;
+              
+
+            }
+            .smallcontainer div {
+          
+              padding: 2px;
+              
+              text-align: left;
+              align-items: left;
+            }
+            .smallcontainer2 {
+              display: grid;
+              grid-template-columns: 200px 200px 200px;
+        
+            }
+            .smallcontainer2 div {
+          
+              padding: 2px;
+              /*border: 1px solid black;*/
+              text-align: left;
+              align-items: left;
+            }
+
+            .small {
+              display: grid;
+              grid-template-columns: 30px 150px;
+              
+
+            }
+            .small div {
+          
+              padding: 2px;
+              
+              text-align: left;
+              align-items: left;
+            }
+            input[name="longAns"] {
+
+                width: 300px;
+                height: 30px;
+                }
+
+            input[name="fname"] {
+
+                width: 190px;
+                
+                }
+           
+            </style>
+    </head>
+    <body>
+        <form id="mainRSVPForm" autocomplete="off"> 
+            <fieldset id="RSVPFieldset">
+                <legend><h3>RSVP</h3></legend>
+                <label for="Responder">Please enter your full name (the person filling out the form):</label>
+                <input type="text" id="Responder" name="responder" placeholder="Full name" required> <br><br>
+                
+                <h4>Can your group make it?</h4>
+                <input type="radio" id="Coming" name="RSVP1" value="yes" required>
+                <label for="Coming">Yes</label>
+                <input type="radio" id="NotComing" name="RSVP1" value="no">
+                <label for="NotComing">No</label> <br><br>
+                
+                <div id="Q1yes" style="display:none;">
+                    <legend><h4>Remember to sign on to get important updates from the website!</h4></legend>
+                    <label for="EUpdates">Please enter your email here:</label>
+                    <input type="email" id="EUpdates" name="email" placeholder="example@gmail.com"><br><br>
+                    <input type="checkbox" id="NoElUp" name="noEmail">
+                    <label for="NoElUp">No thank you, I'll make sure to keep checking the website myself</label>
+                    <br><br>
+                    <button type="button" id="nextButton">Next</button>
+                </div>
+                
+                <div id="SubmitDiv" name="submit" style="display:none;">
+                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
+                     <input type="button" id="testInitbtn" value="Click me to see if the InitialInfoStorage array works"/>
+                </div>
+                </fieldset>
 
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('createTableBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-        const numRows = parseInt(document.getElementById('numRows').value, 10);
-        const numCols = parseInt(document.getElementById('numCols').value, 10);
-        createTable(numRows, numCols, 'tableContainer');
-      });
+            <fieldset id="guestInfoSection" style="display:none;">
+                <legend><h2>Guest Info:</h2></legend>
+                <label for="guestNR">How many guests from your group are coming (including children)?</label>
+                <input type="number" min=1 max=10 id="guestNR"/>
+                <br><br>
+
+                <div id="gInfo" style="display:none">
+                    
+
+                </div>
+
+                <br><br>
+                <div id="testArray" style="display:none">
+                    <input type="button" id="testbtn" value="Click me to see if the GuestInfoStorage array works"/>
+                    <input type="button" id="Next2" value="Next"/>  
+                </div>
+
+            </fieldset>
+
+            <fieldset id="Menu" style="display:none">
+                <legend><h2>Menu</h2></legend>
+                <p>The main course will likely be beef. We will update our website with the chosen menu when we know more, but this won't be until 2026. </p>
+
+                <div id="guestMeals">
+                </div>
+                
+                <br><br>
+                <div id="testMealArray" style="display:none">
+                    <input type="button" id="testMealbtn" value="Click me to see if the MealInfoStorage array works"/>
+                    <input type="button" id="Next3" value="Next"/>
+                </div>
+            </fieldset>
+
+            <fieldset id="Bus" style="display:none">
+                <legend><h2>Will any of you be taking the bus? What time?</h2></legend>
+                <p>Remember that we will ask that you pay a small sum of money to cover some of the cost of hiring the bus. We will keep this under
+                    the price of hiring a taxi, which are notoriously expensive in Norway, though this is always an option. As for payment options, 
+                    I'll set that up on the website asap. 
+
+                    Again, we aren't 100% sure about the times for the bus yet, or if we'll hire one for both pick-up and drop-off. It all depends on 
+                    the amount of people who want/need to take the bus. All of this info will be posted to the website as soon as we know more.</p>
+                
+                <div id="BussInf">
+                </div>
+
+                <br><br>
+                <div id="testBusArray" style="display:none">
+                    <input type="button" id="testBusbtn" value="Click me to see if the BusInfoStorage array works"/>
+                    <input type="button" id="Next4" value="Next"/>
+                </div>
+
+            </fieldset>
+
+            <fieldset id="Drinks" style="display:none">
+                <legend><h2>Drink Vouchers</h2></legend>
+
+                <p>Due to limited space and to save time (and because of the alcohol-serving laws in Norway), instead of having a normal bar
+                    set-up we have to use drink-vouchers. These will be sold in packs of three on our website, and will be purchaseable using 
+                    Vipps (Norway), Paypal and bank transfers. We ask that you buy these in advance, both to save time and so that we get a 
+                    good idea of how many vouchers we will need and how many drinks we will need to provide. we will also set things up so that 
+                    you can purchase some on-site as a last resort.<b>We will of course cover the welcome-drinks and wine with dinner.</b>
+                </p>
+                <div class="container4">
+
+                    <div>
+                        <b>I will set up the payment options via this website as soon as possible.</b>
+                    </div>
+                    <div>
+                        <button id="openDialogBtn" type="button">More info</button>
+                    </div>
+                 </div>
+                <dialog id="drinkInfo">
+                    <h3>Drink menu</h3>
+                    <p>
+                        We are currently working on a drink menu that we will post to the website at some point. What we do know so far, is that 
+                        we want to provide exciting mixed drinks with equally exciting <i>alcohol-free</i> versions! <br> <br>
+                        Again, we haven't landed on the exact menu yet, but we know we want to serve piña coladas and margaritas made in a slushie 
+                        machine, as well as beer, wine and maybe some home-brewed hard cider and beer too. 
+                        <br>
+                    </p>
+                    <button class="close-btn" id="closeDialogBtn" type="button">Close</button>
+                  </dialog>
+                  <p></p>
+             
+                <div id="DrinkNext">
+                </div>
+                <div id="Next5" style="display:none">
+                    <input type="button" id="btn5" value="Next" />
+                     <input type="button" id="testDrinkbtn" value="Click me to see if the DrinkInfoStorage array works"/>
+                </div>
+                
+            </fieldset>
+
+            <fieldset id="End" style="display:none">
+                <legend>Any questions?</legend>
+               
+                <label for="Questions">Please write any questions you have here and we will get back to you as soon as possible!</label><br>
+                <input type="text" id="Questions" name="longAns"/>
+
+                 <div id="SubmitDiv2" name="submit">
+                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
+                     <input type="button" id="testQbtn" value="Click me to see if the QuestionInfoStorage array works"/>
+                </div>
+               
+            </fieldset>
+        </form>
+        
+        <!--What do I have left: 
+        1) include +1's in the menu function XXX
+
+        2) make the functions that append the bus and drink input done
+
+        3) make it so that the next buttons can only be interacted with if all previous inputs are filled in.  done
+
+        4) Restore old user answers done
+
+        5) connect to a google sheets document-->
+
+
+        <!-- <script src="building_own_code.js"></script> -->
+        <script>
+            const testInitbtn = document.getElementById("guestNR");
+           // const testInitArray = document.getElementById("guestNR");
+
+            const guests = document.getElementById("guestNR");
+            const testbtn = document.getElementById("testbtn");
+            const testArrayDiv = document.getElementById("testArray");
+
+            const testMealbtn = document.getElementById("testMealbtn");
+            const testMealArray = document.getElementById("testMealArray");
+
+            const testBusbtn = document.getElementById("testBusbtn");
+            const testBusArray = document.getElementById("testBusArray");
+
+            const testDrinkbtn = document.getElementById("testBusbtn");
+            //const testDrinkArray = document.getElementById("testBusArray");
+
+            const testQbtn = document.getElementById("testBusbtn");
+           // const testQArray = document.getElementById("testBusArray");
+
+             // more info button
+            const dialog = document.getElementById('drinkInfo'); // retrieves the drinkInfo element
+            const openBtn = document.getElementById('openDialogBtn'); //retrieves the openDialog button
+            const closeBtn = document.getElementById('closeDialogBtn'); //retrieves the close Dialog button
+            
+            let GuestInfoStorage = []; // Empty array to store all of the user answers from the GuestInfo fieldset in
+            let MealInfoStorage = [];
+            let BusInfoStorage = [];
+            let DrinkInfoStorage = [];
+            let QuestionInfoStorage = [];
+
+            // Keep backup arrays for restoring
+            let oldGuestInfo = [];
+            let oldMealInfo = [];
+            let oldBusInfo = [];
+            let oldDrinkInfo = [];
+            let oldQuestion = [];
+
+            let counting = 0; // defines a global counting variable that is redefined when the updateField function is run. Stores this info for the next part of the RSVP.
+            let countingGandPlus1 = 0
+//Schemas-------------------------------------------------------
+            // a schema that defines the rules for the GuestInfoStorage array. Used later for validation checks
+            const guestInfoSchema = [
+                { field: "GuestName", message: "Please enter the name for Guest {n}" },
+                { field: "plus1", message: "Please select if Guest {n} wants a +1" },
+                { field: "plusOneName", if: { field: "plus1", value: "yes" }, message: "Please enter the +1 name for Guest {n}" },
+                { field: "plusOneRel", if: { field: "plus1", value: "yes" }, message: "Please enter the +1 relationship for Guest {m}" }
+            ];
+            const mealInfoSchema = [
+                // This checks the menu choice for any meal info object (guest or plus-one)
+                { field: "menuChoice", message: "Please select a meal for all Guests and Plus-Ones!" },
+
+                // This checks severity only if allergenSelected is true
+                { field: "severityChoice", if: { field: "allergenSelected", value: "true" }, message: "Please enter the severity of your allergies" }
+            ];
+            
+            const busInfoSchema = [
+                { field: "busAnswer", message: "Please select Yes or No for the bus for Guest {n}" },
+                { field: "hotelName", if: { field: "busAnswer", value: "Yes" }, message: "Please enter the hotel name for Guest {n}" },
+                { field: "busTimes", if: { field: "busAnswer", value: "Yes" }, message: "Please pick at least one bus time for Guest {n}" }
+            ];          
+
+// Functions:
+//--------------------------------------------------------------
+            function gatherFormData() {
+                // 1. Collect RSVP info
+                const responder = document.getElementById("Responder").value.trim();
+                const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
+                const email = document.getElementById("EUpdates") ? document.getElementById("EUpdates").value.trim() : "";
+
+                // 2. Collect guest and plus-one info
+                let guests = [];
+                let storageIndex = 0;
+
+                for (let i = 0; i < GuestInfoStorage.length; i++) {
+                    const guest = GuestInfoStorage[i];
+
+                    // Main guest info
+                    const mealInfo = MealInfoStorage[storageIndex] || {};
+                    const busInfo = BusInfoStorage[storageIndex] || {};
+                    const drinkInfo = DrinkInfoStorage[storageIndex] || {};
+                    const questionsInfo = QuestionsInfoStorage[storageIndex] || {};
+
+                    guests.push({
+                    name: guest.GuestName || "",
+                    plusOne: "No",
+                    plusOneRelationship: "",
+                    meals: mealInfo.meal || "",
+                    allergies: mealInfo.allergies || "",
+                    otherAllergies: mealInfo.otherAllergies || "",
+                    bus: busInfo.busAnswer || "",
+                    hotel: busInfo.hotelName || "",
+                    pickUp: busInfo.pickUp || "",
+                    dropOff: Array.isArray(busInfo.busTimes) ? busInfo.busTimes.join(", ") : (busInfo.busTimes || ""),
+                    drinks: drinkInfo.drinks || "",
+                    questions: questionsInfo.questions || ""
+                    });
+
+                    storageIndex++;
+
+                    // Plus one info, if present
+                    if (guest.plusOneName && guest.plusOneName.trim() !== "") {
+                        const mealInfoPlus1 = MealInfoStorage[storageIndex] || {};
+                        const busInfoPlus1 = BusInfoStorage[storageIndex] || {};
+                        const drinkInfoPlus1 = DrinkInfoStorage[storageIndex] || {};
+                        const questionsInfoPlus1 = QuestionsInfoStorage[storageIndex] || {};
+
+                        guests.push({
+                            name: guest.plusOneName || "",
+                            plusOne: "Yes",
+                            plusOneRelationship: guest.plusOneRelationship || "",
+                            meals: mealInfoPlus1.meal || "",
+                            allergies: mealInfoPlus1.allergies || "",
+                            otherAllergies: mealInfoPlus1.otherAllergies || "",
+                            bus: busInfoPlus1.busAnswer || "",
+                            hotel: busInfoPlus1.hotelName || "",
+                            pickUp: busInfoPlus1.pickUp || "",
+                            dropOff: Array.isArray(busInfoPlus1.busTimes) ? busInfoPlus1.busTimes.join(", ") : (busInfoPlus1.busTimes || ""),
+                            drinks: drinkInfoPlus1.drinks || "",
+                            questions: questionsInfoPlus1.questions || ""
+                        });
+                        storageIndex++;
+                        }
+                }
+
+                return {
+                    responder,
+                    coming,
+                    email,
+                    guests
+                };
+            }
+
+            // Gathers the initial data from the form about the responder
+            function gatherRSVPData() {
+                const responder = document.getElementById("Responder").value.trim();
+                const coming = document.querySelector("input[name='RSVP1']:checked")?.value;
+                const email = document.getElementById("EUpdates").value.trim();
+                const noEmail = document.getElementById("NoElUp").checked;
+
+                return {
+                    responder,
+                    coming,
+                    email: noEmail ? "" : email,
+                    noEmail
+                };
+            }
+
+            // this function takes a string and replaces white spaces with _
+            function makeSafe(str) {
+                return str.replace(/\W/g, '_');
+            };
+
+            function sendRSVPToSheets(formData) {
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbzAGRTSlWPHqliQuB6lcSph0Li7cCbsy3u94GswjLwey5XpEKT1IH6l7Am84DPrchP85Q/exec';
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if(result.result === "success") {
+                    alert("Your RSVP has been recorded. Thank you!");
+                    } else {
+                    alert("There was a problem saving your RSVP.");
+                    }
+                })
+                .catch(error => {
+                    alert("Error: " + error);
+                });
+                }
+
+
+//For the first guest info section --------------------------------------------------------------
+            function updateField() {
+                document.getElementById("Menu").style.display = "none"; 
+                document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+
+                // Step 1: Save a copy of old data
+                oldGuestInfo = [...GuestInfoStorage];
+                
+                //Step 2: wipe the current Storage list to avoid duplicates
+                GuestInfoStorage = []; 
+                
+                counting = Number(guests.value); // redefines counting to match the number of guests entered by the user. 
+                countingGandPlus1 = counting
+                
+                //Step 3: wipe all previously generated form elements (gInfo in this case)
+                const gInfoDiv = document.getElementById("gInfo");
+                gInfoDiv.innerHTML = '<legend><h3>Enter your full names here:</h3></legend><br>'; //deletes the html content of the guestDetailsDiv element.
+                
+                if (counting > 0 && counting < 11){ // Since I want a max of 10 guests, this makes sure that the code only works when the entered number is above 0 but below 11. 
+                
+                    gInfoDiv.style.display = "block";
+                    testArrayDiv.style.display = "block";
+
+                    //Step 4: create for loop to generate the amount of dynamic fields necessary.
+                    for (let i = 0; i<counting; i++){ //runs the following code up to the number specified by user.
+                        
+                        //Step 5: create empty local storage object  
+                        let GuestiInfo = {}; // Empty object to store all of the answers in, Guest Name, +1 answer, +1 name, +1 relationship
+                
+                        // myInp is a new div element of the class container that will be added to gInfo later
+                        const myInp = document.createElement("div"); myInp.className="container";
+
+                        // defines the code contained in myInp
+                        myInp.innerHTML = `
+                        <div>
+                        <label>Guest ${i+1} full name: </label>
+                        <input type="text" id="GuestID${i+1}" name="fname" required/> <br><br>
+                        </div>
+                        <div id="yesno+1${i+1}">
+                            <legend>Would you like to request a +1?</legend>
+                            <input type="radio" id="yes${i+1}" name="+1${i+1}" value="yes"required/>
+                            <label for="yes${i+1}">Yes</label>
+                            <input type="radio" id="no${i+1}" name="+1${i+1}" value="no" required/>
+                            <label for="no${i+1}">No</label><br><br>
+                        </div>
+                        `;
+
+                        // appends myInp to ginfo in the document.
+                        gInfoDiv.appendChild(myInp);
+     
+                        const GuestName = myInp.querySelector(`#GuestID${i+1}`); //retrieves the current GuestName to save in GuestInfo later
+                        const plusOneYes = myInp.querySelector(`#yes${i+1}`); // retrieves the yes input
+                        const plusOneNo = myInp.querySelector(`#no${i+1}`); // retrieves the no input
+                        
+                        //Event listener for the main guest name                        
+                        GuestName.addEventListener("change", function(){
+                            GuestiInfo.GuestName = this.value; // saves the entered guest name into GuestInfo for later
+                        });
+
+                        // Event listener for the yes radio button. Adds the input fields for plus one to the guest's info
+                        plusOneYes.addEventListener("click", function() {
+                            document.getElementById("Menu").style.display = "none"; 
+                            document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                            document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                            document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                            
+                            countingGandPlus1 += 1
+                            let plusOneInfo = document.getElementById(`+1info${i+1}`); // retrieves the plusone info field if it already exists. 
+                        
+
+                           //if no plus one for this guest existed before, then one is created
+                            if (!plusOneInfo){ 
+                                 plusOneInfo = document.createElement("div"); 
+                                 plusOneInfo.className = "container"; 
+                                 plusOneInfo.id = `+1info${i+1}`;
+                                
+                                 // writes the info in the newly created div
+                                plusOneInfo.innerHTML = `  
+                                    <div> <label>Name of plus one for Guest ${i+1}: </label> </div>
+                                    <div> <label>Relationship between plus one and Guest ${i+1}: </label></div>
+                                    <div><input type="text" id="plusOneName${i+1}" name="fname" /> </div>
+                                    <div><input type="text" id="plusOneRel${i+1}" name="longAns"/></div> <br><br>`;
+                                    // appends this plus one info to myInp
+                                myInp.appendChild(plusOneInfo);
+
+                                // adding eventlisteners to the newly generated plusOne text input fields
+                                plusOneInfo.querySelector(`#plusOneName${i+1}`).addEventListener("change", function(){
+                                    GuestiInfo.plusOneName = this.value;
+                                });
+                                plusOneInfo.querySelector(`#plusOneRel${i+1}`).addEventListener("change", function(){
+                                    GuestiInfo.plusOneRel = this.value;
+                                });
+
+                                // Restores old plus one info if it exists
+                                if (oldGuestInfo[i] && oldGuestInfo[i].plusOneName) { //if both oldGuestInfo[i] and oldGuestInfo[i].plusOneName exists, run the following code:
+                                    plusOneInfo.querySelector(`#plusOneName${i+1}`).value = oldGuestInfo[i].plusOneName; //retrieves the old plus1 info
+                                    GuestiInfo.plusOneName = oldGuestInfo[i].plusOneName // restores the old plus 1 info
+                                }
+                                if (oldGuestInfo[i] && oldGuestInfo[i].plusOneRel) {//if both oldGuestInfo[i] and oldGuestInfo[i].plusOneName exists, run the following code:
+                                    plusOneInfo.querySelector(`#plusOneRel${i+1}`).value = oldGuestInfo[i].plusOneRel;//retrieves the old plus1 info
+                                    GuestiInfo.plusOneRel = oldGuestInfo[i].plusOneRel // restores the old plus 1 info
+                                }
+                            }; // the end of the if statement for restoring old data 
+
+                            GuestiInfo.numberTotal = countingGandPlus1;
+                            // if no plusOneInfo existed yet, then the value of the yes radio button is set to yes here. 
+                            GuestiInfo.plus1 = "yes";
+                            }); //the end of the plusOneYes event listener
+
+                        // adds an eventlistener to the no radio button that 1) removes the +1 info input fields if the user clicked yes first and 2) adds this answer to GuestInfo
+                        plusOneNo.addEventListener("click", function() {
+                            document.getElementById("Menu").style.display = "none"; 
+                            document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                            document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                            document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+
+                            const changedFromYes = document.getElementById(`+1info${i+1}`) // retrieves the +1info from the document
+                            if (changedFromYes) changedFromYes.remove(); //if this +1info exists in the document, it is removed
+                            GuestiInfo.plus1 = "no"; // stores the new answer in GuestiInfo
+                            GuestiInfo.plusOneName = "";
+                            GuestiInfo.plusOneRel = "";
+                        })
+
+                        //Step 10: Restore old guest data if it exists
+                        if (oldGuestInfo[i]) { //if there is anything stored in oldGuestInfo[i], proceed with following code
+                            const old = oldGuestInfo[i];
+                            // Restore guest name
+                            GuestName.value = old.GuestName || ""; // sets the current value to the old value or clears it with ""
+                            GuestiInfo.GuestName = old.GuestName || ""; 
+                            
+                            // Restore +1 radio
+                            if (old.plus1 === "yes") {
+                                plusOneYes.checked = true; 
+                                // Programmatically trigger the click to create the +1 fields
+                                plusOneYes.click();
+
+                            }else if (old.plus1 === "no"){
+                                plusOneNo.checked = true;
+                                GuestiInfo.plus1 = "no";// sete the current no value to no for validation purposes. 
+                            }
+                        } // end of checking if oldguest info was saved
+                        
+
+                        // Saves the info gathered into GuestInfo into a global list by index. This keeps things ordered for later
+                        GuestInfoStorage[i] = GuestiInfo; 
+                    };  // end of for loop
+                    
+                }// end of if statement
+
+                // If the number of guests entered is not between 1 and 10, this alert will pop up.
+                else {
+                    window.alert("Please enter a number between 1 and 10");
+                }
+            }
+
+//For the second, Meal info section --------------------------------------------------------------
+        
+            // this function updates the meal fields to include all of the guests entered in the first question.
+           function updateMeal() {
+                document.getElementById("Bus").style.display = "none";
+                document.getElementById("Drinks").style.display = "none";
+                document.getElementById("End").style.display = "none";
+                document.getElementById("Menu").style.display = "block";
+                testMealArray.style.display = "block";
+
+                let oldMealInfo = [...MealInfoStorage];
+                MealInfoStorage = [];
+                const guestMealsDiv = document.getElementById("guestMeals");
+                guestMealsDiv.innerHTML = "";
+
+                for (let i = 0; i < GuestInfoStorage.length; i++) {
+                    let guestName = GuestInfoStorage[i].GuestName;
+                    let plusOneName = GuestInfoStorage[i].plusOneName || "";
+
+                    // Main guest
+                    let [dynamicSection, temporaryMealStorage] = createMealSection(guestName);
+                    guestMealsDiv.appendChild(dynamicSection);
+                    temporaryMealStorage.plus1 = plusOneName.trim() !== "" ? "yes" : "no";
+
+                    // Restore main guest info by index (if possible)
+                    if (oldMealInfo[i]) {
+                        restoreMealSection(dynamicSection, oldMealInfo[i], makeSafe(guestName));
+                        // Optionally, copy restored fields into temporaryMealStorage
+                        Object.assign(temporaryMealStorage, oldMealInfo[i]);
+                    }
+
+                    // Plus-one
+                    if (plusOneName.trim() !== "") {
+                        let [dynamicSectionPlus1, temporaryPlus1MealStorage] = createMealSection(plusOneName);
+                        guestMealsDiv.appendChild(dynamicSectionPlus1);
+
+                        temporaryPlus1MealStorage.plus1 = "yes";
+                        temporaryPlus1MealStorage.PlusOneName = plusOneName;
+                        temporaryPlus1MealStorage.mainGuestName = guestName;
+
+                        // Restore plus-one info if possible
+                        if (oldMealInfo[i] && oldMealInfo[i].plusOneMeal) {
+                            restoreMealSection(dynamicSectionPlus1, oldMealInfo[i].plusOneMeal, makeSafe(plusOneName));
+                            Object.assign(temporaryPlus1MealStorage, oldMealInfo[i].plusOneMeal);
+                        }
+
+                        // Attach plus-one meal info to main guest object
+                        temporaryMealStorage.plusOneMeal = temporaryPlus1MealStorage;
+                    }
+
+                    MealInfoStorage[i] = temporaryMealStorage;
+                }
+            }
+
+
+
+            // Helper for restoring meal section data
+            function restoreMealSection(section, oldData, safeName) {
+                if (!oldData) return;
+
+                // Restore menu choice
+                const menuChoice = section.querySelector(`#menu${safeName}`);
+                if (menuChoice){
+                    menuChoice.value = oldData.menuChoice || "";
+                }
+                //restore allergen checkboxes: 
+                const allergenChoice = section.querySelectorAll(`[name="allergen${safeName}"]`);
+                if (allergenChoice && oldData.allergenChoice){
+                    allergenChoice.forEach(function(cb){
+                        cb.checked = (oldData.allergenChoice || []).includes(cb.value);
+                    });
+                };
+
+                //Restore severity data: 
+                const severityChoice = section.querySelectorAll(`[name="severity${safeName}"]`);
+                if (severityChoice && oldData.severityChoice){
+                    severityChoice.forEach(function(sel, idx){
+                        sel.value = oldData.severityChoice[idx] || "";
+                    });
+                };
+
+                //restore other allergens: 
+                const otherAllergensChoice = section.querySelector(`#allergies${safeName}`);
+                if (otherAllergensChoice){
+                    otherAllergensChoice.value = oldData.otherAllergens || "";
+                };
+
+            };                 
+
+// Helper function for updateMeal that creates the content for each guest and/or plus one entered in the first question
+            function createMealSection(personName) {
+                //Step 5: create empty local storage object
+                let mealInfo = {};
+                mealInfo.GuestName = personName //stores the relevant name in this local object
+                const safeName = makeSafe(personName); //replaces whitespaces from the person name with _ for element ids
+
+                //Step 6: create the dynamic form-object (Here, a new div element classed as container2 for styling)
+                let section = document.createElement("div");section.className = "container2";
+                section.innerHTML = `
+                <div>
+                    <legend><b>Enter your meal preferences here:</b></legend><br>
+                    <label>${personName}: </label>
+                    <select id="menu${safeName}" class="menuItem${safeName}"> 
+                        <option value="">--Please choose an option--</option>
+                        <option value="Standard meal">Standard meal</option>
+                        <option value="Vegan">Vegan</option>
+                        <option value="Vegetarian">Vegetarian</option>
+                        </select>
+                </div>
+                <div>
+                    <legend><b>Do you have any of the following allergies/intolerances?</b></legend>
+                    <div class="smallcontainer">
+                        <div>
+                            <input type="checkbox" id="Gluten${safeName}" name="allergen${safeName}" value="Gluten" class="menuItem${safeName}"/>
+                            <label for="Gluten${safeName}">Gluten</label>
+                        </div>
+                        <div>
+                            <select id="Gsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>  
+                        <div>
+                            <input type="checkbox" id="Dairy${safeName}" name="allergen${safeName}" value="Dairy" class="menuItem${safeName}"/>
+                            <label for="Dairy${safeName}">Dairy</label>
+                        </div>
+                        <div>
+                            <select id="Dsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div> 
+                        <div>
+                        <input type="checkbox" id="Peanuts${safeName}" name="allergen${safeName}" value="Peanuts" class="menuItem${safeName}"/>
+                            <label for="Peanuts${safeName}">Peanuts</label>
+                        </div>
+                        <div>
+                            <select id="Psev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div> 
+                        <div>
+                            <input type="checkbox" id="treeNuts${safeName}" name="allergen${safeName}" value="treeNuts" class="menuItem${safeName}"/>
+                            <label for="treeNuts${safeName}">Tree nuts</label>
+                        </div>
+                        <div>
+                            <select id="TNsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="checkbox" id="Egg${safeName}" name="allergen${safeName}" value="Egg" class="menuItem${safeName}"/>
+                            <label for="Egg${safeName}">Egg</label>
+                        </div>
+                        <div>
+                            <select id="Esev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="checkbox" id="Soy${safeName}" name="allergen${safeName}" value="Soy" class="menuItem${safeName}"/>
+                            <label for="Soy${safeName}">Soy</label>
+                        </div>
+                        <div>
+                            <select id="Ssev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="checkbox" id="Wheat${safeName}" name="allergen${safeName}" value="Wheat" class="menuItem${safeName}"/>
+                            <label for="Wheat${safeName}">Wheat</label>
+                        </div>
+                        <div>
+                            <select id="Wsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="checkbox" id="Fish${safeName}" name="allergen${safeName}" value="Fish" class="menuItem${safeName}"/>
+                            <label for="Fish${safeName}">Fish</label>
+                        </div> 
+                        <div>
+                            <select id="Fsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <input type="checkbox" id="Shellfish${safeName}" name="allergen${safeName}" value="Shellfish" class="menuItem${safeName}"/>
+                            <label for="Shellfish${safeName}">Shellfish</label>
+                        </div>
+                        <div>
+                            <select id="SFsev${safeName}" name="severity${safeName}" class="menuItem${safeName}">
+                                <option>--severity--</option>
+                                <option>Mild</option>
+                                <option>Moderate</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+                     </div>
+                </div>
+                <div>
+                    <legend><b>Any other intolerances/allergies we should know about?:</b></legend><br>
+                    <input type="text" id="allergies${safeName}" name="longAns" class="menuItem${safeName}"/>
+                </div>
+                `;
+                
+                //Step 8: retrieve any input elements from the newly generated section
+                const menuChoice = section.querySelector(`#menu${safeName}`);
+                const allergenChoice = section.querySelectorAll(`[name="allergen${safeName}"]`);
+                const severityChoice = section.querySelectorAll(`[name="severity${safeName}"]`);
+                const otherAllergensChoice = section.querySelector(`#allergies${safeName}`);
+
+                //Steo 9: add eventlisteners to these input elements which adds the user's current answers to the temporary storage object (mealInfo)
+
+                 // When creating/selecting the menu dropdown
+                 menuChoice.addEventListener("change", function() {
+                    if (this.value === "--Please choose an option--") {
+                        mealInfo.menuChoice = "";
+                    } else {
+                        mealInfo.menuChoice = this.value;
+                    }
+                });
+                                 
+                // scans the answers to see if an allergy has been checked off, and appends this as well as any selected variable to mealInfo
+                function updateAllergenChoice() {
+                    let checkedAllergens = Array.from(allergenChoice)
+                        .filter(cb => cb.checked)
+                        .map(cb => cb.value);
+
+                    // For the schema to work, we need to check that checkedAllergens is true. if it is and the severity hasn't been filled, an alert will pop up.
+                    mealInfo.allergenSelected = checkedAllergens.length > 0 ? "true" : "";
+                    mealInfo.allergenChoice = checkedAllergens;
+                    
+                    // Checks that the severity has been selected when the allergy check box next to it is selected.
+                    let checkedSeverities = Array.from(severityChoice)
+                        .filter(sel => sel.value === "--severity--" ? "" : this.value)
+                        .map(sel => sel.value);
+                    mealInfo.severityChoice = checkedSeverities;
+                };
+
+                allergenChoice.forEach(function(cb) {
+                    cb.addEventListener("change", updateAllergenChoice);
+                });
+                severityChoice.forEach(function(sel) {
+                    sel.addEventListener("change", updateAllergenChoice);
+                });
+
+                otherAllergensChoice.addEventListener("change", function(){
+                        mealInfo.otherAllergens = this.value;
+                });
+
+                const menuChange = section.querySelectorAll(`.menuItem${safeName}`); // retrieves all radio buttons by the class attribute (indicated with a . instead of #)
+                 // adds eventlistener to the menu radio buttons, which hides the time-suggestion field when selected
+                if (menuChange){ // if (times) check is a safety net to make sure times exists before trying to use it.
+                    //forEach loops through each element/item in the times object
+                    menuChange.forEach(function(element) {
+                        element.addEventListener("change", function() {
+                            document.getElementById("Bus").style.display = "none"; //hides the Bus section if it was previously filled out
+                            document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                            document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                        });
+                    });
+                }
+                
+                const UserAnswers = [menuChoice, allergenChoice, severityChoice, otherAllergensChoice]
+                //MealInfoStorage.push(mealInfo);
+            //returns the new div element section 
+            return [section, mealInfo, UserAnswers];
+            };
+
+
+// creates the bus input fields for each guest based on the first question
+            function updateBus() {
+                document.getElementById("Drinks").style.display = "none";
+                document.getElementById("DrinkNext").innerHTML = "";
+                document.getElementById("End").style.display = "none";
+                document.getElementById("Bus").style.display = "block";
+                testBusArray.style.display = "block";
+
+                let oldBusInfo = [...BusInfoStorage];
+                BusInfoStorage = [];
+                const guestBusDiv = document.getElementById("BussInf");
+                guestBusDiv.innerHTML = "";
+
+                // Build a map of old bus info by name
+                let oldBusInfoMap = {};
+                (oldBusInfo || []).forEach(item => {
+                    if (item.GuestName && item.plus1 === "no") oldBusInfoMap[item.GuestName] = item;
+                    if ((item.PlusOneName || item.GuestName) && item.plus1 === "yes") {
+                        let name = item.PlusOneName || item.GuestName;
+                        oldBusInfoMap[name] = item;
+                    }
+                });
+
+                // Always create and push a new storage object for every guest and plus-one
+                for (let i = 0; i < GuestInfoStorage.length; i++) {
+                    let guestName = GuestInfoStorage[i].GuestName;
+                    let plusOneName = GuestInfoStorage[i].plusOneName || "";
+
+                    // --- Main guest ---
+                    let [dynamicSection, temporaryBusStorage] = createBusSection(guestName);
+                    temporaryBusStorage.plus1 = "no";
+                    guestBusDiv.appendChild(dynamicSection);
+
+                    // Restore main guest bus info by name if it exists
+                    if (oldBusInfoMap[guestName]) {
+                        restoreBusSection(dynamicSection, oldBusInfoMap[guestName], makeSafe(guestName));
+                        Object.assign(temporaryBusStorage, oldBusInfoMap[guestName]);
+                    }
+                    // Always push a new object for the main guest
+                    BusInfoStorage.push(temporaryBusStorage);
+
+                    // --- Plus-one (if present) ---
+                    if (plusOneName.trim() !== "") {
+                        let [dynamicSectionPlus1, temporaryPlus1BusStorage] = createBusSection(plusOneName);
+                        temporaryPlus1BusStorage.plus1 = "yes";
+                        temporaryPlus1BusStorage.PlusOneName = plusOneName;
+                        temporaryPlus1BusStorage.mainGuestName = guestName;
+                        guestBusDiv.appendChild(dynamicSectionPlus1);
+
+                        // Restore plus-one bus info by name if it exists
+                        if (oldBusInfoMap[plusOneName]) {
+                            restoreBusSection(dynamicSectionPlus1, oldBusInfoMap[plusOneName], makeSafe(plusOneName));
+                            Object.assign(temporaryPlus1BusStorage, oldBusInfoMap[plusOneName]);
+                        }
+                        // Always push a new object for the plus-one
+                        BusInfoStorage.push(temporaryPlus1BusStorage);
+                    }
+                }
+
+                // Debug: Check that every guest/plus-one is represented
+                console.log("BusInfoStorage after update:", BusInfoStorage.map(x => x.GuestName || x.PlusOneName));
+            }
+
+
+
+
+
+// helper for restoring businfo section data: UserAnswers = [busAnswer, hotelInp, pickUp, busTimes]
+        function restoreBusSection(section, oldData, safeName){
+            if (!oldData) return;
+
+            const yesRadio = section.querySelector(`#yesBus${safeName}`);
+            const noRadio = section.querySelector(`#noBus${safeName}`);
+            const ifYesDiv = section.querySelector(`#ifYesBus${safeName}`);
+            const busTimesDiv = section.querySelector(`#timesBus${safeName}`);
+            const hotelInp = section.querySelector(`#hName${safeName}`);
+            const pickUp = section.querySelector(`#times1${safeName}`);
+            const times = section.querySelectorAll(`.noSuggest${safeName}`);
+            const times4Radio = section.querySelector(`#times4${safeName}`);
+            const suggestedTime = section.querySelector(`#Suggested${safeName}`);
+            const laterDropOffDiv = section.querySelector(`#laterDropOff${safeName}`);
+
+            // Log the entire oldData for debugging
+            console.log("Restoring bus section for:", safeName, "oldData:", oldData);
+
+            // Restore bus answer and update UI
+            if (oldData.busAnswer === "Yes" && yesRadio) {
+                yesRadio.checked = true;
+                ifYesDiv.style.display = "block";
+                busTimesDiv.style.display = "block";
+            } else if (oldData.busAnswer === "No" && noRadio) {
+                noRadio.checked = true;
+                ifYesDiv.style.display = "none";
+                busTimesDiv.style.display = "none";
+            }
+
+            // Restore hotel input
+            if (hotelInp) hotelInp.value = oldData.hotelName || "";
+
+            // --- THIS IS WHERE YOU LOG PICKUP RESTORATION ---
+            if (pickUp) {
+                console.log("Checking pickUp:", pickUp.value, "in", oldData.busTimes);
+                pickUp.checked = oldData.busTimes && (
+                    (Array.isArray(oldData.busTimes) && oldData.busTimes.includes(pickUp.value)) ||
+                    oldData.busTimes === pickUp.value
+                );
+            }
+
+            // --- LOG EACH DROP-OFF RADIO RESTORATION ---
+            times.forEach(function(radio){
+                console.log("Checking drop-off:", radio.value, "in", oldData.busTimes);
+                radio.checked = oldData.busTimes && (
+                    (Array.isArray(oldData.busTimes) && oldData.busTimes.includes(radio.value)) ||
+                    oldData.busTimes === radio.value
+                );
+            });
+
+            // --- LOG SUGGESTED TIME RESTORATION ---
+            if (times4Radio && suggestedTime){
+                console.log("Checking suggested time:", suggestedTime.value, "in", oldData.busTimes);
+                times4Radio.checked = oldData.busTimes && (
+                    (Array.isArray(oldData.busTimes) && oldData.busTimes.includes(suggestedTime.value)) ||
+                    oldData.busTimes === suggestedTime.value
+                );
+                suggestedTime.value = oldData.suggestedTime || "";
+            }
+
+            // Show/hide suggested time input
+            if (times4Radio && times4Radio.checked) {
+                laterDropOffDiv.style.display = "block";
+            } else {
+                laterDropOffDiv.style.display = "none";
+            }
+        }
+
+// Helper function for updatebus
+            function createBusSection(personName) {
+                //Step 5: create empty local storage object:
+                let busInfo = {};
+                busInfo.GuestName = personName
+
+                const safeName = makeSafe(personName); // removes whitespaces from the name, replacing them with _
+
+                //step 6: create the dynamic form-object
+                //creates a new div element called section, making it class=container3 for styling
+                let section = document.createElement("div");section.className = "container3";
+                section.innerHTML = `
+                 <div>
+                    <label>${personName}: </label><br>
+                    <input type="radio" id="yesBus${safeName}" name="Bus${safeName}" value="Yes"/>
+                    <label for="yesBus${safeName}">Yes</label>
+
+                    <input type="radio" id="noBus${safeName}" name="Bus${safeName}" value="No"/>
+                    <label for="noBus${safeName}">No</label>
+                 </div>
+
+                 <div id="ifYesBus${safeName}" style="display:none">
+                    <legend><b>Which hotel will you be staying at?</b></legend><br>
+                    <label>(Where should the bus pick you up/ drop you off?)</label>
+                    <input type="text" id="hName${safeName}" name="longAns"/>
+                 </div>
+                 <div>
+                    </div>
+
+                 <div id="timesBus${safeName}" style="display:none">
+                    <legend><b>What times would you want to take the bus?</b></legend>
+                    <p>Info: we are early-birds, but if enough people would like to stay later than 01:00 am, we will consider pushing 
+                        the second drop-off time back</p>
+
+                    <div class="smallcontainer2"> 
+                        <div class="small">
+                            <div>
+                            <input type="checkbox" id="times1${safeName}" value = "01:30 pm"/>
+                            </div>
+                            <div>
+                            <label for="times1${safeName}">Pick-up at 01:30 pm (13:30)</label>
+                            </div>
+                        </div>
+                        <div>
+                            <legend>Drop-off times</legend>
+                            <input type="radio" id="noTime${safeName}" name="dropOff${safeName}" class="noSuggest${safeName}"/>
+                            <label for="times2${safeName}">No drop-off</label> <br>
+
+                            <input type="radio" id="times2${safeName}" value="10:30 pm" name="dropOff${safeName}" class="noSuggest${safeName}"/>
+                            <label for="times2${safeName}">10:30 pm (22:30)</label> <br>
+                            
+                            <input type="radio" id="times3${safeName}" value="01:00 am" name="dropOff${safeName}" class="noSuggest${safeName}"/>
+                            <label for="times3${safeName}">01:00 am (01:00)</label><br>
+                       
+                            <input type="radio" id="times4${safeName}" name="dropOff${safeName}"/>
+                            <label for="times4${safeName}">Request a later time</label><br>
+                        </div>
+                         <div id="laterDropOff${safeName}" style="display:none"> 
+
+                            <label>Please suggest a time before 03:00 am here:</label><br>
+                            <input type="time" id="Suggested${safeName}"/>
+                        </div>
+                    </div>
+                    
+                </div>`;
+
+                // Step 8: retrieve any input elements from the newly generated section:
+                // querySelector, not getElementById, is used because of the way the code was before (unsanitized by safeName). can only be after innerHTML is set
+                const yesRadio = section.querySelector(`#yesBus${safeName}`); // retrieves the yes radio button
+                const noRadio = section.querySelector(`#noBus${safeName}`); // retrieves the no radio button
+                const ifYesDiv = section.querySelector(`#ifYesBus${safeName}`);  
+                const hotelInp = section.querySelector(`#hName${safeName}`); // retrieves the hotel name input
+                const busTimes = section.querySelector(`#timesBus${safeName}`); // retrieves the bus times div element
+                const suggestedTime = section.querySelector(`#Suggested${safeName}`); // retrieves the later drop-off radio button
+                const times = section.querySelectorAll(`.noSuggest${safeName}`); // retrieves all other drop-off radio buttons by the class attribute (indicated with a . instead of #)
+                const times4Radio = section.querySelector(`#times4${safeName}`); // retrieves the later drop-off time suggestion 
+                const pickUp = section.querySelector(`#times1${safeName}`);
+                
+                //Step 9: add eventlisteners to these input elements to save the current answers to the temp storage object (busInfo)
+                //if the yes radio button is selected, the hotel name input and the bus times input are made visible     
+                yesRadio.addEventListener("change", function() {
+                    document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                    document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                    busInfo.busAnswer = "Yes";
+                    ifYesDiv.style.display = "block";
+                    busTimes.style.display = "block";
+                    busAnswer = "Yes"                    
+                        });
+
+                hotelInp.addEventListener("change", function(){
+                    busInfo.hotelName = this.value
+                });
+
+                // if the no radio button is selected, the hotel name input and the bus times input are made invisible again if they were already visible
+                noRadio.addEventListener("change", function(){
+                    document.getElementById("Drinks").style.display = "none"; //hides the drinks section if it was previously filled out
+                    document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                    busInfo.busAnswer = "No";
+                    busInfo.busTimes = "";
+                    busInfo.suggestedTime = "";
+
+                    ifYesDiv.style.display = "none";
+                    busTimes.style.display = "none";
+                    busAnswer = "No"
+                });
+
+                times4Radio.addEventListener("change", updateBusTimes) ;
+                 // --- Pick-up checkbox ---
+                pickUp.addEventListener("change", updateBusTimes);
+
+                // --- Suggest time input ---
+                suggestedTime.addEventListener("change", updateBusTimes);
+
+                // --- Main function to update busTimes ---
+               // --- Pick-up, drop-off, and suggested time logic ---
+    function updateBusTimes() {
+        document.getElementById("Drinks").style.display = "none";
+        document.getElementById("End").style.display = "none";
+
+        let pickUpSelected = pickUp.checked;
+        let dropOffValue = null;
+        times.forEach(function(radio) {
+            if (radio.checked) {
+                dropOffValue = radio.value;
+            }
+        });
+
+        let suggestChecked = times4Radio.checked;
+        let suggestedValue = suggestedTime.value;
+
+        // Show/hide suggested time input
+        section.querySelector(`#laterDropOff${safeName}`).style.display = suggestChecked ? "block" : "none";
+
+        // Build busTimes array
+        let timesArr = [];
+        if (pickUpSelected) timesArr.push(pickUp.value);
+        if (dropOffValue) timesArr.push(dropOffValue);
+        if (suggestChecked && suggestedValue) timesArr.push(suggestedValue);
+
+        // Set busTimes and timeSelected
+        if (timesArr.length > 0) {
+            busInfo.timeSelected = "true";
+            busInfo.busTimes = timesArr;
+        } else {
+            busInfo.timeSelected = "false";
+            busInfo.busTimes = "";
+        }
+    }
+
+        // --- Attach event listeners ---
+        pickUp.addEventListener("change", updateBusTimes);
+        times.forEach(radio => radio.addEventListener("change", updateBusTimes));
+        times4Radio.addEventListener("change", updateBusTimes);
+        suggestedTime.addEventListener("change", updateBusTimes);
+
+        return [section, busInfo];
+    }
+
+            //drinks function
+            function updateDrinks (){
+                document.getElementById("DrinkNext").innerHTML = ''; //deletes the html content of the DrinkNext element.
+                document.getElementById("End").style.display = "none"; //hides the End question section if it was previously filled out
+                document.getElementById("Drinks").style.display = "block"; // makes the Drinks element visible
+               
+                const guestDrink = document.getElementById("DrinkNext"); //retrieves the DrinkNext element from the document
+               
+                for (let i = 0; i<counting; i++){
+
+                    let guestName = GuestInfoStorage[i].GuestName; // retrieves the guest name from GuestInfoStorage
+
+                    // retrieves the +1 name from GuestInfoStorage if it exists, and sets plusOneName to "" if it doesnt exits (is undefined)
+                    let plusOneName = GuestInfoStorage[i].plusOneName || ""; 
+
+                    // appends the drink inputs for each guest to the DrinkNext element in the document using the createDrinkSection function
+                    guestDrink.appendChild(createDrinksSection(guestName)); 
+
+                    if (plusOneName.trim() !== "") { // if the plus 1 name exists and isn't just "" when all the whitespace is removed, the following happens: 
+                        guestDrink.appendChild(createDrinksSection(plusOneName)); // the +1 name is appended to the DrinkNext element in the document
+                    }
+                };
+            }
+
+// Helper function for updateDrinks
+            function createDrinksSection(personName) {
+                const safeName = makeSafe(personName) // replaces all whitespaces in the name with _
+
+                // creates a new div element using class="container3" for styling
+                let section = document.createElement("div");section.className = "container3";
+                section.innerHTML = `
+                 <div>
+                    <legend>Are you interested in getting some vouchers?</legend>
+
+                    <label>${personName}: </label><br>
+                    <input type="radio" id="yesDrinks${safeName}" name="drinkName${safeName}" value="yes"/>
+                    <label for="yesBus${safeName}">Yes</label>
+
+                    <input type="radio" id="noDrinks${safeName}" name="drinkName${safeName}" value="no"/>
+                    <label for="noBus${safeName}">No</label>
+                 </div>`;
+
+                const yesDrinks = section.querySelector(`#yesDrinks${safeName}`); //retrieves the yes radio button
+                const noDrinks = section.querySelector(`#noDrinks${safeName}`); //retrieves the no radio button
+
+                // adds eventlistener to the yes and no radio buttons, which displays the next button when selected
+                if (yesDrinks) { // if (yesDrinks) check is a safety net to make sure times exists before trying to use it.
+                        yesDrinks.addEventListener("change", function() {
+                            document.getElementById("Next5").style.display = "block";
+                        });
+                    };
+                     // adds eventlistener to the no radio button, which displays the next button when selected
+                    if (noDrinks) {
+                        noDrinks.addEventListener("change", function() {
+                            document.getElementById("Next5").style.display = "block";
+                        });
+                    };
+                return section;
+            }
+// universal validation function
+
+            function validateInfo(infoList, schema) {
+                for (let i = 0; i < infoList.length; i++) {
+                    const answer = infoList[i];
+                    // Validate main object (guest or plus-one)
+                    for (const rule of schema) {
+                        if (rule.if) {
+                            if (answer[rule.if.field] === rule.if.value) {
+                                if (!answer[rule.field] || answer[rule.field].toString().trim() === "") {
+                                    alert(rule.message ? rule.message.replace('{n}', i+1).replace(`{m}`, i) : `Please fill in ${rule.field} for item ${i+1}`);
+                                    return false;
+                                }
+                            }
+                        } else {
+                            if (!answer[rule.field] || answer[rule.field].toString().trim() === "") {
+                                alert(rule.message ? rule.message.replace('{n}', i+1) : `Please fill in ${rule.field} for item ${i+1}`);
+                                return false;
+                            }
+                        }
+                    }
+                    // If this object has a nested plus-one (for meals), validate that too
+                    if (answer.plusOneMeal) {
+                        for (const rule of schema) {
+                            if (rule.if) {
+                                if (answer.plusOneMeal[rule.if.field] === rule.if.value) {
+                                    if (!answer.plusOneMeal[rule.field] || answer.plusOneMeal[rule.field].toString().trim() === "") {
+                                        alert(rule.message ? `Plus-one of guest ${i+1}: ${rule.message}` : `Please fill in ${rule.field} for plus-one of guest ${i+1}`);
+                                        return false;
+                                    }
+                                }
+                            } else {
+                                if (!answer.plusOneMeal[rule.field] || answer.plusOneMeal[rule.field].toString().trim() === "") {
+                                    alert(rule.message ? `Plus-one of guest ${i+1}: ${rule.message}` : `Please fill in ${rule.field} for plus-one of guest ${i+1}`);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+
+// Event listeners
+//--------------------------------------------------
+           document.addEventListener("DOMContentLoaded", function() {
+    // Cache elements
+    const form = document.getElementById("mainRSVPForm");
+    const nextButton = document.getElementById("nextButton");
+    const guestInfoSection = document.getElementById("guestInfoSection");
+    const comingRadios = document.getElementsByName("RSVP1");
+    const q1yesDiv = document.getElementById("Q1yes");
+    const submitDiv = document.getElementById("SubmitDiv");
+    const guests = document.getElementById("guestNR");
+    const testbtn = document.getElementById("testbtn");
+    const testMealbtn = document.getElementById("testMealbtn");
+    const testBusbtn = document.getElementById("testBusbtn");
+    const Next2 = document.getElementById("Next2");
+    const Next3 = document.getElementById("Next3");
+    const Next4 = document.getElementById("Next4");
+    const Next5 = document.getElementById("btn5");
+    const dialog = document.getElementById('drinkInfo');
+    const openBtn = document.getElementById('openDialogBtn');
+    const closeBtn = document.getElementById('closeDialogBtn');
+
+    // Next button on RSVP
+    nextButton.addEventListener("click", function() {
+        guestInfoSection.style.display = "block";
     });
-    </script>
-  </body>
+
+    // Show/hide email and submit based on RSVP answer
+    comingRadios.forEach(radio => {
+        radio.addEventListener("change", function() {
+            if (this.value === "yes") {
+                q1yesDiv.style.display = "block";
+                submitDiv.style.display = "none";
+            } else {
+                q1yesDiv.style.display = "none";
+                submitDiv.style.display = "block";
+            }
+        });
+    });
+
+    // Guest number change triggers guest info fields
+    guests.addEventListener("change", updateField);
+
+    // Debug/test buttons
+    testbtn.addEventListener("click", function() {
+        alert(JSON.stringify(GuestInfoStorage, null, 2));
+    });
+    testMealbtn.addEventListener("click", function() {
+        alert(JSON.stringify(MealInfoStorage, null, 2));
+    });
+    testBusbtn.addEventListener("click", function() {
+        alert(JSON.stringify(BusInfoStorage, null, 2));
+    });
+
+    // Section navigation with validation
+    Next2.addEventListener("click", function() {
+        if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
+            updateMeal();
+        }
+    });
+    Next3.addEventListener("click", function() {
+        if (validateInfo(MealInfoStorage, mealInfoSchema)) {
+            updateBus();
+        }
+    });
+    Next4.addEventListener("click", function() {
+        if (validateInfo(BusInfoStorage, busInfoSchema)) {
+            updateDrinks();
+        }
+    });
+    Next5.addEventListener("click", function(){
+        document.getElementById("End").style.display = "block";
+    });
+
+    // Modal dialog for drinks info
+    openBtn.addEventListener('click', function() {
+        dialog.showModal();
+    });
+    closeBtn.addEventListener('click', function() {
+        dialog.close();
+    });
+    dialog.addEventListener('click', function(event) {
+        const rect = dialog.getBoundingClientRect();
+        if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+        ) {
+            dialog.close();
+        }
+    });
+
+    // Main form submission
+    form.addEventListener("submit", function(e) {
+        // Custom validation (optional, adjust as needed)
+        const responder = document.getElementById("Responder").value.trim();
+        const coming = document.querySelector("input[name='RSVP1']:checked");
+        const email = document.getElementById("EUpdates").value.trim();
+        const noEmail = document.getElementById("NoElUp").checked;
+
+        if (!responder) {
+            alert("Please enter your full name.");
+            e.preventDefault();
+            return;
+        }
+        if (!coming) {
+            alert("Please select if your group is coming.");
+            e.preventDefault();
+            return;
+        }
+        if (coming.value === "yes" && !noEmail && !email) {
+            alert("Please provide an email or check the 'No thank you' box.");
+            e.preventDefault();
+            return;
+        }
+
+        // Gather and send data
+        e.preventDefault(); // Prevent default submit
+        const formData = gatherFormData();
+        sendRSVPToSheets(formData);
+    });
+});
+
+
+            
+        </script>
+
+    </body>
+
 </html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fleur+De+Leah&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    
+    <meta name="viewport" content="width=device-width">
+    <title>Apply google sheets custom form</title>
+    <base target="_top" />
+    <script src="https://cdn.jsdelivr.net/gh/tanaikech/HtmlFormObjectParserForGoogleAppsScript_js/htmlFormObjectParserForGoogleAppsScript_js.min.js"></script>
+    <script src="script.js"></script>
+
+  </head>
+  <body>
+  <p>hello world! I figured it out!
+  </p>
+    <form>
+      <label for="fname">First name:</label><br>
+      <input type="text" id="fname" name="Name" 
+      autocomplete="name"/><br />
+      <label for="elmail">Email:</label><br>
+      <input type="email" id = "elmail" name="Email" 
+      autocomplete="email"/><br />
+      <input
+        type="submit"
+        name="button"
+        value="submit"
+        onclick="run(this);return false;"
+      />
+   <form>
+
+
+
+
+
+   
+
+    <fieldset> <!-- Question 1 (Q1)-->
+      <legend><h3>RSVP</h3></legend>
+      <label for="Responder">Please enter your full name (the person filling out the form):</label>
+      <input type="name" id="Responder" name="name" value="Full name"> <br><br>
+     
+     
+    
+      <h4>Can your group make it?</h4>      <!-- Question 1a (Q1a)-->
+      <input type="radio" id="Coming" name="RSVP1" value="yes">
+      <label for="Coming">Yes</label>
+
+      <input type="radio" id="NotComing" name="RSVP1" value="no">
+      <label for="NotComing">No</label> <br><br>
+    
+
+      <div id="Submit" style="display:none;">
+        <input type="submit" id="Submit" name="submitButton">
+      </div>
+
+
+      <!-- Question 1b (Q1yes), displayed if Q1a = yes-->
+      <div id="Q1yes" style="display:none;">
+        <legend><h4>Remember to sign on to get important updates from the website!</h4></legend>
+
+        <label for="EUpdates">Please enter your email here:</label>
+        <input type="email" id="EUpdates" name="Email" value="Example@gmail.com"> <br><br>
+        
+
+        <input type="radio" id="NoElUp" name="NoEmail">
+        <label for="NoElUp">No thank you, I'll make sure to keep checking the website myself</label>
+        <br><br>
+        <input type="botton" id="next" value="Next_page" name="nextButton" onclick="link">
+        
+     </div> <p></p>
+      
+   <script>
+   branchForm('input[name="RSVP1"]', 'yes', '#Q1yes');
+   branchForm('input[name="RSVP1"]', 'no', '#Submit');
+ 
+   </script>
+
+    </fieldset>
+
+
+
+
+  <fieldset>
+    
+  </fieldset>
+
+
+
+
+
+
+
+
+    <div id="SubmitMSG" style="display:none;">    <!-- Submit message-->
+      <fieldset>
+        
+          <legend><h4>Thank you!</h4></legend>
+          
+            Thank you so much for taking the time to RSVP! We appreciate it, and hope you have a lovely day.
+  
+      </fieldset>
+    </div>
+
+  
+   </form>
+   Number of columns: <input type="number" id="numCols" min="1" required>
+   Number of rows: <input type="number" id="numRows" min="1" required>
+   <button id="createTableBtn">Create Table</button>
+   <div id="tableContainer"></div>
+   <form id="tableForm">
+      Number of columns: <input type="number" id="numCols" min="1" required>
+      Number of rows: <input type="number" id="numRows" min="1" value="1" required>
+      <button type="submit">Create Table</button>
+  </form>
+  
+  <div id="tableContainer"></div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('createTableBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        const numRows = parseInt(document.getElementById('numRows').value, 10);
+        const numCols = parseInt(document.getElementById('numCols').value, 10);
+        createTable(numRows, numCols, 'tableContainer');
+      });
+    });
+    </script>
+  </body>
+</html>
