@@ -463,7 +463,7 @@
                 if (counting > 0 && counting < 11){ // Since I want a max of 10 guests, this makes sure that the code only works when the entered number is above 0 but below 11. 
                 
                     gInfoDiv.style.display = "block";
-                   // testArrayDiv.style.display = "block";
+                    testArrayDiv.style.display = "block";
 
                     //Step 4: create for loop to generate the amount of dynamic fields necessary.
                     for (let i = 0; i<counting; i++){ //runs the following code up to the number specified by user.
@@ -605,7 +605,7 @@
                 document.getElementById("Drinks").style.display = "none";
                 document.getElementById("End").style.display = "none";
                 document.getElementById("Menu").style.display = "block";
-                //testMealArray.style.display = "block";
+                testMealArray.style.display = "block";
 
                 let oldMealInfo = [...MealInfoStorage];
                 MealInfoStorage = [];
@@ -901,7 +901,7 @@
                 document.getElementById("DrinkNext").innerHTML = "";
                 document.getElementById("End").style.display = "none";
                 document.getElementById("Bus").style.display = "block";
-                //testBusArray.style.display = "block";
+                testBusArray.style.display = "block";
 
                 let oldBusInfo = [...BusInfoStorage];
                 BusInfoStorage = [];
