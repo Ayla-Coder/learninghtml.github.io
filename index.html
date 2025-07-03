@@ -174,7 +174,7 @@
                 </div>
                 
                 <div id="SubmitDiv" name="submit" style="display:none;">
-                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
+                    <button type="submit" onclick="return submitForm(this);">Submit</button>
                     
                 </div>
                 </fieldset>
@@ -1430,6 +1430,16 @@
                     sendRSVPToSheets(formData);
                 });
             });
+
+            async function submitForm(btn) {
+                // btn.parentNode is the form element
+                const parsed = await ParseFormObjectForGAS(btn.parentNode);
+                google.script.run
+                    .withSuccessHandler(res => alert(res))
+                    .withFailureHandler(err => alert("Error: " + err.message))
+                    .getFormValues(parsed);
+                return false; // prevent default submit
+                }
 
 
             
