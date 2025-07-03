@@ -301,26 +301,7 @@
 
         <!-- <script src="building_own_code.js"></script> -->
         <script>
-            const testInitbtn = document.getElementById("guestNR");
-           // const testInitArray = document.getElementById("guestNR");
-
-            const guests = document.getElementById("guestNR");
-            const testbtn = document.getElementById("testbtn");
-            const testArrayDiv = document.getElementById("testArray");
-
-            const testMealbtn = document.getElementById("testMealbtn");
-            const testMealArray = document.getElementById("testMealArray");
-
-            const testBusbtn = document.getElementById("testBusbtn");
-            const testBusArray = document.getElementById("testBusArray");
-
-            const testDrinkbtn = document.getElementById("testBusbtn");
-            //const testDrinkArray = document.getElementById("testBusArray");
-
-            const testQbtn = document.getElementById("testBusbtn");
-           // const testQArray = document.getElementById("testBusArray");
-
-             // more info button
+            // more info button
             const dialog = document.getElementById('drinkInfo'); // retrieves the drinkInfo element
             const openBtn = document.getElementById('openDialogBtn'); //retrieves the openDialog button
             const closeBtn = document.getElementById('closeDialogBtn'); //retrieves the close Dialog button
@@ -1427,6 +1408,28 @@
         }
          });
 });
+
+document.getElementById('mainRSVPForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = gatherFormData();
+
+    fetch('https://script.google.com/macros/s/AKfycbzAGRTSlWPHqliQuB6lcSph0Li7cCbsy3u94GswjLwey5XpEKT1IH6l7Am84DPrchP85Q/exec', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(result => {
+        if(result.result === "success") {
+            alert("RSVP submitted successfully!");
+            this.reset();
+        } else {
+            alert("There was a problem submitting your RSVP.");
+        }
+    })
+    .catch(error => alert("Error: " + error.message));
+});
+
 
        
    
