@@ -452,6 +452,7 @@
                 //Step 2: wipe the current Storage list to avoid duplicates
                 GuestInfoStorage = []; 
                 
+                const guests = document.getElementById("guestNR");
                 counting = Number(guests.value); // redefines counting to match the number of guests entered by the user. 
                 countingGandPlus1 = counting
                 
@@ -1429,11 +1430,6 @@ document.getElementById('mainRSVPForm').addEventListener('submit', function(e) {
     })
     .catch(error => alert("Error: " + error.message));
 });
-
-
-       
-   
-
 
             
         </script>
