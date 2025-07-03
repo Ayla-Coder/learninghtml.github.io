@@ -1351,7 +1351,6 @@
 
             async function submitForm(btn) {
                 // btn.parentNode is the form element
-                const url = "https://script.google.com/macros/s/AKfycbzAGRTSlWPHqliQuB6lcSph0Li7cCbsy3u94GswjLwey5XpEKT1IH6l7Am84DPrchP85Q/exec"
                 const parsed = await ParseFormObjectForGAS(btn.parentNode);
                 google.script.run
                     .withSuccessHandler(res => alert(res))
@@ -1359,8 +1358,6 @@
                     .getFormValues(parsed);
                 return false; // prevent default submit
                 }
-
-                
 
 
             
