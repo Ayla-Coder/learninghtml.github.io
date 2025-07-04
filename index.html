@@ -153,7 +153,7 @@
     <body>
         <form id="mainRSVPForm" autocomplete="off"> 
             <fieldset id="RSVPFieldset">
-                <legend><h3>RSVP UPDATED again x7</h3></legend>
+                <legend><h3>RSVP UPDATED again x8</h3></legend>
                 <label for="Responder">Please enter your full name (the person filling out the form):</label>
                 <input type="text" id="Responder" name="responder" placeholder="Full name" required> <br><br>
                 
@@ -350,75 +350,106 @@
 // Functions:
 //--------------------------------------------------------------
           function gatherFormData(sharedQuestion) {
-                const responder = document.getElementById("Responder").value.trim();
-                const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
-                const emailInput = document.getElementById("EUpdates");
-                const noEmail = document.getElementById("NoElUp").checked;
-                const email = noEmail ? "no thank you" : (emailInput ? emailInput.value.trim() : "");
+    const responder = document.getElementById("Responder").value.trim();
+    const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
+    const emailInput = document.getElementById("EUpdates");
+    const noEmail = document.getElementById("NoElUp").checked;
+    const email = noEmail ? "no thank you" : (emailInput ? emailInput.value.trim() : "");
 
-                let guests = [];
+    let guests = [];
 
-                for (let i = 0; i < MealInfoStorage.length; i++) {
-                    const mealInfo = MealInfoStorage[i] || {};
-                    const busInfo = BusInfoStorage[i] || {};
-                    const drinkInfo = DrinkInfoStorage[i] || {};
+    // Loop through all main guests and their plus-ones
+    for (let i = 0; i < GuestInfoStorage.length; i++) {
+        const guest = GuestInfoStorage[i];
 
-                    // Try to match this name to a main guest
-                    let isPlusOne = true;
-                    let guestObj = null;
-                    for (let g = 0; g < GuestInfoStorage.length; g++) {
-                        if (mealInfo.GuestName === GuestInfoStorage[g].GuestName) {
-                            isPlusOne = false;
-                            guestObj = GuestInfoStorage[g];
-                            break;
-                        }
-                    }
+        // --- Main guest ---
+        const guestName = guest.GuestName || "";
+        const mealInfo = MealInfoStorage.find(m => m.GuestName === guestName) || {};
+        const busInfo = BusInfoStorage.find(b => b.GuestName === guestName) || {};
+        const drinkInfo = DrinkInfoStorage.find(d => d.GuestName === guestName) || {};
 
-                    // --- Properly extract pick up and drop off from busTimes array ---
-                    let pickUp = "";
-                    let dropOff = "";
-                    if (Array.isArray(busInfo.busTimes)) {
-                        // Assume pick up is always "01:30 pm" if present (from your form)
-                        pickUp = busInfo.busTimes.find(t => t === "01:30 pm") || "";
-                        // Drop off is any other value in busTimes
-                        dropOff = busInfo.busTimes.filter(t => t !== "01:30 pm").join(", ");
-                    } else if (typeof busInfo.busTimes === "string") {
-                        // If only one string, check if it's the pick up time
-                        if (busInfo.busTimes === "01:30 pm") {
-                            pickUp = "01:30 pm";
-                            dropOff = "";
-                        } else {
-                            pickUp = "";
-                            dropOff = busInfo.busTimes;
-                        }
-                    }
-
-                    guests.push({
-                        name: mealInfo.GuestName || "",
-                        plusOneRequested: isPlusOne ? "" : (guestObj.plus1 === "yes" ? "Yes" : "No"),
-                        plusOneName: isPlusOne ? "" : (guestObj.plusOneName || ""),
-                        plusOneRelationship: isPlusOne ? "" : (guestObj.plusOneRel || ""),
-                        meals: mealInfo.menuChoice || "",
-                        allergies: mealInfo.allergenChoice ? mealInfo.allergenChoice.join(", ") : "",
-                        allergySeverity: mealInfo.severityChoice ? mealInfo.severityChoice.join(", ") : "",
-                        otherAllergies: mealInfo.otherAllergens || "",
-                        bus: busInfo.busAnswer || "",
-                        hotel: busInfo.hotelName || "",
-                        pickUp: pickUp,
-                        dropOff: dropOff,
-                        drinks: drinkInfo.drinks || "",
-                        questions: sharedQuestion || ""
-                    });
-                }console.log("guests array for submission:", guests);
-
-
-                return {
-                    responder,
-                    coming,
-                    email,
-                    guests
-                };
+        // --- Properly extract pick up and drop off from busTimes array ---
+        let pickUp = "";
+        let dropOff = "";
+        if (Array.isArray(busInfo.busTimes)) {
+            pickUp = busInfo.busTimes.find(t => t === "01:30 pm") || "";
+            dropOff = busInfo.busTimes.filter(t => t !== "01:30 pm").join(", ");
+        } else if (typeof busInfo.busTimes === "string") {
+            if (busInfo.busTimes === "01:30 pm") {
+                pickUp = "01:30 pm";
+                dropOff = "";
+            } else {
+                pickUp = "";
+                dropOff = busInfo.busTimes;
             }
+        }
+
+        guests.push({
+            name: guestName,
+            plusOneRequested: guest.plus1 === "yes" ? "Yes" : "No",
+            plusOneName: guest.plusOneName || "",
+            plusOneRelationship: guest.plusOneRel || "",
+            meals: mealInfo.menuChoice || "",
+            allergies: mealInfo.allergenChoice ? mealInfo.allergenChoice.join(", ") : "",
+            allergySeverity: mealInfo.severityChoice ? mealInfo.severityChoice.join(", ") : "",
+            otherAllergies: mealInfo.otherAllergens || "",
+            bus: busInfo.busAnswer || "",
+            hotel: busInfo.hotelName || "",
+            pickUp: pickUp,
+            dropOff: dropOff,
+            drinks: drinkInfo.drinks || "",
+            questions: sharedQuestion || ""
+        });
+
+        // --- Plus one ---
+        if (guest.plus1 === "yes" && guest.plusOneName && guest.plusOneName.trim() !== "") {
+            const plusOneName = guest.plusOneName;
+            const mealInfoPlus1 = MealInfoStorage.find(m => m.GuestName === plusOneName) || {};
+            const busInfoPlus1 = BusInfoStorage.find(b => b.GuestName === plusOneName) || {};
+            const drinkInfoPlus1 = DrinkInfoStorage.find(d => d.GuestName === plusOneName) || {};
+
+            let pickUpPlus1 = "";
+            let dropOffPlus1 = "";
+            if (Array.isArray(busInfoPlus1.busTimes)) {
+                pickUpPlus1 = busInfoPlus1.busTimes.find(t => t === "01:30 pm") || "";
+                dropOffPlus1 = busInfoPlus1.busTimes.filter(t => t !== "01:30 pm").join(", ");
+            } else if (typeof busInfoPlus1.busTimes === "string") {
+                if (busInfoPlus1.busTimes === "01:30 pm") {
+                    pickUpPlus1 = "01:30 pm";
+                    dropOffPlus1 = "";
+                } else {
+                    pickUpPlus1 = "";
+                    dropOffPlus1 = busInfoPlus1.busTimes;
+                }
+            }
+
+            guests.push({
+                name: plusOneName,
+                plusOneRequested: "",
+                plusOneName: "",
+                plusOneRelationship: "",
+                meals: mealInfoPlus1.menuChoice || "",
+                allergies: mealInfoPlus1.allergenChoice ? mealInfoPlus1.allergenChoice.join(", ") : "",
+                allergySeverity: mealInfoPlus1.severityChoice ? mealInfoPlus1.severityChoice.join(", ") : "",
+                otherAllergies: mealInfoPlus1.otherAllergens || "",
+                bus: busInfoPlus1.busAnswer || "",
+                hotel: busInfoPlus1.hotelName || "",
+                pickUp: pickUpPlus1,
+                dropOff: dropOffPlus1,
+                drinks: drinkInfoPlus1.drinks || "",
+                questions: sharedQuestion || ""
+            });
+        }
+    }
+
+    return {
+        responder,
+        coming,
+        email,
+        guests
+    };
+}
+
 
 
 
