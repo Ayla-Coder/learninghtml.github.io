@@ -153,7 +153,7 @@
     <body>
         <form id="mainRSVPForm" autocomplete="off"> 
             <fieldset id="RSVPFieldset">
-                <legend><h3>RSVP UPDATED again x10</h3></legend>
+                <legend><h3>RSVP UPDATED again x11</h3></legend>
                 <label for="Responder">Please enter your full name (the person filling out the form):</label>
                 <input type="text" id="Responder" name="responder" placeholder="Full name" required> <br><br>
                 
@@ -1493,158 +1493,77 @@
 
 // Event listeners
 //--------------------------------------------------
-           document.addEventListener("DOMContentLoaded", function() {
-    // Cache elements
-    const form = document.getElementById("mainRSVPForm");
-    const nextButton = document.getElementById("nextButton");
-    const guestInfoSection = document.getElementById("guestInfoSection");
-    const comingRadios = document.getElementsByName("RSVP1");
-    const q1yesDiv = document.getElementById("Q1yes");
-    const submitDiv = document.getElementById("SubmitDiv");
-    const guests = document.getElementById("guestNR");
-    const Next2 = document.getElementById("Next2");
-    const Next3 = document.getElementById("Next3");
-    const Next4 = document.getElementById("Next4");
-    const Next5 = document.getElementById("btn5");
-    const dialog = document.getElementById('drinkInfo');
-    const openBtn = document.getElementById('openDialogBtn');
-    const closeBtn = document.getElementById('closeDialogBtn');
+           form.addEventListener("submit", function(e) {
+                e.preventDefault();
 
-     form.addEventListener("keydown", function(e) {
-        if (e.key === "Enter" && e.target.tagName.toLowerCase() !== "textarea") {
-            e.preventDefault();
-            return false;
-        }
-    });
-    // Next button on RSVP
-    nextButton.addEventListener("click", function() {
-        guestInfoSection.style.display = "block";
-    });
+                // Get RSVP value
+                const responder = document.getElementById("Responder").value.trim();
+                const comingRadio = document.querySelector("input[name='RSVP1']:checked");
+                const coming = comingRadio ? comingRadio.value : "";
+                const emailInput = document.getElementById("EUpdates");
+                const noEmail = document.getElementById("NoElUp").checked;
+                const email = noEmail ? "no thank you" : (emailInput ? emailInput.value.trim() : "");
+                const QInfo = document.getElementById("Questions");
+                const sharedQuestion = QInfo ? QInfo.value : "none";
 
-    // Show/hide email and submit based on RSVP answer
-    comingRadios.forEach(radio => {
-        radio.addEventListener("change", function() {
-            if (this.value === "yes") {
-                q1yesDiv.style.display = "block";
-                submitDiv.style.display = "none";
-            } else {
-                q1yesDiv.style.display = "none";
-                submitDiv.style.display = "block";
-            }
-        });
-    });
+                // Validation
+                if (!responder) {
+                    alert("Please enter your full name.");
+                    return;
+                }
+                if (!coming) {
+                    alert("Please select if your group is coming.");
+                    return;
+                }
+                if (coming === "yes" && !noEmail && (!email || email === "")) {
+                    alert("Please provide an email or check the 'No thank you' box.");
+                    return;
+                }
 
-    // Guest number change triggers guest info fields
-    guests.addEventListener("change", updateField);
+                let formData;
 
-    // Section navigation with validation
-    Next2.addEventListener("click", function() {
-        if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
-            updateMeal();
-        }
-    });
-    Next3.addEventListener("click", function() {
-        if (validateInfo(MealInfoStorage, mealInfoSchema)) {
-            updateBus();
-        }
-    });
-    Next4.addEventListener("click", function() {
-        if (validateInfo(BusInfoStorage, busInfoSchema)) {
-            updateDrinks();
-        }
-    });
-    Next5.addEventListener("click", function(){
-        document.getElementById("End").style.display = "block";
-    });
+                if (coming === "no") {
+                    // Minimal data for "no" RSVP
+                    formData = {
+                        responder,
+                        coming,
+                        email,
+                        guests: [] // No guests array for "no"
+                    };
+                } else {
+                    // --- Update DrinkInfoStorage before gathering form data ---
+                    for (let i = 0; i < DrinkInfoStorage.length; i++) {
+                        const personName = DrinkInfoStorage[i].GuestName;
+                        const safeName = makeSafe(personName);
+                        const yesDrinks = document.getElementById(`yesDrinks${safeName}`);
+                        const noDrinks = document.getElementById(`noDrinks${safeName}`);
+                        if (yesDrinks && yesDrinks.checked) {
+                            DrinkInfoStorage[i].drinks = "Yes";
+                        } else if (noDrinks && noDrinks.checked) {
+                            DrinkInfoStorage[i].drinks = "No";
+                        } else {
+                            DrinkInfoStorage[i].drinks = "";
+                        }
+                    }
+                    // Full data for "yes" RSVP
+                    formData = gatherFormData(sharedQuestion);
+                }
 
-    // Modal dialog for drinks info
-    openBtn.addEventListener('click', function() {
-        dialog.showModal();
-    });
-    closeBtn.addEventListener('click', function() {
-        dialog.close();
-    });
-    dialog.addEventListener('click', function(event) {
-        const rect = dialog.getBoundingClientRect();
-        if (
-            event.clientX < rect.left ||
-            event.clientX > rect.right ||
-            event.clientY < rect.top ||
-            event.clientY > rect.bottom
-        ) {
-            dialog.close();
-        }
-    });
+                const url = 'https://script.google.com/macros/s/AKfycbw4puRgZqdiMkqPKKglCQ8Op-xmNWf6TkH75pXrgXa2eInPMBESEaV78_R9YixWaWYFEQ/exec';
 
-    // Main form submission
-    
-    form.addEventListener("submit", function(e) {
-        console.log('MealInfoStorage', MealInfoStorage);
-        console.log('BusInfoStorage', BusInfoStorage);
-        console.log('DrinkInfoStorage', DrinkInfoStorage);
-        console.log('QuestionInfoStorage', QuestionInfoStorage);
-        // Custom validation (optional, adjust as needed)
-        const responder = document.getElementById("Responder").value.trim();
-        const coming = document.querySelector("input[name='RSVP1']:checked");
-        const email = document.getElementById("EUpdates").value.trim();
-        const noEmail = document.getElementById("NoElUp").checked;
-        //const QInfo = document.getElementById("Questions");
-       // const sharedQuestion = QInfo ? QInfo.value : "Nothing";
-        
-
-        if (!responder) {
-            alert("Please enter your full name.");
-            e.preventDefault();
-            return;
-        }
-        if (!coming) {
-            alert("Please select if your group is coming.");
-            e.preventDefault();
-            return;
-        }
-        if (coming.value === "yes" && !noEmail && !email) {
-            alert("Please provide an email or check the 'No thank you' box.");
-            e.preventDefault();
-            return;
-        }
-
-         // --- Update DrinkInfoStorage before gathering form data ---
-        for (let i = 0; i < DrinkInfoStorage.length; i++) {
-            const personName = DrinkInfoStorage[i].GuestName;
-            const safeName = makeSafe(personName);
-            const yesDrinks = document.getElementById(`yesDrinks${safeName}`);
-            const noDrinks = document.getElementById(`noDrinks${safeName}`);
-            if (yesDrinks && yesDrinks.checked) {
-                DrinkInfoStorage[i].drinks = "Yes";
-            } else if (noDrinks && noDrinks.checked) {
-                DrinkInfoStorage[i].drinks = "No";
-            } else {
-                DrinkInfoStorage[i].drinks = "";
-            }
-        }
-            // If all validation passes, prevent default and send data
-        e.preventDefault();
-        //const formData = gatherFormData();
-        const QInfo = document.getElementById("Questions");
-        const sharedQuestion = QInfo ? QInfo.value : "none";
-        const formData = gatherFormData(sharedQuestion);
-        const url ='https://script.google.com/macros/s/AKfycbw4puRgZqdiMkqPKKglCQ8Op-xmNWf6TkH75pXrgXa2eInPMBESEaV78_R9YixWaWYFEQ/exec';
-
-        fetch(url, {method: 'POST', body: JSON.stringify(formData)})
-        .then(res => res.json())
-        .then(result => {
-            if(result.result === "success") {
-                alert("RSVP submitted successfully!");
-                this.reset();
-            } else {
-                alert("There was a problem submitting your RSVP.");
-            }
-        })
-        .catch(error => alert("Error: " + error.message));
-
+                fetch(url, { method: 'POST', body: JSON.stringify(formData) })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.result === "success") {
+                            alert("RSVP submitted successfully!");
+                            form.reset();
+                        } else {
+                            alert("There was a problem submitting your RSVP.");
+                        }
+                    })
+                    .catch(error => alert("Error: " + error.message));
             });
-    });
- 
+
  
 
 
