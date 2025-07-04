@@ -153,7 +153,7 @@
     <body>
         <form id="mainRSVPForm" autocomplete="off"> 
             <fieldset id="RSVPFieldset">
-                <legend><h3>RSVP UPDATED again x11</h3></legend>
+                <legend><h3>RSVP UPDATED again x12</h3></legend>
                 <label for="Responder">Please enter your full name (the person filling out the form):</label>
                 <input type="text" id="Responder" name="responder" placeholder="Full name" required> <br><br>
                 
@@ -1493,6 +1493,90 @@
 
 // Event listeners
 //--------------------------------------------------
+           document.addEventListener("DOMContentLoaded", function() {
+    // Cache elements
+            const form = document.getElementById("mainRSVPForm");
+            const nextButton = document.getElementById("nextButton");
+            const guestInfoSection = document.getElementById("guestInfoSection");
+            const comingRadios = document.getElementsByName("RSVP1");
+            const q1yesDiv = document.getElementById("Q1yes");
+            const submitDiv = document.getElementById("SubmitDiv");
+            const guests = document.getElementById("guestNR");
+            const Next2 = document.getElementById("Next2");
+            const Next3 = document.getElementById("Next3");
+            const Next4 = document.getElementById("Next4");
+            const Next5 = document.getElementById("btn5");
+            const dialog = document.getElementById('drinkInfo');
+            const openBtn = document.getElementById('openDialogBtn');
+            const closeBtn = document.getElementById('closeDialogBtn');
+
+            form.addEventListener("keydown", function(e) {
+                if (e.key === "Enter" && e.target.tagName.toLowerCase() !== "textarea") {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            // Next button on RSVP
+            nextButton.addEventListener("click", function() {
+                guestInfoSection.style.display = "block";
+            });
+
+            // Show/hide email and submit based on RSVP answer
+            comingRadios.forEach(radio => {
+                radio.addEventListener("change", function() {
+                    if (this.value === "yes") {
+                        q1yesDiv.style.display = "block";
+                        submitDiv.style.display = "none";
+                    } else {
+                        q1yesDiv.style.display = "none";
+                        submitDiv.style.display = "block";
+                    }
+                });
+            });
+
+            // Guest number change triggers guest info fields
+            guests.addEventListener("change", updateField);
+
+            // Section navigation with validation
+            Next2.addEventListener("click", function() {
+                if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
+                    updateMeal();
+                }
+            });
+            Next3.addEventListener("click", function() {
+                if (validateInfo(MealInfoStorage, mealInfoSchema)) {
+                    updateBus();
+                }
+            });
+            Next4.addEventListener("click", function() {
+                if (validateInfo(BusInfoStorage, busInfoSchema)) {
+                    updateDrinks();
+                }
+            });
+            Next5.addEventListener("click", function(){
+                document.getElementById("End").style.display = "block";
+            });
+
+            // Modal dialog for drinks info
+            openBtn.addEventListener('click', function() {
+                dialog.showModal();
+            });
+            closeBtn.addEventListener('click', function() {
+                dialog.close();
+            });
+            dialog.addEventListener('click', function(event) {
+                const rect = dialog.getBoundingClientRect();
+                if (
+                    event.clientX < rect.left ||
+                    event.clientX > rect.right ||
+                    event.clientY < rect.top ||
+                    event.clientY > rect.bottom
+                ) {
+                    dialog.close();
+                }
+            });
+
+            // Main form submission
            form.addEventListener("submit", function(e) {
                 e.preventDefault();
 
@@ -1564,6 +1648,8 @@
                     .catch(error => alert("Error: " + error.message));
             });
 
+            });
+ 
  
 
 
