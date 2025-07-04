@@ -353,8 +353,132 @@
                 // 1. Collect RSVP info
                 const responder = document.getElementById("Responder").value.trim();
                 const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
-                const email = document.getElementById("EUpdates") ? document.getElementById("EUpdates").value.trim() : "";
+                const emailInput = document.getElementById("EUpdates");
+                const noEmail = document.getElementById("NoElUp").checked;
+                const email = noEmail ? "no thank you" : (emailInput ? emailInput.value.trim() : "");
 
+                let guests = [];
+                let infoIdx = 0; // Single index for all info arrays
+
+                for (let i = 0; i < GuestInfoStorage.length; i++) {
+                    const guest = GuestInfoStorage[i];
+
+                    // -- Main guest row --
+                    const mealInfo = MealInfoStorage[infoIdx] || {};
+                    const busInfo = BusInfoStorage[infoIdx] || {};
+                    const drinkInfo = DrinkInfoStorage[infoIdx] || {};
+                    const questionsInfo = QuestionInfoStorage[infoIdx] || {};
+
+                    guests.push({
+                        name: guest.GuestName || "",
+                        plusOneRequested: guest.plus1 === "yes" ? "Yes" : "No",
+                        plusOneName: guest.plusOneName || "",
+                        plusOneRelationship: guest.plusOneRel || "",
+                        meals: mealInfo.menuChoice || "",
+                        allergies: mealInfo.allergenChoice ? mealInfo.allergenChoice.join(", ") : "",
+                        allergySeverity: mealInfo.severityChoice ? mealInfo.severityChoice.join(", ") : "",
+                        otherAllergies: mealInfo.otherAllergens || "",
+                        bus: busInfo.busAnswer || "",
+                        drinks: drinkInfo.drinks || "",
+                        questions: questionsInfo.questions || ""
+                    });
+                    infoIdx++;
+
+                    // -- Plus one row (if present) --
+                    if (guest.plus1 === "yes" && guest.plusOneName && guest.plusOneName.trim() !== "") {
+                        const mealInfoPlus1 = MealInfoStorage[infoIdx] || {};
+                        const busInfoPlus1 = BusInfoStorage[infoIdx] || {};
+                        const drinkInfoPlus1 = DrinkInfoStorage[infoIdx] || {};
+                        const questionsInfoPlus1 = QuestionInfoStorage[infoIdx] || {};
+
+                        guests.push({
+                            name: guest.plusOneName || "",
+                            plusOneRequested: "",
+                            plusOneName: "",
+                            plusOneRelationship: "",
+                            meals: mealInfoPlus1.menuChoice || "",
+                            allergies: mealInfoPlus1.allergenChoice ? mealInfoPlus1.allergenChoice.join(", ") : "",
+                            allergySeverity: mealInfoPlus1.severityChoice ? mealInfoPlus1.severityChoice.join(", ") : "",
+                            otherAllergies: mealInfoPlus1.otherAllergens || "",
+                            bus: busInfoPlus1.busAnswer || "",
+                            drinks: drinkInfoPlus1.drinks || "",
+                            questions: questionsInfoPlus1.questions || ""
+                        });
+                        infoIdx++;
+                    }
+                }
+
+                return {
+                    responder,
+                    coming,
+                    email,
+                    guests
+                };
+            }
+
+           /* function gatherFormData() {
+                // 1. Collect RSVP info
+                const responder = document.getElementById("Responder").value.trim();
+                const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
+                const emailInput = document.getElementById("EUpdates");
+                const noEmail = document.getElementById("NoElUp").checked;
+                const email = noEmail ? "no thank you" : (emailInput ? emailInput.value.trim() : "");
+
+                let guests = [];
+                let mealIdx = 0;
+                let storageIndex = 0;
+
+                for (let i = 0; i < GuestInfoStorage.length; i++) {
+                    const guest = GuestInfoStorage[i];
+
+                    // -- Main guest row --
+                    const mealInfo = MealInfoStorage[mealIdx] || {};
+                    guests.push({
+                    name: guest.GuestName || "",
+                    plusOneRequested: guest.plus1 === "yes" ? "Yes" : "No",
+                    plusOneName: guest.plusOneName || "",
+                    plusOneRelationship: guest.plusOneRel || "",
+                    meals: mealInfo.menuChoice || "",
+                    allergies: mealInfo.allergenChoice ? mealInfo.allergenChoice.join(", ") : "",
+                    allergySeverity: mealInfo.severityChoice ? mealInfo.severityChoice.join(", ") : "",
+                    otherAllergies: mealInfo.otherAllergens || "",
+                    bus: busInfo.busAnswer || "",
+                    drinks: drinkInfo.drinks || "",
+                    questions: questionsInfo.questions || ""
+                    });
+                    mealIdx++;
+                    storageIndex++;
+
+                    // -- Plus one row (if present) --
+                    if (guest.plus1 === "yes" && guest.plusOneName && guest.plusOneName.trim() !== "") {
+                    const mealInfoPlus1 = MealInfoStorage[mealIdx] || {};
+                    guests.push({
+                        name: guest.plusOneName || "",
+                        plusOneRequested: "",
+                        plusOneName: "",
+                        plusOneRelationship: "",
+                        meals: mealInfoPlus1.menuChoice || "",
+                        allergies: mealInfoPlus1.allergenChoice ? mealInfoPlus1.allergenChoice.join(", ") : "",
+                        allergySeverity: mealInfoPlus1.severityChoice ? mealInfoPlus1.severityChoice.join(", ") : "",
+                        otherAllergies: mealInfoPlus1.otherAllergens || "",
+                        bus: busInfo.busAnswer || "",
+                        drinks: drinkInfo.drinks || "",
+                        questions: questionsInfo.questions || ""
+                    });
+                    mealIdx++;
+                    storageIndex++;
+                    }
+                }
+
+                return {
+                    responder,
+                    coming,
+                    email,
+                    guests
+                };
+                }*/
+
+/*
                 // 2. Collect guest and plus-one info
                 let guests = [];
                 let storageIndex = 0;
@@ -376,7 +500,7 @@
                         bus: busInfo.busAnswer || "",
                         drinks: drinkInfo.drinks || "",
                         questions: questionsInfo.questions || ""
-                    });
+                    });*/
 /*
                     guests.push({
                         name: guest.GuestName || "",
@@ -391,12 +515,12 @@
                         dropOff: Array.isArray(busInfo.busTimes) ? busInfo.busTimes.join(", ") : (busInfo.busTimes || ""),
                         drinks: drinkInfo.drinks || "",
                         questions: questionsInfo.questions || ""
-                    });*/
+                    });
 
-                    storageIndex++;
+                    storageIndex++;*/
 
                     // Plus one info, if present
-                    if (guest.plusOneName && guest.plusOneName.trim() !== "") {
+                 /*   if (guest.plusOneName && guest.plusOneName.trim() !== "") {
                         const mealInfoPlus1 = MealInfoStorage[storageIndex] || {};
                         const busInfoPlus1 = BusInfoStorage[storageIndex] || {};
                         const drinkInfoPlus1 = DrinkInfoStorage[storageIndex] || {};
@@ -411,7 +535,7 @@
                             bus: busInfoPlus1.busAnswer || "",
                             drinks: drinkInfoPlus1.drinks || "",
                             questions: questionsInfoPlus1.questions || ""
-                        });
+                        });*/
 /*
                         guests.push({
                             name: guest.plusOneName || "",
@@ -426,7 +550,7 @@
                             dropOff: Array.isArray(busInfoPlus1.busTimes) ? busInfoPlus1.busTimes.join(", ") : (busInfoPlus1.busTimes || ""),
                             drinks: drinkInfoPlus1.drinks || "",
                             questions: questionsInfoPlus1.questions || ""
-                        });*/
+                        });
                         storageIndex++;
                         }
                 }
@@ -437,7 +561,7 @@
                     email,
                     guests
                 };
-            }
+            }*/
 
             // Gathers the initial data from the form about the responder
             function gatherRSVPData() {
