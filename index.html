@@ -153,7 +153,7 @@
     <body>
         <form id="mainRSVPForm" autocomplete="off"> 
             <fieldset id="RSVPFieldset">
-                <legend><h3>RSVP UPDATED</h3></legend>
+                <legend><h3>RSVP UPDATED again again</h3></legend>
                 <label for="Responder">Please enter your full name (the person filling out the form):</label>
                 <input type="text" id="Responder" name="responder" placeholder="Full name" required> <br><br>
                 
@@ -367,21 +367,31 @@
                     const busInfo = BusInfoStorage[storageIndex] || {};
                     const drinkInfo = DrinkInfoStorage[storageIndex] || {};
                     const questionsInfo = QuestionInfoStorage[storageIndex] || {};
-
                     guests.push({
-                    name: guest.GuestName || "",
-                    plusOne: "No",
-                    plusOneRelationship: "",
-                    meals: mealInfo.meal || "",
-                    allergies: mealInfo.allergies || "",
-                    otherAllergies: mealInfo.otherAllergies || "",
-                    bus: busInfo.busAnswer || "",
-                    hotel: busInfo.hotelName || "",
-                    pickUp: busInfo.pickUp || "",
-                    dropOff: Array.isArray(busInfo.busTimes) ? busInfo.busTimes.join(", ") : (busInfo.busTimes || ""),
-                    drinks: drinkInfo.drinks || "",
-                    questions: questionsInfo.questions || ""
+                        name: guest.GuestName || "",
+                        plusOneRequested: guest.plus1 === "yes" ? "Yes" : "No",
+                        plusOneName: guest.plusOneName || "",
+                        plusOneRelationship: guest.plusOneRel || "",
+                        meals: mealInfo.meal || "",
+                        bus: busInfo.busAnswer || "",
+                        drinks: drinkInfo.drinks || "",
+                        questions: questionsInfo.questions || ""
                     });
+/*
+                    guests.push({
+                        name: guest.GuestName || "",
+                        plusOne: "No",
+                        plusOneRelationship: "",
+                        meals: mealInfo.meal || "",
+                        allergies: mealInfo.allergies || "",
+                        otherAllergies: mealInfo.otherAllergies || "",
+                        bus: busInfo.busAnswer || "",
+                        hotel: busInfo.hotelName || "",
+                        pickUp: busInfo.pickUp || "",
+                        dropOff: Array.isArray(busInfo.busTimes) ? busInfo.busTimes.join(", ") : (busInfo.busTimes || ""),
+                        drinks: drinkInfo.drinks || "",
+                        questions: questionsInfo.questions || ""
+                    });*/
 
                     storageIndex++;
 
@@ -392,6 +402,17 @@
                         const drinkInfoPlus1 = DrinkInfoStorage[storageIndex] || {};
                         const questionsInfoPlus1 = QuestionInfoStorage[storageIndex] || {};
 
+                        guests.push({
+                            name: guest.plusOneName || "",
+                            plusOneRequested: "", // blank for plus one row
+                            plusOneName: "",
+                            plusOneRelationship: "",
+                            meals: mealInfoPlus1.meal || "",
+                            bus: busInfoPlus1.busAnswer || "",
+                            drinks: drinkInfoPlus1.drinks || "",
+                            questions: questionsInfoPlus1.questions || ""
+                        });
+/*
                         guests.push({
                             name: guest.plusOneName || "",
                             plusOne: "Yes",
@@ -405,7 +426,7 @@
                             dropOff: Array.isArray(busInfoPlus1.busTimes) ? busInfoPlus1.busTimes.join(", ") : (busInfoPlus1.busTimes || ""),
                             drinks: drinkInfoPlus1.drinks || "",
                             questions: questionsInfoPlus1.questions || ""
-                        });
+                        });*/
                         storageIndex++;
                         }
                 }
