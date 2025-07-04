@@ -349,7 +349,7 @@
 
 // Functions:
 //--------------------------------------------------------------
-          function gatherFormData() {
+          function gatherFormData(sharedQuestion) {
             // 1. Collect RSVP info
             const responder = document.getElementById("Responder").value.trim();
             const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
@@ -366,8 +366,7 @@
                 // -- Main guest row --
                 const mealInfo = MealInfoStorage[infoIdx] || {};
                 const busInfo = BusInfoStorage[infoIdx] || {};
-                const drinkInfo = DrinkInfoStorage[infoIdx] || {};
-                const questionsInfo = QuestionInfoStorage[infoIdx] || {};
+                const drinkInfo = DrinkInfoStorage[infoIdx] || {};                
 
                 guests.push({
                     name: guest.GuestName || "",
@@ -383,7 +382,7 @@
                     pickUp: busInfo.pickUp || "",
                     dropOff: Array.isArray(busInfo.busTimes) ? busInfo.busTimes.join(", ") : (busInfo.busTimes || ""),
                     drinks: drinkInfo.drinks || "",
-                    questions: questionsInfo.questions || ""
+                    questions: sharedQuestion || ""
                 });
                 infoIdx++;
 
@@ -392,8 +391,7 @@
                     const mealInfoPlus1 = MealInfoStorage[infoIdx] || {};
                     const busInfoPlus1 = BusInfoStorage[infoIdx] || {};
                     const drinkInfoPlus1 = DrinkInfoStorage[infoIdx] || {};
-                    const questionsInfoPlus1 = QuestionInfoStorage[infoIdx] || {};
-
+                    
                     guests.push({
                         name: guest.plusOneName || "",
                         plusOneRequested: "",
@@ -408,7 +406,7 @@
                         pickUp: busInfoPlus1.pickUp || "",
                         dropOff: Array.isArray(busInfoPlus1.busTimes) ? busInfoPlus1.busTimes.join(", ") : (busInfoPlus1.busTimes || ""),
                         drinks: drinkInfoPlus1.drinks || "",
-                        questions: questionsInfoPlus1.questions || ""
+                        questions: sharedQuestion || ""
                     });
                     infoIdx++;
                 }
@@ -1352,7 +1350,8 @@
                 document.getElementById("Drinks").style.display = "block"; // makes the Drinks element visible
                
                 const guestDrink = document.getElementById("DrinkNext"); //retrieves the DrinkNext element from the document
-               
+                
+                let storageIndex = 0;
                 for (let i = 0; i<counting; i++){
 
                     let guestName = GuestInfoStorage[i].GuestName; // retrieves the guest name from GuestInfoStorage
@@ -1361,17 +1360,23 @@
                     let plusOneName = GuestInfoStorage[i].plusOneName || ""; 
 
                     // appends the drink inputs for each guest to the DrinkNext element in the document using the createDrinkSection function
-                    guestDrink.appendChild(createDrinksSection(guestName)); 
+                    guestDrink.appendChild(createDrinksSection(guestName, storageIndex));
+                    storageIndex++;
+                    if (plusOneName.trim() !== "") {
+                        
 
                     if (plusOneName.trim() !== "") { // if the plus 1 name exists and isn't just "" when all the whitespace is removed, the following happens: 
-                        guestDrink.appendChild(createDrinksSection(plusOneName)); // the +1 name is appended to the DrinkNext element in the document
+                        guestDrink.appendChild(createDrinksSection(plusOneName, storageIndex));
+                        storageIndex++; // the +1 name is appended to the DrinkNext element in the document
                     }
                 };
-            }
+            }};
 
 // Helper function for updateDrinks
-            function createDrinksSection(personName) {
+            function createDrinksSection(personName, storageIndex) {
                 const safeName = makeSafe(personName) // replaces all whitespaces in the name with _
+                let drinkInfo = {}; // <-- New: create a storage object
+
 
                 // creates a new div element using class="container3" for styling
                 let section = document.createElement("div");section.className = "container3";
@@ -1393,15 +1398,18 @@
                 // adds eventlistener to the yes and no radio buttons, which displays the next button when selected
                 if (yesDrinks) { // if (yesDrinks) check is a safety net to make sure times exists before trying to use it.
                         yesDrinks.addEventListener("change", function() {
+                             drinkInfo.drinks = "Yes";
                             document.getElementById("Next5").style.display = "block";
                         });
                     };
                      // adds eventlistener to the no radio button, which displays the next button when selected
                     if (noDrinks) {
                         noDrinks.addEventListener("change", function() {
+                            drinkInfo.drinks = "No";
                             document.getElementById("Next5").style.display = "block";
                         });
                     };
+                DrinkInfoStorage[storageIndex] = drinkInfo;
                 return section;
             }
 // universal validation function
@@ -1459,7 +1467,7 @@
     const q1yesDiv = document.getElementById("Q1yes");
     const submitDiv = document.getElementById("SubmitDiv");
     const guests = document.getElementById("guestNR");
-        const Next2 = document.getElementById("Next2");
+    const Next2 = document.getElementById("Next2");
     const Next3 = document.getElementById("Next3");
     const Next4 = document.getElementById("Next4");
     const Next5 = document.getElementById("btn5");
@@ -1539,6 +1547,9 @@
         const coming = document.querySelector("input[name='RSVP1']:checked");
         const email = document.getElementById("EUpdates").value.trim();
         const noEmail = document.getElementById("NoElUp").checked;
+        //const QInfo = document.getElementById("Questions");
+       // const sharedQuestion = QInfo ? QInfo.value : "Nothing";
+        
 
         if (!responder) {
             alert("Please enter your full name.");
@@ -1557,7 +1568,10 @@
         }
         // If all validation passes, prevent default and send data
     e.preventDefault();
-    const formData = gatherFormData();
+    //const formData = gatherFormData();
+    const QInfo = document.getElementById("Questions");
+    const sharedQuestion = QInfo ? QInfo.value : "none";
+    const formData = gatherFormData(sharedQuestion);
     const url ='https://script.google.com/macros/s/AKfycbw4puRgZqdiMkqPKKglCQ8Op-xmNWf6TkH75pXrgXa2eInPMBESEaV78_R9YixWaWYFEQ/exec';
 
     fetch(url, {method: 'POST', body: JSON.stringify(formData)})
