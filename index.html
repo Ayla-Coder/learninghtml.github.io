@@ -153,7 +153,7 @@
     <body>
         <form id="mainRSVPForm" autocomplete="off"> 
             <fieldset id="RSVPFieldset">
-                <legend><h3>RSVP UPDATED again x9</h3></legend>
+                <legend><h3>RSVP UPDATED again x10</h3></legend>
                 <label for="Responder">Please enter your full name (the person filling out the form):</label>
                 <input type="text" id="Responder" name="responder" placeholder="Full name" required> <br><br>
                 
@@ -350,107 +350,107 @@
 // Functions:
 //--------------------------------------------------------------
           function gatherFormData(sharedQuestion) {
-    const responder = document.getElementById("Responder").value.trim();
-    const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
-    const emailInput = document.getElementById("EUpdates");
-    const noEmail = document.getElementById("NoElUp").checked;
-    const email = noEmail ? "no thank you" : (emailInput ? emailInput.value.trim() : "");
+            const responder = document.getElementById("Responder").value.trim();
+            const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
+            const emailInput = document.getElementById("EUpdates");
+            const noEmail = document.getElementById("NoElUp").checked;
+            const email = noEmail ? "no thank you" : (emailInput ? emailInput.value.trim() : "");
 
-    let guests = [];
+            let guests = [];
 
-    // Loop through all main guests and their plus-ones
-    for (let i = 0; i < GuestInfoStorage.length; i++) {
-        const guest = GuestInfoStorage[i];
+            // Loop through all main guests and their plus-ones
+            for (let i = 0; i < GuestInfoStorage.length; i++) {
+                const guest = GuestInfoStorage[i];
 
-        // --- Main guest ---
-        const guestName = guest.GuestName || "";
-        const mealInfo = MealInfoStorage.find(m => m.GuestName === guestName) || {};
-        const busInfo = BusInfoStorage.find(b => b.GuestName === guestName) || {};
-        const drinkInfo = DrinkInfoStorage.find(d => d.GuestName === guestName) || {};
+                // --- Main guest ---
+                const guestName = guest.GuestName || "";
+                const mealInfo = MealInfoStorage.find(m => m.GuestName === guestName) || {};
+                const busInfo = BusInfoStorage.find(b => b.GuestName === guestName) || {};
+                const drinkInfo = DrinkInfoStorage.find(d => d.GuestName === guestName) || {};
 
-        // --- Properly extract pick up and drop off from busTimes array ---
-        let pickUp = "";
-        let dropOff = "";
-        if (Array.isArray(busInfo.busTimes)) {
-            pickUp = busInfo.busTimes.find(t => t === "01:30 pm") || "";
-            dropOff = busInfo.busTimes.filter(t => t !== "01:30 pm").join(", ");
-        } else if (typeof busInfo.busTimes === "string") {
-            if (busInfo.busTimes === "01:30 pm") {
-                pickUp = "01:30 pm";
-                dropOff = "";
-            } else {
-                pickUp = "";
-                dropOff = busInfo.busTimes;
-            }
-        }
+                // --- Properly extract pick up and drop off from busTimes array ---
+                let pickUp = "";
+                let dropOff = "";
+                if (Array.isArray(busInfo.busTimes)) {
+                    pickUp = busInfo.busTimes.find(t => t === "01:30 pm") || "";
+                    dropOff = busInfo.busTimes.filter(t => t !== "01:30 pm").join(", ");
+                } else if (typeof busInfo.busTimes === "string") {
+                    if (busInfo.busTimes === "01:30 pm") {
+                        pickUp = "01:30 pm";
+                        dropOff = "";
+                    } else {
+                        pickUp = "";
+                        dropOff = busInfo.busTimes;
+                    }
+                }
 
-        guests.push({
-            name: guestName,
-            plusOneRequested: guest.plus1 === "yes" ? "Yes" : "No",
-            plusOneName: guest.plusOneName || "",
-            plusOneRelationship: guest.plusOneRel || "",
-            meals: mealInfo.menuChoice || "",
-            allergies: mealInfo.allergenChoice ? mealInfo.allergenChoice.join(", ") : "",
-            allergySeverity: mealInfo.severityChoice ? mealInfo.severityChoice.join(", ") : "",
-            otherAllergies: mealInfo.otherAllergens || "",
-            bus: busInfo.busAnswer || "",
-            hotel: busInfo.hotelName || "",
-            pickUp: pickUp,
-            dropOff: dropOff,
-            drinks: drinkInfo.drinks || "",
-            questions: sharedQuestion || ""
-        });
+                guests.push({
+                    name: guestName,
+                    plusOneRequested: guest.plus1 === "yes" ? "Yes" : "No",
+                    plusOneName: guest.plusOneName || "",
+                    plusOneRelationship: guest.plusOneRel || "",
+                    meals: mealInfo.menuChoice || "",
+                    allergies: mealInfo.allergenChoice ? mealInfo.allergenChoice.join(", ") : "",
+                    allergySeverity: mealInfo.severityChoice ? mealInfo.severityChoice.join(", ") : "",
+                    otherAllergies: mealInfo.otherAllergens || "",
+                    bus: busInfo.busAnswer || "",
+                    hotel: busInfo.hotelName || "",
+                    pickUp: pickUp,
+                    dropOff: dropOff,
+                    drinks: drinkInfo.drinks || "",
+                    questions: sharedQuestion || ""
+                });
 
-        // --- Plus one ---
-        if (guest.plus1 === "yes" && guest.plusOneName && guest.plusOneName.trim() !== "") {
-            const plusOneName = guest.plusOneName;
-           // Find the main guest's meal info object
-            const mainMealInfo = MealInfoStorage.find(m => m.GuestName === guestName) || {};
-            const mealInfoPlus1 = mainMealInfo.plusOneMeal || {};
-            const busInfoPlus1 = BusInfoStorage.find(b => b.GuestName === plusOneName) || {};
-            const drinkInfoPlus1 = DrinkInfoStorage.find(d => d.GuestName === plusOneName) || {};
+                // --- Plus one ---
+                if (guest.plus1 === "yes" && guest.plusOneName && guest.plusOneName.trim() !== "") {
+                    const plusOneName = guest.plusOneName;
+                // Find the main guest's meal info object
+                    const mainMealInfo = MealInfoStorage.find(m => m.GuestName === guestName) || {};
+                    const mealInfoPlus1 = mainMealInfo.plusOneMeal || {};
+                    const busInfoPlus1 = BusInfoStorage.find(b => b.GuestName === plusOneName) || {};
+                    const drinkInfoPlus1 = DrinkInfoStorage.find(d => d.GuestName === plusOneName) || {};
 
-            let pickUpPlus1 = "";
-            let dropOffPlus1 = "";
-            if (Array.isArray(busInfoPlus1.busTimes)) {
-                pickUpPlus1 = busInfoPlus1.busTimes.find(t => t === "01:30 pm") || "";
-                dropOffPlus1 = busInfoPlus1.busTimes.filter(t => t !== "01:30 pm").join(", ");
-            } else if (typeof busInfoPlus1.busTimes === "string") {
-                if (busInfoPlus1.busTimes === "01:30 pm") {
-                    pickUpPlus1 = "01:30 pm";
-                    dropOffPlus1 = "";
-                } else {
-                    pickUpPlus1 = "";
-                    dropOffPlus1 = busInfoPlus1.busTimes;
+                    let pickUpPlus1 = "";
+                    let dropOffPlus1 = "";
+                    if (Array.isArray(busInfoPlus1.busTimes)) {
+                        pickUpPlus1 = busInfoPlus1.busTimes.find(t => t === "01:30 pm") || "";
+                        dropOffPlus1 = busInfoPlus1.busTimes.filter(t => t !== "01:30 pm").join(", ");
+                    } else if (typeof busInfoPlus1.busTimes === "string") {
+                        if (busInfoPlus1.busTimes === "01:30 pm") {
+                            pickUpPlus1 = "01:30 pm";
+                            dropOffPlus1 = "";
+                        } else {
+                            pickUpPlus1 = "";
+                            dropOffPlus1 = busInfoPlus1.busTimes;
+                        }
+                    }
+
+                    guests.push({
+                        name: plusOneName,
+                        plusOneRequested: "",
+                        plusOneName: "",
+                        plusOneRelationship: "",
+                        meals: mealInfoPlus1.menuChoice || "",
+                        allergies: mealInfoPlus1.allergenChoice ? mealInfoPlus1.allergenChoice.join(", ") : "",
+                        allergySeverity: mealInfoPlus1.severityChoice ? mealInfoPlus1.severityChoice.join(", ") : "",
+                        otherAllergies: mealInfoPlus1.otherAllergens || "",
+                        bus: busInfoPlus1.busAnswer || "",
+                        hotel: busInfoPlus1.hotelName || "",
+                        pickUp: pickUpPlus1,
+                        dropOff: dropOffPlus1,
+                        drinks: drinkInfoPlus1.drinks || "",
+                        questions: sharedQuestion || ""
+                    });
                 }
             }
 
-            guests.push({
-                name: plusOneName,
-                plusOneRequested: "",
-                plusOneName: "",
-                plusOneRelationship: "",
-                meals: mealInfoPlus1.menuChoice || "",
-                allergies: mealInfoPlus1.allergenChoice ? mealInfoPlus1.allergenChoice.join(", ") : "",
-                allergySeverity: mealInfoPlus1.severityChoice ? mealInfoPlus1.severityChoice.join(", ") : "",
-                otherAllergies: mealInfoPlus1.otherAllergens || "",
-                bus: busInfoPlus1.busAnswer || "",
-                hotel: busInfoPlus1.hotelName || "",
-                pickUp: pickUpPlus1,
-                dropOff: dropOffPlus1,
-                drinks: drinkInfoPlus1.drinks || "",
-                questions: sharedQuestion || ""
-            });
+            return {
+                responder,
+                coming,
+                email,
+                guests
+            };
         }
-    }
-
-    return {
-        responder,
-        coming,
-        email,
-        guests
-    };
-}
 
 
 
@@ -1408,7 +1408,9 @@
 // Helper function for updateDrinks
             function createDrinksSection(personName, storageIndex) {
                 const safeName = makeSafe(personName) // replaces all whitespaces in the name with _
-                let drinkInfo = {}; // <-- New: create a storage object
+                let drinkInfo = DrinkInfoStorage[storageIndex] || {};
+                drinkInfo.GuestName = personName;
+                DrinkInfoStorage[storageIndex] = drinkInfo;
 
 
                 // creates a new div element using class="container3" for styling
@@ -1508,6 +1510,12 @@
     const openBtn = document.getElementById('openDialogBtn');
     const closeBtn = document.getElementById('closeDialogBtn');
 
+     form.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && e.target.tagName.toLowerCase() !== "textarea") {
+            e.preventDefault();
+            return false;
+        }
+    });
     // Next button on RSVP
     nextButton.addEventListener("click", function() {
         guestInfoSection.style.display = "block";
@@ -1599,28 +1607,43 @@
             e.preventDefault();
             return;
         }
-        // If all validation passes, prevent default and send data
-    e.preventDefault();
-    //const formData = gatherFormData();
-    const QInfo = document.getElementById("Questions");
-    const sharedQuestion = QInfo ? QInfo.value : "none";
-    const formData = gatherFormData(sharedQuestion);
-    const url ='https://script.google.com/macros/s/AKfycbw4puRgZqdiMkqPKKglCQ8Op-xmNWf6TkH75pXrgXa2eInPMBESEaV78_R9YixWaWYFEQ/exec';
 
-    fetch(url, {method: 'POST', body: JSON.stringify(formData)})
-    .then(res => res.json())
-    .then(result => {
-        if(result.result === "success") {
-            alert("RSVP submitted successfully!");
-            this.reset();
-        } else {
-            alert("There was a problem submitting your RSVP.");
+         // --- Update DrinkInfoStorage before gathering form data ---
+        for (let i = 0; i < DrinkInfoStorage.length; i++) {
+            const personName = DrinkInfoStorage[i].GuestName;
+            const safeName = makeSafe(personName);
+            const yesDrinks = document.getElementById(`yesDrinks${safeName}`);
+            const noDrinks = document.getElementById(`noDrinks${safeName}`);
+            if (yesDrinks && yesDrinks.checked) {
+                DrinkInfoStorage[i].drinks = "Yes";
+            } else if (noDrinks && noDrinks.checked) {
+                DrinkInfoStorage[i].drinks = "No";
+            } else {
+                DrinkInfoStorage[i].drinks = "";
+            }
         }
-    })
-    .catch(error => alert("Error: " + error.message));
+            // If all validation passes, prevent default and send data
+        e.preventDefault();
+        //const formData = gatherFormData();
+        const QInfo = document.getElementById("Questions");
+        const sharedQuestion = QInfo ? QInfo.value : "none";
+        const formData = gatherFormData(sharedQuestion);
+        const url ='https://script.google.com/macros/s/AKfycbw4puRgZqdiMkqPKKglCQ8Op-xmNWf6TkH75pXrgXa2eInPMBESEaV78_R9YixWaWYFEQ/exec';
 
-         });
-});
+        fetch(url, {method: 'POST', body: JSON.stringify(formData)})
+        .then(res => res.json())
+        .then(result => {
+            if(result.result === "success") {
+                alert("RSVP submitted successfully!");
+                this.reset();
+            } else {
+                alert("There was a problem submitting your RSVP.");
+            }
+        })
+        .catch(error => alert("Error: " + error.message));
+
+            });
+    });
  
  
 
