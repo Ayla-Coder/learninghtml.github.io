@@ -153,7 +153,7 @@
     <body>
         <form id="mainRSVPForm" autocomplete="off"> 
             <fieldset id="RSVPFieldset">
-                <legend><h3>RSVP UPDATED again x13</h3></legend>
+                <legend><h3>RSVP UPDATED again x14</h3></legend>
                 <label for="Responder">Please enter your full name (the person filling out the form):</label>
                 <input type="text" id="Responder" name="responder" placeholder="Full name" required> <br><br>
                 
@@ -279,7 +279,6 @@
 
                  <div id="SubmitDiv2" name="submit">
                     <button type="submit" id="Submit" name="submitbtn">Submit</button>
-                     <input type="button" id="testQbtn" value="Click me to see if the QuestionInfoStorage array works"/>
                 </div>
                
             </fieldset>
@@ -451,157 +450,6 @@
                 guests
             };
         }
-
-
-
-
-           /* function gatherFormData() {
-                // 1. Collect RSVP info
-                const responder = document.getElementById("Responder").value.trim();
-                const coming = document.querySelector("input[name='RSVP1']:checked")?.value || "";
-                const emailInput = document.getElementById("EUpdates");
-                const noEmail = document.getElementById("NoElUp").checked;
-                const email = noEmail ? "no thank you" : (emailInput ? emailInput.value.trim() : "");
-
-                let guests = [];
-                let mealIdx = 0;
-                let storageIndex = 0;
-
-                for (let i = 0; i < GuestInfoStorage.length; i++) {
-                    const guest = GuestInfoStorage[i];
-
-                    // -- Main guest row --
-                    const mealInfo = MealInfoStorage[mealIdx] || {};
-                    guests.push({
-                    name: guest.GuestName || "",
-                    plusOneRequested: guest.plus1 === "yes" ? "Yes" : "No",
-                    plusOneName: guest.plusOneName || "",
-                    plusOneRelationship: guest.plusOneRel || "",
-                    meals: mealInfo.menuChoice || "",
-                    allergies: mealInfo.allergenChoice ? mealInfo.allergenChoice.join(", ") : "",
-                    allergySeverity: mealInfo.severityChoice ? mealInfo.severityChoice.join(", ") : "",
-                    otherAllergies: mealInfo.otherAllergens || "",
-                    bus: busInfo.busAnswer || "",
-                    drinks: drinkInfo.drinks || "",
-                    questions: questionsInfo.questions || ""
-                    });
-                    mealIdx++;
-                    storageIndex++;
-
-                    // -- Plus one row (if present) --
-                    if (guest.plus1 === "yes" && guest.plusOneName && guest.plusOneName.trim() !== "") {
-                    const mealInfoPlus1 = MealInfoStorage[mealIdx] || {};
-                    guests.push({
-                        name: guest.plusOneName || "",
-                        plusOneRequested: "",
-                        plusOneName: "",
-                        plusOneRelationship: "",
-                        meals: mealInfoPlus1.menuChoice || "",
-                        allergies: mealInfoPlus1.allergenChoice ? mealInfoPlus1.allergenChoice.join(", ") : "",
-                        allergySeverity: mealInfoPlus1.severityChoice ? mealInfoPlus1.severityChoice.join(", ") : "",
-                        otherAllergies: mealInfoPlus1.otherAllergens || "",
-                        bus: busInfo.busAnswer || "",
-                        drinks: drinkInfo.drinks || "",
-                        questions: questionsInfo.questions || ""
-                    });
-                    mealIdx++;
-                    storageIndex++;
-                    }
-                }
-
-                return {
-                    responder,
-                    coming,
-                    email,
-                    guests
-                };
-                }*/
-
-/*
-                // 2. Collect guest and plus-one info
-                let guests = [];
-                let storageIndex = 0;
-
-                for (let i = 0; i < GuestInfoStorage.length; i++) {
-                    const guest = GuestInfoStorage[i];
-
-                    // Main guest info
-                    const mealInfo = MealInfoStorage[storageIndex] || {};
-                    const busInfo = BusInfoStorage[storageIndex] || {};
-                    const drinkInfo = DrinkInfoStorage[storageIndex] || {};
-                    const questionsInfo = QuestionInfoStorage[storageIndex] || {};
-                    guests.push({
-                        name: guest.GuestName || "",
-                        plusOneRequested: guest.plus1 === "yes" ? "Yes" : "No",
-                        plusOneName: guest.plusOneName || "",
-                        plusOneRelationship: guest.plusOneRel || "",
-                        meals: mealInfo.meal || "",
-                        bus: busInfo.busAnswer || "",
-                        drinks: drinkInfo.drinks || "",
-                        questions: questionsInfo.questions || ""
-                    });*/
-/*
-                    guests.push({
-                        name: guest.GuestName || "",
-                        plusOne: "No",
-                        plusOneRelationship: "",
-                        meals: mealInfo.meal || "",
-                        allergies: mealInfo.allergies || "",
-                        otherAllergies: mealInfo.otherAllergies || "",
-                        bus: busInfo.busAnswer || "",
-                        hotel: busInfo.hotelName || "",
-                        pickUp: busInfo.pickUp || "",
-                        dropOff: Array.isArray(busInfo.busTimes) ? busInfo.busTimes.join(", ") : (busInfo.busTimes || ""),
-                        drinks: drinkInfo.drinks || "",
-                        questions: questionsInfo.questions || ""
-                    });
-
-                    storageIndex++;*/
-
-                    // Plus one info, if present
-                 /*   if (guest.plusOneName && guest.plusOneName.trim() !== "") {
-                        const mealInfoPlus1 = MealInfoStorage[storageIndex] || {};
-                        const busInfoPlus1 = BusInfoStorage[storageIndex] || {};
-                        const drinkInfoPlus1 = DrinkInfoStorage[storageIndex] || {};
-                        const questionsInfoPlus1 = QuestionInfoStorage[storageIndex] || {};
-
-                        guests.push({
-                            name: guest.plusOneName || "",
-                            plusOneRequested: "", // blank for plus one row
-                            plusOneName: "",
-                            plusOneRelationship: "",
-                            meals: mealInfoPlus1.meal || "",
-                            bus: busInfoPlus1.busAnswer || "",
-                            drinks: drinkInfoPlus1.drinks || "",
-                            questions: questionsInfoPlus1.questions || ""
-                        });*/
-/*
-                        guests.push({
-                            name: guest.plusOneName || "",
-                            plusOne: "Yes",
-                            plusOneRelationship: guest.plusOneRelationship || "",
-                            meals: mealInfoPlus1.meal || "",
-                            allergies: mealInfoPlus1.allergies || "",
-                            otherAllergies: mealInfoPlus1.otherAllergies || "",
-                            bus: busInfoPlus1.busAnswer || "",
-                            hotel: busInfoPlus1.hotelName || "",
-                            pickUp: busInfoPlus1.pickUp || "",
-                            dropOff: Array.isArray(busInfoPlus1.busTimes) ? busInfoPlus1.busTimes.join(", ") : (busInfoPlus1.busTimes || ""),
-                            drinks: drinkInfoPlus1.drinks || "",
-                            questions: questionsInfoPlus1.questions || ""
-                        });
-                        storageIndex++;
-                        }
-                }
-
-                return {
-                    responder,
-                    coming,
-                    email,
-                    guests
-                };
-            }*/
-
             // Gathers the initial data from the form about the responder
             function gatherRSVPData() {
                 const responder = document.getElementById("Responder").value.trim();
@@ -1519,6 +1367,7 @@
             // Next button on RSVP
             nextButton.addEventListener("click", function() {
                 guestInfoSection.style.display = "block";
+                document.getElementById("guestInfoSection").scrollIntoView({ behavior: "smooth" });
             });
 
             // Show/hide email and submit based on RSVP answer
@@ -1541,20 +1390,24 @@
             Next2.addEventListener("click", function() {
                 if (validateInfo(GuestInfoStorage, guestInfoSchema)) {
                     updateMeal();
+                    document.getElementById("Menu").scrollIntoView({ behavior: "smooth" });
                 }
             });
             Next3.addEventListener("click", function() {
                 if (validateInfo(MealInfoStorage, mealInfoSchema)) {
                     updateBus();
+                    document.getElementById("Bus").scrollIntoView({ behavior: "smooth" });
                 }
             });
             Next4.addEventListener("click", function() {
                 if (validateInfo(BusInfoStorage, busInfoSchema)) {
                     updateDrinks();
+                    document.getElementById("Drinks").scrollIntoView({ behavior: "smooth" });
                 }
             });
             Next5.addEventListener("click", function(){
                 document.getElementById("End").style.display = "block";
+                document.getElementById("End").scrollIntoView({ behavior: "smooth" });
             });
 
             // Modal dialog for drinks info
