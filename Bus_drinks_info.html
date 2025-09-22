@@ -9,7 +9,7 @@
     </head>
     <body>
         <form id="BusRSVPForm" autocomplete="off"> 
-            <fieldset id="RSVPFieldset">
+            <fieldset id="GuestInfoFieldset">
                 <legend><h3>Bus form<img src="images/bus_transparent.png" alt="Bus icon" class="legend-img"></h3></legend>
                 <p>This form looks best on a desktop, although it does work using a phone or tablet. Please let me know if you have any issues or questions! 
                     our email is codergulbrandsen@gmail.com.
@@ -18,43 +18,34 @@
                 <label for = "People">Please enter the amount of guests you're filling this form out for</label>
                 <input type="number" min=1 max=10 id="guestNR">
 
-                <div id="NR" style="display:none">
-                    <button type="button" id="next1">Next</button>
-                </div>
-                <div id="names">
-                <label for="Responder">Please enter your full name (the person filling out the form):</label>
-                <input type="text" id="Responder" name="responder" placeholder="Full name" required> <br><br>
-                </div>
+            </fieldset>
+
+            <fieldset id="Busfieldset" style="">
                 <legend><h2>Will any of you be taking the bus? What time?<img src="images/bus_transparent.png" alt="Bus icon" class="legend-img2"></h2></legend>
+                <div id="GuestNames" style="">
+                   
+                </div>
+                <button type="button" id="OK2" style="">OK</button>                
                 <p>We'll ask for a small contribution to help cover the bus cost; don't worry, 
                     it'll cost much less than a taxi in Norway! I'll add payment options to the website soon.<br>
-                    We're still finalizing the bus schedule and whether we'll have it for both pick-up and drop-off. 
-                    This depends on how many people are interested. We'll share all updates on the website as soon as we know more.</p>
+
+                    We're still finalizing the bus schedule, but we're pretty sure that we'll have it for both pick-up and drop-off. 
+                    We need to know how many people want to take these buses so we can book the right sized bus for each time. </p>
                 
-                <div id="BussInf">
-                </div>
-                <button type="button" id="Next4" value="Next">OK</button>
-              
+                
+                <button type="button" id="OK3" style="">OK</button>
             </fieldset>
 
-            <fieldset id="Bus" style="display:none">
-                
-
-                <br><br>
-                <div id="testBusArray" style="display:none">
-                   
-                   
-                </div>
-
-            </fieldset>
-
-            <fieldset id="Drinks" style="display:none">
+    
+            <fieldset id="Drinks" style="">
                 <legend><h2>Drink Vouchers<img src="images/Skaal.png" alt="Drink icon" class="legend-img"></h2></legend>
 
-                <p>Because of space, timing, and Norwegian alcohol laws, we’ll use drink vouchers instead of a regular bar. 
-                    You can buy packs of three on our website using Vipps, PayPal, or bank transfer—we’d really appreciate it 
-                    if you purchase in advance to help us plan. Vouchers will also be available on-site if needed.
-                    <b>We’ll provide welcome drinks and wine with dinner!.</b>
+                <p>Because of space, timing, and Norwegian alcohol laws, we were considering using drink vouchers instead of a regular 
+                    card scanner at the bar. Vouchers will also be available on-site if needed. If all of this turns out to be too complicated, 
+                    we'll keep the drinks simple and find a better alternative. If you want any mixed drinks, cider or beer in addition to the 
+                    wine (and beer) we'll provide (for free) with dinner, please let us know so we can buy the correct amount of ingredients! 
+                    
+                    <br><b>We’ll provide welcome drinks and wine with dinner!</b>
                 </p>
                 <div class="container4">
 
@@ -71,47 +62,39 @@
                         We are currently working on a drink menu that we will post to the website at some point. What we do know so far, is that 
                         we want to provide exciting mixed drinks with equally exciting <i>alcohol-free</i> versions! <br> <br>
                         Again, we haven't landed on the exact menu yet, but we know we want to serve piña coladas and margaritas made in a slushie 
-                        machine, as well as beer, wine and maybe some home-brewed hard cider and beer too. 
+                        machine, as well as beer, wine and maybe some home-brewed hard cider and beer too. You'll be able to buy packs of three on our 
+                        website using Vipps, PayPal, or bank transfer. We’d really appreciate it if you purchase in advance to help us plan. 
                         <br>
                     </p>
                     <button class="close-btn" id="closeDialogBtn" type="button">Close</button>
                   </dialog>
                   <p></p>
-             
-                <div id="DrinkNext">
-                </div>
-                <div id="Next5" style="display:none">
-                    <button type="button" id="btn5" value="Next">OK</button>
-                </div>
-                
+                  <button type="button" id="OK4" style="">OK</button>
+               
             </fieldset>
 
-            <fieldset id="End" style="display:none">
-                  <div id="Email" style="display:none;">
+            <fieldset id="End" style="">
+
+           <legend><h2>Any questions or small notes you want us to read?</b> <img src="images/thinker.png" alt="Thinker icon" class="legend-img2"></h2></legend>
+               
+                <label for="Questions">Please write here, and we will get back to you as soon as possible!</label><br><br>
+                <input type="text" id="Questions" name="longAns"/> <br><br>
+
+                                
+
+                 <div id="Email" style="">
                     <legend><h4>Remember to sign on to get important updates from the website!</h4></legend>
                     <label for="EUpdates">Please enter your email here:</label>
                     <input type="email" id="EUpdates" name="email" placeholder="example@gmail.com"><br><br>
                     <input type="checkbox" id="NoElUp" name="noEmail">
                     <label for="NoElUp">No thank you, I'll make sure to keep checking the website myself </label>
                     <br><br>
-                    <button type="button" id="nextButton">OK</button>
-                </div>
-                
-                <div id="SubmitDiv" name="submit" style="display:none;">
-                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
-                     
-                <legend><h2></legend>Any questions or small notes you want us to read?</b> <img src="images/thinker.png" alt="Thinker icon" class="legend-img2"></h2></legend>
-               
-                <label for="Questions">Please write here, and we will get back to you as soon as possible!</label><br><br>
-                <input type="text" id="Questions" name="longAns"/> <br><br>
-
-                 <div id="SubmitDiv2" name="submit">
-                    <button type="submit" id="Submit" name="submitbtn">Submit</button>
+                    <button type="submit" id="Submit" name="submitbtn" style="">Submit</button>
                 </div>
                
             </fieldset>
         </form>
-        <script src="Bus_drinks_script.js"></script>
+        <script src="Bus_drinks_script_rewrite.js"></script>
     </body>
 
 </html>
